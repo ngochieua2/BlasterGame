@@ -46,6 +46,7 @@ public class Hud {
                 new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
 
+        // add true type font
         fontGenerator = new FreeTypeFontGenerator(
                 Gdx.files.internal("fonts/kenvector_future.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -53,6 +54,8 @@ public class Hud {
         // set the font parameters
         fontParameter.size = FONT_SIZE;
         fontParameter.color = Color.WHITE;
+
+        // generate the bitmap font
         bitmapFont = fontGenerator.generateFont(fontParameter);
 
         // set the label style
