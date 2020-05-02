@@ -13,13 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.SpaceStationBlaster;
 
-public class Hud {
+public class Hud implements Disposable {
 
     private static final int FONT_SIZE = 24;
     private static final int DEF_SCORE = 0;
@@ -145,5 +147,13 @@ public class Hud {
         final TextureAtlas.AtlasRegion region = uiTextureAtlas.findRegion("glassPanel");
 
         return new NinePatch(new TextureRegion(region, 0, 0, region.getRegionWidth(), region.getRegionHeight()), 10, 10, 10, 10);
+    }
+
+
+    @Override
+    public void dispose() {
+        bitmapFont.dispose();
+        stage.dispose();
+
     }
 }
