@@ -21,8 +21,7 @@ public class MapLoader implements Disposable {
     private static final String MAP_PLAYER = "PlayerShip";
 
     private World world;
-    private TiledMap tileMap;
-
+    private TiledMap tiledMap;
 
     /**
      * tileMapLoader: creates an array of all the Bounds objects in the tile map and then creates
@@ -32,10 +31,10 @@ public class MapLoader implements Disposable {
     public MapLoader(World world) {
         this.world = world;
 
-        tileMap = new TmxMapLoader().load(TILE_MAP_NAME);
+        tiledMap = new TmxMapLoader().load(TILE_MAP_NAME);
 
         // get all the bounds objects in the tile map
-        Array<RectangleMapObject> bounds = tileMap.getLayers().get(MAP_BOUNDS).getObjects().getByType(RectangleMapObject.class);
+        Array<RectangleMapObject> bounds = tiledMap.getLayers().get(MAP_BOUNDS).getObjects().getByType(RectangleMapObject.class);
 
         // create static bodies and fixtures for all the objects in the tile map
         for (RectangleMapObject rectangleMapObject : bounds) {
@@ -54,7 +53,7 @@ public class MapLoader implements Disposable {
      */
     public Body getPlayer() {
         // get the playerShip bounds object in the tile map
-        Rectangle playerRectangle = tileMap.getLayers().get(MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
+        Rectangle playerRectangle = tiledMap.getLayers().get(MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
 
         // create dynamic body and fixture for the playerShip object in the tile map and then returns it
         return ShapeFactory.createRectangle(
@@ -64,10 +63,18 @@ public class MapLoader implements Disposable {
     }
 
     /**
+     * getTiledMap: gets the tiled map
+     * @return tiledMap
+     */
+    public TiledMap getTiledMap() {
+        return tiledMap;
+    }
+
+    /**
      * disposes of assets
      */
     @Override
     public void dispose() {
-        tileMap.dispose();
+        tiledMap.dispose();
     }
 }

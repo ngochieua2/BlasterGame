@@ -5,7 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,6 +23,7 @@ import com.mygdx.game.Tools.MapLoader;
 public class PlayScreen implements Screen {
     private GameAssetManager gameAssetManager;
     public TextureAtlas textureAtlas;
+    public MapRenderer mapRenderer;
     private SpaceStationBlaster game;
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
@@ -54,9 +58,14 @@ public class PlayScreen implements Screen {
 
         // create Box3d world with no gravity and set to sleep objects at rest
         world = new World(new Vector2(0, 0), true);
+
+        // load tiled map and set up tiled map renderer
+        mapLoader = new MapLoader(world);
+        mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.getTiledMap(),1 / SpaceStationBlaster.PPM);
+        gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
+
         box2dDebugRenderer = new Box2DDebugRenderer();
 
-        mapLoader = new MapLoader(world);
         player = new PlayerSpaceship(world, this);
     }
 
@@ -74,12 +83,12 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float deltaTime) {
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 2) {
-            player.body.applyForce(new Vector2(1f, 0), player.body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x <= -2) {
-            player.body.applyForce(new Vector2(-1f, 0), player.body.getWorldCenter(), true);
-        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 2) {
+//            player.body.applyForce(new Vector2(1f, 0), player.body.getWorldCenter(), true);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x <= -2) {
+//            player.body.applyForce(new Vector2(-1f, 0), player.body.getWorldCenter(), true);
+//        }
 
     }
 
@@ -88,17 +97,19 @@ public class PlayScreen implements Screen {
         handleInput(deltaTime);
 
         // set how many time to calculate per second
-        world.step(1 / 60f, 5, 2);
+        world.step(1 / 60f, 6, 2);
 
         player.update(deltaTime);
 
-        // attach game camera x position to players x position
+        // attach game camera x and y position to players x and y position
         gameCamera.position.x = player.body.getPosition().x;
+        gameCamera.position.y = player.body.getPosition().y;
 
         // update our Gamecamera with the correct coordinates
         gameCamera.update();
+        // tell our renderer to draw only what it can see in our game world
+        mapRenderer.setView(gameCamera);
 
-        //Todo: tell our renderer to draw only what it can see in our game world
 
     }
 
@@ -109,6 +120,9 @@ public class PlayScreen implements Screen {
         // clear the game screen with Black
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // gameCamera.update();
+        mapRenderer.render();
 
         // render Box2DDebugLines
         box2dDebugRenderer.render(world, gameCamera.combined);
