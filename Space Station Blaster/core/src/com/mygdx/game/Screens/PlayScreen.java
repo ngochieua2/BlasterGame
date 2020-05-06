@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -16,6 +15,7 @@ import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Sprites.PlayerSpaceship;
+import com.mygdx.game.Tools.MapLoader;
 
 public class PlayScreen implements Screen {
     private GameAssetManager gameAssetManager;
@@ -30,6 +30,7 @@ public class PlayScreen implements Screen {
     // graphical representation of bodies and fixtures in our game world
     private Box2DDebugRenderer box2dDebugRenderer;
 
+    private MapLoader mapLoader;
 
     // game sprites
     private PlayerSpaceship player;
@@ -55,7 +56,12 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, 0), true);
         box2dDebugRenderer = new Box2DDebugRenderer();
 
+        mapLoader = new MapLoader(world);
         player = new PlayerSpaceship(world, this);
+    }
+
+    public MapLoader getMapLoader() {
+        return mapLoader;
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -145,5 +151,6 @@ public class PlayScreen implements Screen {
         world.dispose();
         box2dDebugRenderer.dispose();
         gameHud.dispose();
+        mapLoader.dispose();
     }
 }

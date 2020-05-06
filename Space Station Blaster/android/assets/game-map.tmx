@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="128" height="100" tilewidth="25" tileheight="25" infinite="0" nextlayerid="6" nextobjectid="12">
+ <layer id="1" name="Tile Layer 1" width="128" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20LL6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G/IAAAB
+  </data>
+ </layer>
+ <objectgroup id="4" name="PlayerShip">
+  <object id="11" name="PlayerSpaceship" x="1577.75" y="1231.5" width="99" height="75"/>
+ </objectgroup>
+ <objectgroup id="3" name="Bounds">
+  <object id="1" name="TopLeftBounds" x="0" y="0" width="50" height="50"/>
+  <object id="2" name="BottomLeftBounds" x="0" y="2450" width="50" height="50"/>
+  <object id="3" name="BottomRightBounds" x="3150" y="2450" width="50" height="50"/>
+  <object id="4" name="TopRightBounds" x="3150" y="0" width="50" height="50"/>
+  <object id="5" name="TopBounds" x="50" y="0" width="3100" height="50"/>
+  <object id="7" name="BottomBounds" x="50" y="2450" width="3100" height="50"/>
+  <object id="8" name="RightBounds" x="0" y="50" width="50" height="2400"/>
+  <object id="10" name="LeftBounds" x="3150" y="50" width="50" height="2400"/>
+ </objectgroup>
+</map>

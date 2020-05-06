@@ -29,9 +29,7 @@ public class PlayerSpaceship extends Sprite {
         super(playScreen.getTextureAtlas().findRegion("playerShip1_blue"));
         this.world = world;
 
-        body = ShapeFactory.createRectangle(new Vector2(250, 250),
-                new Vector2(PLAYER_SHIP_TEXTURE_WIDTH, PLAYER_SHIP_TEXTURE_HEIGHT),
-                BodyDef.BodyType.DynamicBody, world, 0.4f);
+        body = playScreen.getMapLoader().getPlayer();
 
         spaceship = new TextureRegion(getTexture(), PLAYER_SHIP_TEXTURE_X,
                 PLAYER_SHIP_TEXTURE_Y, PLAYER_SHIP_TEXTURE_WIDTH, PLAYER_SHIP_TEXTURE_HEIGHT);
