@@ -1,17 +1,11 @@
 package com.mygdx.game.Sprites;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
-import com.mygdx.game.Tools.ShapeFactory;
 
 public class PlayerSpaceship extends Sprite {
     private static final int PLAYER_SHIP_TEXTURE_X = 1454;
@@ -31,6 +25,9 @@ public class PlayerSpaceship extends Sprite {
 
         body = playScreen.getMapLoader().getPlayer();
 
+        setOrigin(PLAYER_SHIP_TEXTURE_WIDTH / 2 / SpaceStationBlaster.PPM,
+                PLAYER_SHIP_TEXTURE_HEIGHT / 2 /SpaceStationBlaster.PPM);
+
         spaceship = new TextureRegion(getTexture(), PLAYER_SHIP_TEXTURE_X,
                 PLAYER_SHIP_TEXTURE_Y, PLAYER_SHIP_TEXTURE_WIDTH, PLAYER_SHIP_TEXTURE_HEIGHT);
 
@@ -41,6 +38,7 @@ public class PlayerSpaceship extends Sprite {
     }
 
     public void update(float deltaTime) {
+
         // our box2d body is at the centre of our fixture.
         // We need to set the position to be the bottom left corner of our fixture.
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
