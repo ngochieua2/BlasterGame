@@ -38,7 +38,6 @@ public class PlayerSpaceship extends Sprite {
     }
 
     public void update(float deltaTime) {
-
         // our box2d body is at the centre of our fixture.
         // We need to set the position to be the bottom left corner of our fixture.
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
