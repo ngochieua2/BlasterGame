@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Tools.ShapeFactory;
@@ -24,12 +25,7 @@ public class GreenUFO extends Sprite {
 
     private TextureRegion greenUFOTexture;
 
-    private float xVelocity;
-    private float yVelocity;
-    private Vector2 velocity;
-    private int health;
-
-    public GreenUFO(PlayScreen playScreen) {
+    public GreenUFO(World world, PlayScreen playScreen) {
         super(playScreen.getTextureAtlas().findRegion("ufoGreen"));
 
         greenUFOTexture = new TextureRegion(getTexture(), GREEN_UFO_TEXTURE_X, GREEN_UFO_TEXTURE_Y,
@@ -41,29 +37,7 @@ public class GreenUFO extends Sprite {
                 GREEN_UFO_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
     }
 
-    public void spawn() {
-        //Randomly generate velocity vector so the ships direction is random
-        xVelocity = MathUtils.random(-20f, 20f);
-        //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
-        yVelocity = (float) Math.sqrt(GREEN_UFO_SPEED*GREEN_UFO_SPEED - xVelocity*xVelocity);
-        yVelocity = yVelocity * MathUtils.randomSign();
-        velocity = new Vector2(xVelocity, yVelocity);
-
-        health = 3;
-
-        float spawnX;
-        float spawnY;
-        //TODO: get camera position to come up with random spawn point
-        if (xVelocity < 0) {
-
-        }
-    }
-
     public void update(float deltaTime) {
-        translate(xVelocity*deltaTime, yVelocity*deltaTime);
-    }
 
-    public void render(SpriteBatch batch) {
-        draw(batch);
     }
 }
