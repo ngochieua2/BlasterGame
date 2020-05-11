@@ -1,16 +1,21 @@
 package com.mygdx.game.Tools;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.GreenUFO;
 
 public class Enemies {
-    public static final int MAX_ENEMIES = 5;
-    public static final int GREEN_UFO_HEALTH = 3;
+    private static final int MAX_ENEMIES = 5;
+    private static final int GREEN_UFO_HEALTH = 3;
+    private static final float GREEN_UFO_DENSITY = 0.4f;
 
     private Sprite greenUfoSprite;
     private World world;
@@ -18,10 +23,11 @@ public class Enemies {
 
     public enum Type {NONE, GREEN_UFO};
 
-    public Type[] type;
-    public Sprite[] sprite;
-    public Vector2[] velocity;
-    public int[] health;
+    private Type[] type;
+    private Sprite[] sprite;
+    private Vector2[] velocity;
+    private int[] health;
+    private Body[] body;
 
 
     public Enemies(World world, PlayScreen playScreen) {
@@ -32,6 +38,7 @@ public class Enemies {
         sprite = new Sprite[MAX_ENEMIES];
         velocity = new Vector2[MAX_ENEMIES];
         health = new int[MAX_ENEMIES];
+        body = new Body[MAX_ENEMIES];
     }
 
     public void init() {
@@ -71,14 +78,26 @@ public class Enemies {
 
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
-                //TODO: create body
-
-                float spawnX;
-                float spawnY;
                 //TODO: get camera position to come up with random spawn point
-                if (xVelocity < 0) {
-
+                float spawnY;
+                float spawnX = MathUtils.random(0 - GreenUFO.GREEN_UFO_TEXTURE_WIDTH, Gdx.graphics.getWidth() + GreenUFO.GREEN_UFO_TEXTURE_WIDTH);
+                //if it spawns completely left of screen or right of screen, then the Y position can be anywhere within the screen's height
+                if (spawnX < 0 + GreenUFO.GREEN_UFO_TEXTURE_WIDTH/2 || spawnX > Gdx.graphics.getWidth() - GreenUFO.GREEN_UFO_TEXTURE_WIDTH/2) {
+                    spawnY = MathUtils.random(0 - GreenUFO.GREEN_UFO_TEXTURE_HEIGHT, Gdx.graphics.getHeight() + GreenUFO.GREEN_UFO_TEXTURE_HEIGHT);
                 }
+                //Otherwise, it must spawn either completely above the screen or completely below it
+                else {
+                    if (MathUtils.randomBoolean()) {
+                        spawnY = 0 - GreenUFO.GREEN_UFO_TEXTURE_HEIGHT;
+                    }
+                    else {
+                        spawnY = Gdx.graphics.getHeight() + GreenUFO.GREEN_UFO_TEXTURE_HEIGHT;
+                    }
+                }
+                Vector2 position = new Vector2(spawnX, spawnY);
+                body[freeIndex] = ShapeFactory.createCircle(position, GreenUFO.GREEN_UFO_TEXTURE_WIDTH/2, BodyDef.BodyType.DynamicBody, world, 0.4f);
+                sprite[freeIndex].setOrigin(spawnX, spawnY);
+                sprite[freeIndex].setCenter(spawnX, spawnY);
                 break;
             default:
                 break;
