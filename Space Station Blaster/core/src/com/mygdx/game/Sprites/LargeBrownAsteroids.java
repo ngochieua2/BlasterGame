@@ -13,23 +13,27 @@ import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Tools.ShapeFactory;
 
-public class LargeAsteroids extends Sprite {
+public class LargeBrownAsteroids extends Sprite {
 
     private static final int MeteorBrown_Big1_TEXTURE_X = 220;
     private static final int MeteorBrown_Big1_TEXTURE_Y = 250;
     private static final int MeteorBrown_Big1_TEXTURE_WIDTH = 101;
     private static final int MeteorBrown_Big1_TEXTURE_HEIGHT = 84;
+    private static final float MeteorBrown_Big1_SPEED = 32;
+    private static final int MeteorBrown_Big1_MAX_HEALTH = 3;
 
 
-    TextureRegion textureRegion;
+    private TextureRegion LBrownAstTexture;
 
-    float x,y;
-    boolean remove = false;
 
-    public LargeAsteroids(PlayScreen playScreen, float x, float y){
+    public LargeBrownAsteroids(World world, PlayScreen playScreen){
         super(playScreen.getTextureAtlas().findRegion("meteorBrown_big1"));
-        textureRegion = new TextureRegion(getTexture(), MeteorBrown_Big1_TEXTURE_X, MeteorBrown_Big1_TEXTURE_Y,
+        LBrownAstTexture = new TextureRegion(getTexture(), MeteorBrown_Big1_TEXTURE_X, MeteorBrown_Big1_TEXTURE_Y,
                 MeteorBrown_Big1_TEXTURE_WIDTH, MeteorBrown_Big1_TEXTURE_HEIGHT);
+        setTexture(getTexture());
+        setRegion(LBrownAstTexture);
+        setBounds(MeteorBrown_Big1_TEXTURE_X,MeteorBrown_Big1_TEXTURE_Y,
+                MeteorBrown_Big1_TEXTURE_WIDTH / SpaceStationBlaster.PPM ,MeteorBrown_Big1_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
 
     }
 
