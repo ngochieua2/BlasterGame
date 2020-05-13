@@ -79,6 +79,10 @@ public class PlayScreen implements Screen {
         return textureAtlas;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
     @Override
     public void show() {
 
