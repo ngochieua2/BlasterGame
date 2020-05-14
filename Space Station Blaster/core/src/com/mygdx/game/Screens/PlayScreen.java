@@ -19,6 +19,7 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Sprites.PlayerSpaceship;
 import com.mygdx.game.Tools.MapLoader;
+import com.mygdx.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private GameAssetManager gameAssetManager;
@@ -69,6 +70,7 @@ public class PlayScreen implements Screen {
 
         player = new PlayerSpaceship(world, this);
 
+        world.setContactListener(new WorldContactListener());
     }
 
     public MapLoader getMapLoader() {

@@ -13,6 +13,8 @@ import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Tools.ShapeFactory;
 
+import java.util.Set;
+
 /**
  * Shot: for the creation of four different shot types that can be used any type of enemy or
  * player ship.
@@ -198,6 +200,13 @@ public class Shot extends Sprite {
         setOrigin(shotRectangleWidth / 2 / SpaceStationBlaster.PPM,
                 shotRectangleHeight / 2 / SpaceStationBlaster.PPM);
 
+        /*
+        TODO 1. Set bullet sensor to false
+        TODO 2. Set bullet to DynamicBody
+        TODO 3. Transform bullet to in front of gun
+        TODO 4. Set linear velocity of bullet to zero
+        TODO 5. Shoot bullet with using force
+        */
         setBounds(body.getPosition().x, body.getPosition().y,
                 shotRectangleWidth / SpaceStationBlaster.PPM,
                 shotRectangleHeight / SpaceStationBlaster.PPM);

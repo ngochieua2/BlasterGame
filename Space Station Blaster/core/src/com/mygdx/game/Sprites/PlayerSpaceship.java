@@ -35,6 +35,8 @@ public class PlayerSpaceship extends Sprite {
                 PLAYER_SHIP_TEXTURE_Y, PLAYER_SHIP_TEXTURE_WIDTH / SpaceStationBlaster.PPM,
                 PLAYER_SHIP_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
         setRegion(spaceship);
+
+
     }
 
     public void update(float deltaTime) {
