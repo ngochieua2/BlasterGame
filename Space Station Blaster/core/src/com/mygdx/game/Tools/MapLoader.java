@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.SpaceStationBlaster;
 
 /**
  * MapLoader: used to load the tile map for the game world. Load Bounds objects and playerShip
@@ -23,6 +24,9 @@ public class MapLoader implements Disposable {
     private World world;
     private TiledMap tiledMap;
 
+    short categoryBits;
+    short maskBits;
+
     /**
      * tileMapLoader: creates an array of all the Bounds objects in the tile map and then creates
      * static bodies and fixtures of all the objects
@@ -30,6 +34,12 @@ public class MapLoader implements Disposable {
      */
     public MapLoader(World world) {
         this.world = world;
+
+        categoryBits = SpaceStationBlaster.WALL_BIT;
+        maskBits = SpaceStationBlaster.PLAYER_BIT | SpaceStationBlaster.ASTEROID_BIT |
+                SpaceStationBlaster.UFO_BIT | SpaceStationBlaster.ENEMY_SHIP_BIT |
+                SpaceStationBlaster.PLAYER_SHOT_BIT | SpaceStationBlaster.ENEMY_SHOT_BIT |
+                SpaceStationBlaster.SPACE_STATION_BIT | SpaceStationBlaster.MISSILE_BIT;
 
         tiledMap = new TmxMapLoader().load(TILE_MAP_NAME);
 
@@ -42,7 +52,7 @@ public class MapLoader implements Disposable {
             ShapeFactory.createRectangle(
                     new Vector2(boundRectangle.getX() + boundRectangle.getWidth() / 2, boundRectangle.getY() + boundRectangle.getHeight() / 2),
                     new Vector2(boundRectangle.getWidth() / 2, boundRectangle.getHeight() / 2),
-                    BodyDef.BodyType.StaticBody, world, 1f);
+                    BodyDef.BodyType.StaticBody, world, 1f, categoryBits, maskBits);
         }
     }
 
@@ -52,6 +62,11 @@ public class MapLoader implements Disposable {
      * @return created playerShip Body
      */
     public Body getPlayer() {
+        categoryBits = SpaceStationBlaster.PLAYER_BIT;
+        maskBits = SpaceStationBlaster.ASTEROID_BIT |
+                SpaceStationBlaster.UFO_BIT | SpaceStationBlaster.ENEMY_SHIP_BIT | SpaceStationBlaster.ENEMY_SHOT_BIT |
+                SpaceStationBlaster.SPACE_STATION_BIT | SpaceStationBlaster.MISSILE_BIT | SpaceStationBlaster.WALL_BIT;
+
         // get the playerShip bounds object in the tile map
         Rectangle playerRectangle = tiledMap.getLayers().get(MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
 
@@ -59,7 +74,7 @@ public class MapLoader implements Disposable {
         return ShapeFactory.createRectangle(
                 new Vector2(playerRectangle.getX() + playerRectangle.getWidth() / 2, playerRectangle.getY() + playerRectangle.getHeight() / 2),
                 new Vector2(playerRectangle.getWidth() / 2, playerRectangle.getHeight() / 2),
-                BodyDef.BodyType.DynamicBody, world, 0.4f);
+                BodyDef.BodyType.DynamicBody, world, 0.4f, categoryBits, maskBits);
     }
 
     /**

@@ -20,6 +20,7 @@ public class SpaceStationBlaster extends Game {
 	public static final short ENEMY_SHOT_BIT = 64;
 	public static final short SPACE_STATION_BIT = 128;
 	public static final short MISSILE_BIT = 256;
+	public static final short WALL_BIT = 512;
 
 	public SpriteBatch spriteBatch; // public to allow access to batch from SpaceStationBlaster
 									// instance

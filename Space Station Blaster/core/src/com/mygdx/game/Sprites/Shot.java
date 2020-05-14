@@ -115,11 +115,14 @@ public class Shot extends Sprite {
     // box2D body
     public Body body;
 
+    private short categoryBit;
+    private short maskBit;
+
     /**
      * Shot: create one of the four shot types. When the shotType is passed in it creates the
      * fire shot animation, shot textures and impact animation of that Type
      * @param shotType is the shot type that is to be created
-     * @param world the Box2d physics world
+     * @param shipBody the Box2d shipBody
      * @param playScreen the main game play screen
      */
     public Shot(Type shotType, Body shipBody, PlayScreen playScreen) {
@@ -173,6 +176,19 @@ public class Shot extends Sprite {
             }
         }
 
+        if (shotType == Type.GREEN_SHOT) {
+            categoryBit = SpaceStationBlaster.PLAYER_SHOT_BIT;
+            maskBit = SpaceStationBlaster.ASTEROID_BIT |
+                    SpaceStationBlaster.UFO_BIT | SpaceStationBlaster.ENEMY_SHIP_BIT |
+                    SpaceStationBlaster.SPACE_STATION_BIT | SpaceStationBlaster.MISSILE_BIT |
+                    SpaceStationBlaster.WALL_BIT;
+        } else {
+            categoryBit = SpaceStationBlaster.ENEMY_SHOT_BIT;
+            maskBit = SpaceStationBlaster.PLAYER_BIT | SpaceStationBlaster.ASTEROID_BIT |
+                    SpaceStationBlaster.UFO_BIT | SpaceStationBlaster.SPACE_STATION_BIT |
+                    SpaceStationBlaster.MISSILE_BIT | SpaceStationBlaster.WALL_BIT;
+        }
+
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
         // get the fire shot animation frames and add them to fireShot
@@ -217,22 +233,23 @@ public class Shot extends Sprite {
     }
 
     public void defineShot() {
+
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity);
+                world, shotFixtureDefDensity, categoryBit, maskBit);
     }
 
     public void defineImpactShot() {
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity);
+                world, shotFixtureDefDensity, categoryBit, maskBit);
 
     }
 
     public void defineFireShot() {
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity);
+                world, shotFixtureDefDensity, categoryBit, maskBit);
     }
 
 
