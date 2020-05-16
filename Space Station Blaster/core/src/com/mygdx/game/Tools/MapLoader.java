@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.SpaceStationBlaster;
+import com.mygdx.game.Sprites.Wall;
 
 /**
  * MapLoader: used to load the tile map for the game world. Load Bounds objects and playerShip
@@ -53,10 +54,7 @@ public class MapLoader implements Disposable {
         // create static bodies and fixtures for all the objects in the tile map
         for (RectangleMapObject rectangleMapObject : bounds) {
             Rectangle boundRectangle = rectangleMapObject.getRectangle();
-            ShapeFactory.createRectangle(
-                    new Vector2(boundRectangle.getX() + boundRectangle.getWidth() / 2, boundRectangle.getY() + boundRectangle.getHeight() / 2),
-                    new Vector2(boundRectangle.getWidth() / 2, boundRectangle.getHeight() / 2),
-                    BodyDef.BodyType.StaticBody, world, 1f, false, categoryBits, maskBits);
+            new Wall(world, tiledMap, boundRectangle);
         }
     }
 
