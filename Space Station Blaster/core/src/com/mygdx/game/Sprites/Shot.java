@@ -244,20 +244,20 @@ public class Shot extends Sprite {
 
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity, categoryBit, maskBit);
+                world, shotFixtureDefDensity, true, categoryBit, maskBit);
     }
 
     public void defineImpactShot() {
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity, categoryBit, maskBit);
+                world, shotFixtureDefDensity, false, categoryBit, maskBit);
 
     }
 
     public void defineFireShot() {
         body = ShapeFactory.createRectangle(new Vector2(getX(), getY()),
                 new Vector2(getWidth(), getHeight()), BodyDef.BodyType.DynamicBody,
-                world, shotFixtureDefDensity, categoryBit, maskBit);
+                world, shotFixtureDefDensity, false, categoryBit, maskBit);
     }
 
 

@@ -1,5 +1,8 @@
 package com.mygdx.game.Tools;
 
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -10,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.SpaceStationBlaster;
 
 /**
@@ -32,7 +36,7 @@ public class MapLoader implements Disposable {
      * static bodies and fixtures of all the objects
      * @param world
      */
-    public MapLoader(World world) {
+    public MapLoader(World world, GameAssetManager gameAssetManager) {
         this.world = world;
 
         categoryBits = SpaceStationBlaster.WALL_BIT;
@@ -41,7 +45,7 @@ public class MapLoader implements Disposable {
                 SpaceStationBlaster.PLAYER_SHOT_BIT | SpaceStationBlaster.ENEMY_SHOT_BIT |
                 SpaceStationBlaster.SPACE_STATION_BIT | SpaceStationBlaster.MISSILE_BIT;
 
-        tiledMap = new TmxMapLoader().load(TILE_MAP_NAME);
+        tiledMap = gameAssetManager.assetManager.get(gameAssetManager.tiledMap,  TiledMap.class);
 
         // get all the bounds objects in the tile map
         Array<RectangleMapObject> bounds = tiledMap.getLayers().get(MAP_BOUNDS).getObjects().getByType(RectangleMapObject.class);
@@ -52,7 +56,7 @@ public class MapLoader implements Disposable {
             ShapeFactory.createRectangle(
                     new Vector2(boundRectangle.getX() + boundRectangle.getWidth() / 2, boundRectangle.getY() + boundRectangle.getHeight() / 2),
                     new Vector2(boundRectangle.getWidth() / 2, boundRectangle.getHeight() / 2),
-                    BodyDef.BodyType.StaticBody, world, 1f, categoryBits, maskBits);
+                    BodyDef.BodyType.StaticBody, world, 1f, false, categoryBits, maskBits);
         }
     }
 
@@ -74,7 +78,7 @@ public class MapLoader implements Disposable {
         return ShapeFactory.createRectangle(
                 new Vector2(playerRectangle.getX() + playerRectangle.getWidth() / 2, playerRectangle.getY() + playerRectangle.getHeight() / 2),
                 new Vector2(playerRectangle.getWidth() / 2, playerRectangle.getHeight() / 2),
-                BodyDef.BodyType.DynamicBody, world, 0.4f, categoryBits, maskBits);
+                BodyDef.BodyType.DynamicBody, world, 0.4f, true, categoryBits, maskBits);
     }
 
     /**

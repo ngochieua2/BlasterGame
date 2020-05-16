@@ -59,7 +59,7 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, 0), true);
 
         // load tiled map and set up tiled map renderer
-        mapLoader = new MapLoader(world);
+        mapLoader = new MapLoader(world, gameAssetManager);
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.getTiledMap(),1 / SpaceStationBlaster.PPM);
         gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
 

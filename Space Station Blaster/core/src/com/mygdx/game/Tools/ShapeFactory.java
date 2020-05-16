@@ -15,7 +15,7 @@ public class ShapeFactory {
 
     public static Body createRectangle(final Vector2 position, final Vector2 size,
                                        final BodyDef.BodyType bodyType, final World world,
-                                       float density, short categoryBits, short maskBits) {
+                                       float density, boolean isSensor, short categoryBits, short maskBits) {
 
         // define body
         final BodyDef bodyDef = new BodyDef();
@@ -35,7 +35,7 @@ public class ShapeFactory {
         fixtureDef.shape = shape;
         fixtureDef.density = density;
 
-        fixtureDef.isSensor = true;
+        fixtureDef.isSensor = isSensor;
 
         body.createFixture(fixtureDef);
         shape.dispose();
@@ -45,7 +45,7 @@ public class ShapeFactory {
 
     public static Body createCircle(final Vector2 position, final float radius,
                                        final BodyDef.BodyType bodyType, final World world,
-                                       float density, short categoryBits, short maskBits) {
+                                       float density, boolean isSensor, short categoryBits, short maskBits) {
 
         // define body
         final BodyDef bodyDef = new BodyDef();
@@ -65,7 +65,7 @@ public class ShapeFactory {
         fixtureDef.shape = shape;
         fixtureDef.density = density;
 
-        fixtureDef.isSensor = true;
+        fixtureDef.isSensor = isSensor;
 
         body.createFixture(fixtureDef);
         shape.dispose();
