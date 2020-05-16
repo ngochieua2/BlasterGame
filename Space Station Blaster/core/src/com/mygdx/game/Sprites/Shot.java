@@ -91,6 +91,9 @@ public class Shot extends Sprite {
     Type shotType;
 
     public enum State {FIRE, SHOT, IMPACT} // current State of the shot
+    public State currentState;
+    public State previousState;
+    private float stateTimer; // amount of time we are in any given state
 
     private int shotTextureX; // the X position of the texture region in texture atlas
     private int shotTextureY; // the Y position of the texture region in texture atlas
@@ -107,9 +110,9 @@ public class Shot extends Sprite {
     private int shotRectangleHeight; // the height of the Rectangle shape applied to FixtureDef
     private float shotFixtureDefDensity; // the fixtureDef density for a shot
 
-    private Animation fireShot;
-    private TextureRegion shot;
-    private Animation impactShot;
+    private Animation<TextureRegion> fireShot;
+    private Animation<TextureRegion> shot;
+    private Animation<TextureRegion> impactShot;
 
     // world that the shot is spawned into
     public World world;
@@ -129,6 +132,11 @@ public class Shot extends Sprite {
     public Shot(Type shotType, Body shipBody, PlayScreen playScreen) {
         this.world = playScreen.getWorld();
         this.shotType = shotType;
+
+        // set the initial state
+        currentState = State.FIRE;
+        previousState = State.FIRE;
+        stateTimer = 0f;
 
         // initialise the for shotType
         switch(shotType) {
@@ -202,8 +210,9 @@ public class Shot extends Sprite {
         frames.clear();
 
         // get the shot texture region
-        shot = new TextureRegion(getTexture(), shotTextureX + shotFrame * shotTextureWidth,
-                shotTextureY, shotTextureWidth, shotTextureHeight);
+        frames.add(new TextureRegion(getTexture(), shotTextureX + shotFrame * shotTextureWidth,
+                shotTextureY, shotTextureWidth, shotTextureHeight));
+        shot = new Animation(0.1f, frames);
 
         // get the impact shot animation frames and dd them to impactShot
         for (int index = impactShotStartFrame; index <= impactShotEndFrame; index++) {
@@ -233,7 +242,7 @@ public class Shot extends Sprite {
         setOrigin(shotRectangleWidth / 2 / SpaceStationBlaster.PPM,
                 shotRectangleHeight / 2 / SpaceStationBlaster.PPM);
 
-        setRegion((Texture) fireShot.getKeyFrame(0));
+        setRegion(fireShot.getKeyFrame(0));
 
         defineShot();
         // set angular velocity and position Shot body in front of shipBody
@@ -269,6 +278,45 @@ public class Shot extends Sprite {
         // our box2d body is at the centre of our fixture.
         // We need to set the position to be the bottom left corner of our fixture.
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(deltaTime));
+    }
+
+    public TextureRegion getFrame(float deltaTime) {
+        currentState = getState();
+
+        TextureRegion region = null;
+        switch(currentState) {
+            case FIRE: {
+                region = (TextureRegion) fireShot.getKeyFrame(stateTimer, true);
+                break;
+            }
+            case SHOT: {
+                region = shot.getKeyFrame(stateTimer);
+                break;
+            }
+            case IMPACT: {
+                region = (TextureRegion) impactShot.getKeyFrame(stateTimer, true);
+                break;
+            }
+        }
+
+        if (currentState == previousState) {
+            stateTimer += deltaTime;
+        } else {
+            stateTimer = 0;
+        }
+        previousState = currentState;
+        return region;
+    }
+
+    public State getState() {
+        if (body.getLinearVelocity().x > 0 || body.getLinearVelocity().y > 0) {
+            return State.SHOT;
+        } else if (body.getLinearVelocity().x == 0 && body.getLinearVelocity().y == 0 || previousState == State.SHOT) {
+            return State.IMPACT;
+        } else {
+            return State.FIRE;
+        }
     }
 
     /**
