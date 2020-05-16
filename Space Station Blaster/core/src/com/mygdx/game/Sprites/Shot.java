@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -223,13 +224,20 @@ public class Shot extends Sprite {
         TODO 4. Set linear velocity of bullet to zero
         TODO 5. Shoot bullet with using force
         */
-        setBounds(body.getPosition().x, body.getPosition().y,
+
+        // set bounds as the shipBody.position so it is in the same position as shot
+        setBounds(shipBody.getPosition().x, shipBody.getPosition().y,
                 shotRectangleWidth / SpaceStationBlaster.PPM,
                 shotRectangleHeight / SpaceStationBlaster.PPM);
+
+        setOrigin(shotRectangleWidth / 2 / SpaceStationBlaster.PPM,
+                shotRectangleHeight / 2 / SpaceStationBlaster.PPM);
 
         setRegion((Texture) fireShot.getKeyFrame(0));
 
         defineShot();
+        // set angular velocity and position Shot body in front of shipBody
+        body.setTransform(5, 5, shipBody.getAngularVelocity());
     }
 
     public void defineShot() {
