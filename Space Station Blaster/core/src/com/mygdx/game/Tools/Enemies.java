@@ -78,7 +78,6 @@ public class Enemies {
 
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
-                //TODO: get camera position to come up with random spawn point
                 float spawnY;
                 float spawnX = MathUtils.random(0 - GreenUFO.GREEN_UFO_TEXTURE_WIDTH, Gdx.graphics.getWidth() + GreenUFO.GREEN_UFO_TEXTURE_WIDTH);
                 //if it spawns completely left of screen or right of screen, then the Y position can be anywhere within the screen's height
