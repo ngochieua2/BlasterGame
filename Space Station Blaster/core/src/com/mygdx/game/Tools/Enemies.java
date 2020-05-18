@@ -4,20 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Sprites.GreenUFO;
 
 public class Enemies {
     private static final int MAX_ENEMIES = 5;
     private static final int GREEN_UFO_HEALTH = 3;
-    private static final float GREEN_UFO_DENSITY = 0.4f;
 
-    private Sprite greenUfoSprite;
     private World world;
     private PlayScreen playScreen;
 
@@ -25,7 +27,7 @@ public class Enemies {
 
     private Type[] type;
     private Sprite[] sprite;
-    private Vector2[] velocity;
+    //private Vector2[] velocity;
     private int[] health;
     private Body[] body;
 
@@ -36,18 +38,18 @@ public class Enemies {
 
         type = new Type[MAX_ENEMIES];
         sprite = new Sprite[MAX_ENEMIES];
-        velocity = new Vector2[MAX_ENEMIES];
+        //velocity = new Vector2[MAX_ENEMIES];
         health = new int[MAX_ENEMIES];
         body = new Body[MAX_ENEMIES];
     }
 
-    public void init() {
+    /*public void init() {
         for (int i=0; i<MAX_ENEMIES; i++) {
             type[i] = Type.NONE;
             velocity[i] = new Vector2();
         }
-    }
-    //TODO: spawn enemies
+    }*/
+
     public int spawn(Type t) {
         if (t == Type.NONE) {
             return -1;
@@ -65,7 +67,7 @@ public class Enemies {
         type[freeIndex] = t;
         switch (t) {
             case GREEN_UFO:
-                sprite[freeIndex] = new GreenUFO(world, playScreen);
+                sprite[freeIndex] = new GreenUFO(playScreen);
                 if (t == Type.NONE) {
                     return -1;
                 }
@@ -74,7 +76,7 @@ public class Enemies {
                 //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
                 float yVelocity = (float) Math.sqrt(GreenUFO.GREEN_UFO_SPEED * GreenUFO.GREEN_UFO_SPEED - xVelocity * xVelocity);
                 yVelocity = yVelocity * MathUtils.randomSign();
-                velocity[freeIndex] = new Vector2(xVelocity, yVelocity);
+                //velocity[freeIndex] = new Vector2(xVelocity, yVelocity);
 
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
@@ -93,10 +95,11 @@ public class Enemies {
                         spawnY = Gdx.graphics.getHeight() + GreenUFO.GREEN_UFO_TEXTURE_HEIGHT;
                     }
                 }
-                Vector2 position = new Vector2(spawnX, spawnY);
-                body[freeIndex] = ShapeFactory.createCircle(position, GreenUFO.GREEN_UFO_TEXTURE_WIDTH/2, BodyDef.BodyType.DynamicBody, world, 0.4f);
                 sprite[freeIndex].setOrigin(spawnX, spawnY);
                 sprite[freeIndex].setCenter(spawnX, spawnY);
+
+                spawnGreenUFO(spawnX, spawnY, freeIndex);
+                body[freeIndex].setLinearVelocity(xVelocity, yVelocity);
                 break;
             default:
                 break;
@@ -104,8 +107,29 @@ public class Enemies {
         return freeIndex;
     }
 
-    public void update(float deltaTime) {
+    public void spawnGreenUFO(float x, float y, int index) {
+        BodyDef bd = new BodyDef();
+        bd.type = BodyDef.BodyType.DynamicBody;
+        bd.position.set(x/ SpaceStationBlaster.PPM, y/SpaceStationBlaster.PPM);
 
+        body[index] = world.createBody(bd);
+
+        CircleShape circle = new CircleShape();
+        circle.setRadius((GreenUFO.GREEN_UFO_TEXTURE_WIDTH/2)/SpaceStationBlaster.PPM);
+
+        FixtureDef fd = new FixtureDef();
+        fd.shape = circle;
+        fd.density = GreenUFO.GREEN_UFO_DENSITY;
+
+        body[index].createFixture(fd);
+    }
+
+    public void update(float deltaTime) {
+        for (int i=0; i<MAX_ENEMIES; i++) {
+            if (type[i] != Type.NONE) {
+                sprite[i].translate(body[i].getLinearVelocity().x * deltaTime, body[i].getLinearVelocity().y * deltaTime);
+            }
+        }
     }
 
     public void render(SpriteBatch batch) {

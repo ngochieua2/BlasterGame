@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
@@ -21,11 +22,11 @@ public class GreenUFO extends Sprite {
     public static final int GREEN_UFO_TEXTURE_HEIGHT = 91;
     public static final int GREEN_UFO_TEXTURE_WIDTH = 91;
     public static final float GREEN_UFO_SPEED = 20f;
-    public static final int MAX_GREEN_UFOS = 3;
+    public static final float GREEN_UFO_DENSITY = 0.4f;
 
     private TextureRegion greenUFOTexture;
 
-    public GreenUFO(World world, PlayScreen playScreen) {
+    public GreenUFO(PlayScreen playScreen) {
         super(playScreen.getTextureAtlas().findRegion("ufoGreen"));
 
         greenUFOTexture = new TextureRegion(getTexture(), GREEN_UFO_TEXTURE_X, GREEN_UFO_TEXTURE_Y,
@@ -35,9 +36,5 @@ public class GreenUFO extends Sprite {
         setBounds(GREEN_UFO_TEXTURE_X,
                 GREEN_UFO_TEXTURE_Y, GREEN_UFO_TEXTURE_WIDTH / SpaceStationBlaster.PPM,
                 GREEN_UFO_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
-    }
-
-    public void update(float deltaTime) {
-
     }
 }
