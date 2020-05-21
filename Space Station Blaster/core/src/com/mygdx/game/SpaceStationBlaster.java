@@ -11,6 +11,7 @@ public class SpaceStationBlaster extends Game {
 	public static final float PPM = 100f; // number of pixels per meter
 
 	public static final String TEXTURE_ATLAS_PATH = "sprite-sheet.atlas";
+	public static final String UI_TEXTURE_ATLAS_PATH = "ui-space-expansion-sprite-sheet.atlas";
 	public static final String TILE_MAP_PATH = "game-map.tmx";
 	public static final String MAP_BOUNDS = "Bounds";
 

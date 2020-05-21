@@ -13,15 +13,14 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Walls;
 
 public class PlayScreen implements Screen {
-    private GameAssetManager gameAssetManager;
     private TextureAtlas textureAtlas;
+    private TextureAtlas uiTextureAtlas;
     private TiledMap tiledMap;
     private MapRenderer mapRenderer;
     private SpaceStationBlaster game;
@@ -39,6 +38,8 @@ public class PlayScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
 
         textureAtlas = new TextureAtlas(Gdx.files.internal(SpaceStationBlaster.TEXTURE_ATLAS_PATH));
+        uiTextureAtlas = new TextureAtlas(Gdx.files.internal(SpaceStationBlaster.UI_TEXTURE_ATLAS_PATH));
+
         tiledMap = new TmxMapLoader().load(SpaceStationBlaster.TILE_MAP_PATH);
 
         // gameCamera is used to follow player spaceship through game world
@@ -51,7 +52,7 @@ public class PlayScreen implements Screen {
         gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
 
         // create HUD for score, number of ships and shield level
-        gameHud = new Hud(game.spriteBatch);
+        gameHud = new Hud(game.spriteBatch, this);
 
         walls = new Walls(this);
 
@@ -60,6 +61,10 @@ public class PlayScreen implements Screen {
 
     public TextureAtlas getTextureAtlas() {
         return textureAtlas;
+    }
+
+    public TextureAtlas getUITextureAtlas() {
+        return uiTextureAtlas;
     }
 
     public TiledMap getTiledMap() {
