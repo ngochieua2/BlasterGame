@@ -65,38 +65,9 @@ public class PlayScreen implements Screen {
 
     }
 
-//    public void handleInput(float deltaTime) {
-//        Vector2 baseVector = new Vector2(0, 0);
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            player.body.setAngularVelocity(-2f);
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            player.body.setAngularVelocity(2f);
-//        } else if (player.body.getAngularVelocity() != 0) {
-//            player.body.setAngularVelocity(0f);
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-//            //TODO fire laser
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            baseVector.set(0, 2f);
-//        }
-//
-//        if (!baseVector.isZero()) {
-//            player.body.applyForceToCenter(player.body.getWorldVector(baseVector), true);
-//        }
-//    }
-
     public void update(float deltaTime) {
-        // handle user input first
-        //handleInput(deltaTime);
 
         player.update(deltaTime);
-
-
-        //player.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
 
         // attach game camera x and y position to players x and y position
         gameCamera.position.x = player.getSprite().getX();

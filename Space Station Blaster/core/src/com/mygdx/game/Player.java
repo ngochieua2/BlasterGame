@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,12 +17,6 @@ import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
     enum State { NORMAL, DESTROYED }
-
-    // coordinates and size of the player spaceship texture on the textureAtlas
-    private static final int PLAYER_SHIP_TEXTURE_X = 1454;
-    private static final int PLAYER_SHIP_TEXTURE_Y = 168;
-    private static final int PLAYER_SHIP_TEXTURE_WIDTH = 99;
-    private static final int PLAYER_SHIP_TEXTURE_HEIGHT = 75;
 
     private static final float MAX_SPEED = 300; // the maximum speed the player can travel
     private static final float ACCELERATION = 200; // how fast the player can accelerate
@@ -35,9 +28,9 @@ public class Player {
 
     State state;
 
-    public int hp; // players number of hit points left
-    public int lives; // players number of lives left
-    public int score; // players current score
+    private int hp; // players number of hit points left
+    private int lives; // players number of lives left
+    private int score; // players current score
 
     Vector2 position; // players current position
     Vector2 direction; // direction the player is travelling
@@ -48,7 +41,6 @@ public class Player {
 
     private TextureAtlas textureAtlas;
     private TextureRegion textureRegion;
-    private TmxMapLoader tmxMapLoader;
     private TiledMap tiledMap;
 
     public ShapeRenderer playerShape;
@@ -123,17 +115,12 @@ public class Player {
     public void update(float deltaTime) {
         handleInput(deltaTime);
 
-        // set sprite position
-        //
-        // playerSprite.setPosition(playerSprite.getX() / 2, playerSprite.getY() - playerSprite.getHeight() / 2);
+        // set sprite position and rotation
         playerSprite.setPosition(position.x, position.y);
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
+        // set bounds position and rotation
         playerBounds.setPosition(position.x, position.y);
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
-
-        // our box2d body is at the centre of our fixture.
-        // We need to set the position to be the bottom left corner of our fixture.
-        // playerSprite.setPosition( playerSprite.getX() / 2, playerSprite.getY() - playerSprite.getHeight() / 2);
     }
 
     public void render(SpriteBatch spriteBatch) {
@@ -142,6 +129,18 @@ public class Player {
 
     public Sprite getSprite() {
         return playerSprite;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public int getScore() {
+        return score;
     }
 
 
