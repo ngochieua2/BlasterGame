@@ -43,14 +43,11 @@ public class Player {
     private TextureRegion textureRegion;
     private TiledMap tiledMap;
 
-    public ShapeRenderer playerShape;
-
     public Polygon playerBounds;
 
     public Player(PlayScreen playScreen) {
         this.textureAtlas = playScreen.getTextureAtlas();
         this.tiledMap = playScreen.getTiledMap();
-        playerShape = new ShapeRenderer();
         state = State.NORMAL;
         position = new Vector2();
         direction = new Vector2();

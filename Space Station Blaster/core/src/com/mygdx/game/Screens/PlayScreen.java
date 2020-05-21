@@ -17,6 +17,7 @@ import com.mygdx.game.GameAssetManager;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
+import com.mygdx.game.Walls;
 
 public class PlayScreen implements Screen {
     private GameAssetManager gameAssetManager;
@@ -27,12 +28,15 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
     private Hud gameHud;
-
+    private Walls walls;
     // game sprites
     private Player player;
 
+    ShapeRenderer shapeRenderer = new ShapeRenderer();
+
     public PlayScreen(SpaceStationBlaster game) {
         this.game = game;
+        shapeRenderer = new ShapeRenderer();
 
         textureAtlas = new TextureAtlas(Gdx.files.internal(SpaceStationBlaster.TEXTURE_ATLAS_PATH));
         tiledMap = new TmxMapLoader().load(SpaceStationBlaster.TILE_MAP_PATH);
@@ -48,6 +52,8 @@ public class PlayScreen implements Screen {
 
         // create HUD for score, number of ships and shield level
         gameHud = new Hud(game.spriteBatch);
+
+        walls = new Walls(this);
 
         player = new Player(this);
     }
@@ -101,12 +107,24 @@ public class PlayScreen implements Screen {
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);
         gameHud.stage.draw();
 
+
         // testing the player bounds
-        player.playerShape.setProjectionMatrix(gameCamera.combined);
-        player.playerShape.begin(ShapeRenderer.ShapeType.Line);
-        player.playerShape.setColor(Color.RED);
-        player.playerShape.polygon(player.playerBounds.getTransformedVertices());
-        player.playerShape.end();
+        shapeRenderer.setProjectionMatrix(gameCamera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.polygon(player.playerBounds.getTransformedVertices());
+        shapeRenderer.end();
+
+        // testing the wall bounds
+        for(int index = 0; index < walls.colliders.size(); index++) {
+            shapeRenderer.setProjectionMatrix(gameCamera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.rect(walls.colliders.get(index).getX(), walls.colliders.get(index).getY(),
+                    walls.colliders.get(index).getWidth(), walls.colliders.get(index).getHeight());
+            shapeRenderer.end();
+        }
+
     }
 
     @Override
