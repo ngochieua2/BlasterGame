@@ -18,7 +18,7 @@ public class MediumBrownAsteroids extends Sprite {
     private TextureRegion MBrownAstTexture;
 
 
-    public MediumBrownAsteroids(World world, PlayScreen playScreen){
+    public MediumBrownAsteroids(PlayScreen playScreen){
         super(playScreen.getTextureAtlas().findRegion("meteorBrown_med1"));
         MBrownAstTexture = new TextureRegion(getTexture(), MeteorBrown_Med1_TEXTURE_X, MeteorBrown_Med1_TEXTURE_Y,
                 MeteorBrown_Med1_TEXTURE_WIDTH, MeteorBrown_Med1_TEXTURE_HEIGHT);
@@ -28,12 +28,5 @@ public class MediumBrownAsteroids extends Sprite {
                 MeteorBrown_Med1_TEXTURE_WIDTH / SpaceStationBlaster.PPM ,MeteorBrown_Med1_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
 
     }
-
-
-    public void update(float deltaTime) {
-
-
-    }
-
 
 }

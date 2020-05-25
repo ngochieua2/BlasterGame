@@ -18,7 +18,7 @@ public class MediumGreyAsteroids extends Sprite {
     private TextureRegion MGreyAstTexture;
 
 
-    public MediumGreyAsteroids(World world, PlayScreen playScreen){
+    public MediumGreyAsteroids(PlayScreen playScreen){
         super(playScreen.getTextureAtlas().findRegion("meteorGrey_med1"));
         MGreyAstTexture = new TextureRegion(getTexture(), MeteorGrey_Med1_TEXTURE_X, MeteorGrey_Med1_TEXTURE_Y,
                 MeteorGrey_Med1_TEXTURE_WIDTH, MeteorGrey_Med1_TEXTURE_HEIGHT);
@@ -28,11 +28,4 @@ public class MediumGreyAsteroids extends Sprite {
                 MeteorGrey_Med1_TEXTURE_WIDTH / SpaceStationBlaster.PPM ,MeteorGrey_Med1_TEXTURE_HEIGHT / SpaceStationBlaster.PPM);
 
     }
-
-
-    public void update(float deltaTime) {
-
-
-    }
-
 }
