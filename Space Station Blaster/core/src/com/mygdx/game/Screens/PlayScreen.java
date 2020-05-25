@@ -156,4 +156,8 @@ public class PlayScreen implements Screen {
     public void dispose() {
         gameHud.dispose();
     }
+
+    public Player getPlayer() {
+        return player;
+    }
 }
