@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.GameAssetManager;
+import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
 public class Hud implements Disposable {
@@ -32,14 +32,12 @@ public class Hud implements Disposable {
     public Stage stage;
     private Viewport viewport;
 
-    private GameAssetManager gameAssetManager;
-    private TextureAtlas mainTextureAtlas;
+    private TextureAtlas textureAtlas;
     private TextureAtlas uiTextureAtlas;
 
     private Image numeralXImage;
     private Image[] playerLifeImages;
     private Image[] shieldImages;
-    private Image squareWhiteImage;
 
     private Integer score;
     private Integer shield;
@@ -54,7 +52,10 @@ public class Hud implements Disposable {
     private BitmapFont bitmapFont;
     private Label.LabelStyle labelStyle;
 
-    public Hud(SpriteBatch spriteBatch) {
+    public Hud(SpriteBatch spriteBatch, PlayScreen playScreen) {
+        this.textureAtlas = playScreen.getTextureAtlas();
+        this.uiTextureAtlas = playScreen.getUITextureAtlas();
+
         score = DEF_SCORE;
         shield = DEF_SHIELD;
         ships = DEF_SHIPS;
@@ -62,10 +63,6 @@ public class Hud implements Disposable {
         viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT,
                 new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
-
-        gameAssetManager = new GameAssetManager();
-        gameAssetManager.loadImages();
-        gameAssetManager.assetManager.finishLoading();
 
         // add true type font
         fontGenerator = new FreeTypeFontGenerator(
@@ -83,12 +80,7 @@ public class Hud implements Disposable {
         labelStyle = new Label.LabelStyle();
         labelStyle.font = bitmapFont;
 
-        mainTextureAtlas = gameAssetManager.assetManager.get(gameAssetManager.spriteSheetPack);
-        uiTextureAtlas = gameAssetManager.assetManager.get(
-                gameAssetManager.uiSpaceExpansionSpriteSheetPack);
-
-        numeralXImage = new Image(mainTextureAtlas.findRegion("numeralX"));
-
+        numeralXImage = new Image(textureAtlas.findRegion("numeralX"));
 
         shieldImages = new Image[MAX_SHIELD];
         for (int index = 0; index < shieldImages.length; index++) {
@@ -102,7 +94,7 @@ public class Hud implements Disposable {
         playerLifeImages = new Image[MAX_SHIPS];
         for (int index = 0; index < playerLifeImages.length; index++)
             if (index < ships) {
-                playerLifeImages[index] = new Image(mainTextureAtlas.findRegion("playerLife1_blue"));
+                playerLifeImages[index] = new Image(textureAtlas.findRegion("playerLife1_blue"));
             }
 
         // set the label text
@@ -115,7 +107,6 @@ public class Hud implements Disposable {
         table.setHeight(50);
         table.setWidth(SpaceStationBlaster.V_WIDTH);
         table.top();
-        // table.setFillParent(true);
         table.setBackground(new NinePatchDrawable(getNinePatch()));
 
         table.add(shieldLevelLabel).left().padLeft(10);
@@ -153,6 +144,7 @@ public class Hud implements Disposable {
     public void dispose() {
         bitmapFont.dispose();
         stage.dispose();
-
+        textureAtlas.dispose();
+        uiTextureAtlas.dispose();
     }
 }
