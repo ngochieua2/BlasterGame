@@ -127,12 +127,6 @@ public class Enemies {
                 if (t == Type.NONE) {
                     return -1;
                 }
-                //Randomly generate velocity vector so the ships direction is random
-                xVelocity = MathUtils.random(-RED_UFO_SPEED, RED_UFO_SPEED);
-                //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
-                yVelocity = (float) Math.sqrt(RED_UFO_SPEED * GREEN_UFO_SPEED - xVelocity * xVelocity);
-                yVelocity = yVelocity * MathUtils.randomSign();
-                velocity[freeIndex] = new Vector2(xVelocity, yVelocity);
 
                 health[freeIndex] = RED_UFO_HEALTH;
 
@@ -164,6 +158,21 @@ public class Enemies {
 
         for (int i=0; i<MAX_ENEMIES; i++) {
             if (type[i] != Type.NONE) {
+                if (type[i] == Type.RED_UFO) {
+                    float dx = playScreen.getPlayer().getSprite().getX() - sprite[i].getX();
+                    float dy = playScreen.getPlayer().getSprite().getY() - sprite[i].getY();
+                    float distance = (float) Math.sqrt(dx*dx + dy*dy);
+
+                    dx *= RED_UFO_SPEED / distance;
+                    dy *= RED_UFO_SPEED / distance;
+
+                    velocity[i].x += dx;
+                    velocity[i].y += dy;
+
+                    if (velocity[i].len() > RED_UFO_SPEED) {
+                        velocity[i].setLength(RED_UFO_SPEED);
+                    }
+                }
                 sprite[i].translate(velocity[i].x * deltaTime, velocity[i].y * deltaTime);
                 circleColliders[i].setPosition(sprite[i].getX() + greenUFOTexture.getRegionWidth()/2, sprite[i].getY() + greenUFOTexture.getRegionWidth() /2);
 
