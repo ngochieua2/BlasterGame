@@ -17,17 +17,32 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
+import java.util.Random;
+
 public class Enemies {
     private static final int MAX_ENEMIES = 5;
     private static final int GREEN_UFO_HEALTH = 3;
+    private static final int RED_UFO_HEALTH = 3;
     private static final float GREEN_UFO_SPEED = 100f;
+    private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 10f;
 
     private PlayScreen playScreen;
+    private OrthographicCamera camera;
     private float timeInterval;
 
-    public enum Type {NONE, GREEN_UFO};
+    public enum Type {
+        NONE,
+        GREEN_UFO,
+        RED_UFO;
+        public static Type getRandomType() {
+            Random random = new Random();
+            return values()[random.nextInt(values().length-1) + 1];
+        }
+    }
+
     private TextureRegion greenUFOTexture;
+    private TextureRegion redUFOTexture;
 
     private Type[] type;
     private Sprite[] sprite;
@@ -38,8 +53,10 @@ public class Enemies {
 
     public Enemies(PlayScreen playScreen) {
         this.playScreen = playScreen;
+        camera = playScreen.getCamera();
         timeInterval = 0f;
         greenUFOTexture = playScreen.getTextureAtlas().findRegion("ufoGreen");
+        redUFOTexture = playScreen.getTextureAtlas().findRegion("ufoRed");
 
         type = new Type[MAX_ENEMIES];
         sprite = new Sprite[MAX_ENEMIES];
@@ -75,6 +92,10 @@ public class Enemies {
         if (freeIndex < 0) {
             return -1;
         }
+
+        float xVelocity;
+        float yVelocity;
+        Vector2 spawnPoint;
         type[freeIndex] = t;
         switch (t) {
             case GREEN_UFO:
@@ -83,16 +104,40 @@ public class Enemies {
                     return -1;
                 }
                 //Randomly generate velocity vector so the ships direction is random
-                float xVelocity = MathUtils.random(-GREEN_UFO_SPEED, GREEN_UFO_SPEED);
+                xVelocity = MathUtils.random(-GREEN_UFO_SPEED, GREEN_UFO_SPEED);
                 //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
-                float yVelocity = (float) Math.sqrt(GREEN_UFO_SPEED * GREEN_UFO_SPEED - xVelocity * xVelocity);
+                yVelocity = (float) Math.sqrt(GREEN_UFO_SPEED * GREEN_UFO_SPEED - xVelocity * xVelocity);
                 yVelocity = yVelocity * MathUtils.randomSign();
                 velocity[freeIndex] = new Vector2(xVelocity, yVelocity);
 
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
-                Vector2 spawnPoint = generateSpawnPoint();
-                OrthographicCamera camera = playScreen.getCamera();
+                spawnPoint = generateSpawnPoint();
+
+                while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
+                    spawnPoint = generateSpawnPoint();
+                }
+
+                sprite[freeIndex].setOrigin(spawnPoint.x, spawnPoint.y);
+                sprite[freeIndex].setCenter(spawnPoint.x, spawnPoint.y);
+
+                break;
+            case RED_UFO:
+                sprite[freeIndex] = new Sprite(redUFOTexture);
+                if (t == Type.NONE) {
+                    return -1;
+                }
+                //Randomly generate velocity vector so the ships direction is random
+                xVelocity = MathUtils.random(-RED_UFO_SPEED, RED_UFO_SPEED);
+                //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
+                yVelocity = (float) Math.sqrt(RED_UFO_SPEED * GREEN_UFO_SPEED - xVelocity * xVelocity);
+                yVelocity = yVelocity * MathUtils.randomSign();
+                velocity[freeIndex] = new Vector2(xVelocity, yVelocity);
+
+                health[freeIndex] = RED_UFO_HEALTH;
+
+                spawnPoint = generateSpawnPoint();
+
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpawnPoint();
                 }
@@ -113,7 +158,7 @@ public class Enemies {
 
         //Spawns enemies after waiting a specified amount of time
         if (timeInterval >= ENEMY_SPAWN_INTERVAL) {
-            spawn(Type.GREEN_UFO);
+            spawn(Type.getRandomType());
             timeInterval = 0;
         }
 
@@ -127,17 +172,16 @@ public class Enemies {
                     type[i] = Type.NONE;
                 }
                 //Collision with boundary
-                //TODO
                 for (Rectangle wall : playScreen.getWalls().colliders) {
                     if (Intersector.overlaps(circleColliders[i], wall)) {
                         type[i] = Type.NONE;
-                        spawn(Type.GREEN_UFO);
+                        spawn(Type.getRandomType());
                     }
                 }
                 if (circleColliders[i].x < 0 || circleColliders[i].x > SpaceStationBlaster.MAP_WIDTH
                         || circleColliders[i].y < 0 || circleColliders[i].y > SpaceStationBlaster.MAP_HEIGHT) {
                     type[i] = Type.NONE;
-                    spawn(Type.GREEN_UFO);
+                    spawn(Type.getRandomType());
                 }
             }
         }
