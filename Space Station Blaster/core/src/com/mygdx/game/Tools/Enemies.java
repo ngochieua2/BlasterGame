@@ -1,6 +1,8 @@
 package com.mygdx.game.Tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,14 +11,17 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.SpaceStationBlaster;
 
 public class Enemies {
     private static final int MAX_ENEMIES = 5;
     private static final int GREEN_UFO_HEALTH = 3;
-    private static final float GREEN_UFO_SPEED = 20f;
-    private static final float ENEMY_SPAWN_INTERVAL = 5000f;
+    private static final float GREEN_UFO_SPEED = 100f;
+    private static final float ENEMY_SPAWN_INTERVAL = 10f;
 
     private PlayScreen playScreen;
     private float timeInterval;
@@ -27,7 +32,7 @@ public class Enemies {
     private Type[] type;
     private Sprite[] sprite;
     private Vector2[] velocity;
-    private Circle[] circleColliders;
+    public Circle[] circleColliders;
     private Rectangle[] rectangleColliders;
     private int[] health;
 
@@ -78,7 +83,7 @@ public class Enemies {
                     return -1;
                 }
                 //Randomly generate velocity vector so the ships direction is random
-                float xVelocity = MathUtils.random(-20f, 20f);
+                float xVelocity = MathUtils.random(-GREEN_UFO_SPEED, GREEN_UFO_SPEED);
                 //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
                 float yVelocity = (float) Math.sqrt(GREEN_UFO_SPEED * GREEN_UFO_SPEED - xVelocity * xVelocity);
                 yVelocity = yVelocity * MathUtils.randomSign();
@@ -86,24 +91,14 @@ public class Enemies {
 
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
-                float spawnY;
-                float spawnX = MathUtils.random(0 - greenUFOTexture.getRegionWidth(), Gdx.graphics.getWidth() + greenUFOTexture.getRegionWidth());
-                //if it spawns completely left of screen or right of screen, then the Y position can be anywhere within the screen's height
-                if (spawnX < 0 + greenUFOTexture.getRegionWidth()/2 || spawnX > Gdx.graphics.getWidth() - greenUFOTexture.getRegionWidth()/2) {
-                    spawnY = MathUtils.random(0 - greenUFOTexture.getRegionHeight(), Gdx.graphics.getHeight() + greenUFOTexture.getRegionHeight());
+                Vector2 spawnPoint = generateSpawnPoint();
+                OrthographicCamera camera = playScreen.getCamera();
+                while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
+                    spawnPoint = generateSpawnPoint();
                 }
-                //Otherwise, it must spawn either completely above the screen or completely below it
-                else {
-                    if (MathUtils.randomBoolean()) {
-                        spawnY = 0 - greenUFOTexture.getRegionHeight();
-                    }
-                    else {
-                        spawnY = Gdx.graphics.getHeight() + greenUFOTexture.getRegionHeight();
-                    }
-                }
-                sprite[freeIndex].setOrigin(spawnX, spawnY);
-                sprite[freeIndex].setCenter(spawnX, spawnY);
-                circleColliders[freeIndex].setPosition(sprite[freeIndex].getOriginX(), sprite[freeIndex].getOriginY());
+
+                sprite[freeIndex].setOrigin(spawnPoint.x, spawnPoint.y);
+                sprite[freeIndex].setCenter(spawnPoint.x, spawnPoint.y);
 
                 break;
             default:
@@ -125,10 +120,24 @@ public class Enemies {
         for (int i=0; i<MAX_ENEMIES; i++) {
             if (type[i] != Type.NONE) {
                 sprite[i].translate(velocity[i].x * deltaTime, velocity[i].y * deltaTime);
-                circleColliders[i].setPosition(sprite[i].getOriginX(), sprite[i].getOriginY());
+                circleColliders[i].setPosition(sprite[i].getX() + greenUFOTexture.getRegionWidth()/2, sprite[i].getY() + greenUFOTexture.getRegionWidth() /2);
 
+                //Collision with player
                 if (overlaps(playScreen.getPlayer().playerBounds, circleColliders[i])) {
                     type[i] = Type.NONE;
+                }
+                //Collision with boundary
+                //TODO
+                for (Rectangle wall : playScreen.getWalls().colliders) {
+                    if (Intersector.overlaps(circleColliders[i], wall)) {
+                        type[i] = Type.NONE;
+                        spawn(Type.GREEN_UFO);
+                    }
+                }
+                if (circleColliders[i].x < 0 || circleColliders[i].x > SpaceStationBlaster.MAP_WIDTH
+                        || circleColliders[i].y < 0 || circleColliders[i].y > SpaceStationBlaster.MAP_HEIGHT) {
+                    type[i] = Type.NONE;
+                    spawn(Type.GREEN_UFO);
                 }
             }
         }
@@ -144,7 +153,7 @@ public class Enemies {
 
     //Collision detection between Circle and Polygon
     //https://stackoverflow.com/questions/15323719/circle-and-polygon-collision-with-libgdx
-    public static boolean overlaps(Polygon polygon, Circle circle) {
+    private static boolean overlaps(Polygon polygon, Circle circle) {
         float []vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(circle.x, circle.y);
         float squareRadius = circle.radius * circle.radius;
@@ -159,5 +168,12 @@ public class Enemies {
             }
         }
         return polygon.contains(circle.x, circle.y);
+    }
+
+    private Vector2 generateSpawnPoint() {
+        float spawnX = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH - greenUFOTexture.getRegionWidth());
+        float spawnY = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT - greenUFOTexture.getRegionHeight());
+
+        return new Vector2(spawnX, spawnY);
     }
 }

@@ -15,6 +15,9 @@ public class SpaceStationBlaster extends Game {
 	public static final String TILE_MAP_PATH = "game-map.tmx";
 	public static final String MAP_BOUNDS = "Bounds";
 
+	public static final int MAP_WIDTH = 3200;
+	public static final int MAP_HEIGHT = 2500;
+
 	public SpriteBatch spriteBatch; // public to allow access to batch from SpaceStationBlaster
 									// instance
 
