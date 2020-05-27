@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,248 +17,234 @@ import com.mygdx.game.Screens.PlayScreen;
 import javax.xml.soap.Text;
 
 public class Bullets {
-    private enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE }
 
     // constants for green bullet
-    private static final String GREEN_BULLET_TEXTURE_ATLAS_REGION = "shot-green";
-    private static final int GREEN_BULLET_TEXTURE_X = 1396;
-    private static final int GREEN_BULLET_TEXTURE_Y = 0;
+    private static final String GREEN_BULLET_TEXTURE_ATLAS_REGION = "shot1_asset";
     private static final int GREEN_BULLET_TEXTURE_WIDTH = 32;
     private static final int GREEN_BULLET_TEXTURE_HEIGHT = 32;
-    private static final int GREEN_BULLET_FRAME = 4;
-    private static final int GREEN_MAX_BULLETS = 4;
     private static final float GREEN_BULLET_SPEED = 350;
-    private static final int GREEN_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int GREEN_BULLET_RECTANGLE_HEIGHT = 0;
 
     // constants for orange bullet
-    private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot-orange";
-    private static final int ORANGE_BULLET_TEXTURE_X = 768;
-    private static final int ORANGE_BULLET_TEXTURE_Y = 104;
+    private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot4_asset";
     private static final int ORANGE_BULLET_TEXTURE_WIDTH = 64;
     private static final int ORANGE_BULLET_TEXTURE_HEIGHT = 64;
-    private static final int ORANGE_BULLET_FRAME = 5;
-    private static final int ORANGE_MAX_BULLETS = 2;
     private static final float ORANGE_BULLET_SPEED = 300;
-    private static final int ORANGE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int ORANGE_BULLET_RECTANGLE_HEIGHT = 0;
 
     // constants for purple bullet
-    private static final String PURPLE_BULLET_TEXTURE_ATLAS_REGION = "shot-purple";
-    private static final int PURPLE_BULLET_TEXTURE_X = 0;
-    private static final int PURPLE_BULLET_TEXTURE_Y = 348;
+    private static final String PURPLE_BULLET_TEXTURE_ATLAS_REGION = "shot6_asset";
     private static final int PURPLE_BULLET_TEXTURE_WIDTH = 128;
     private static final int PURPLE_BULLET_TEXTURE_HEIGHT = 128;
-    private static final int PURPLE_BULLET_FRAME = 4;
-    private static final int PURPLE_MAX_BULLETS = 2;
     private static final float PURPLE_BULLET_SPEED = 300;
-    private static final int PURPLE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int PURPLE_BULLET_RECTANGLE_HEIGHT = 0;
 
     // constants for blue bullet
-    private static final String BLUE_BULLET_TEXTURE_ATLAS_REGION = "shot-green";
-    private static final int BLUE_BULLET_TEXTURE_X = 0;
-    private static final int BLUE_BULLET_TEXTURE_Y = 104;
+    private static final String BLUE_BULLET_TEXTURE_ATLAS_REGION = "shot2_asset";
     private static final int BLUE_BULLET_TEXTURE_WIDTH = 64;
     private static final int BLUE_BULLET_TEXTURE_HEIGHT = 64;
-    private static final int BLUE_BULLET_FRAME = 6;
-    private static final int BLUE_MAX_BULLETS = 2;
     private static final float BLUE_BULLET_SPEED = 300;
-    private static final int BLUE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int BLUE_BULLET_RECTANGLE_HEIGHT = 0;
+
+    private static final int MAX_BULLETS = 120;
 
     private TextureAtlas textureAtlas;
-    private TextureRegion textureRegion;
-    private Polygon collider;
-    private TextureRegion bulletTextureRegion;
+    // TextureRegion of the bullet frames
+    private TextureRegion greenBulletTextureRegion;
+    private TextureRegion orangeBulletTextureRegion;
+    private TextureRegion purpleBulletTextureRegion;
+    private TextureRegion blueBulletTextureRegion;
 
-    Array<TextureRegion> frames;
-    private BulletType currentBulletType;
-    private int maxBullets;
+    public Polygon greenBulletCollider;
+    private Polygon orangeBulletCollider;
+    private Polygon purpleBulletCollider;
+    private Polygon blueBulletCollider;
+    public Polygon refCollider;
+
+    public Sprite bulletSprite;
 
     // bullet entities
-    private BulletType[] bulletType;
-    Vector2[] position; // bullets current position
-    Vector2[] direction; // direction the bullet is travelling
+    private SpaceStationBlaster.BulletType[] bulletType;
+    public Vector2[] position; // bullets current position
+    public Vector2[] direction; // direction the bullet is travelling
     float[] radians; // the angle in radians the bullet is
     private float[] lifeTime; // the time the bullet is alive
 
-    public Bullets(PlayScreen playScreen, BulletType bulletType) {
+    public Bullets(PlayScreen playScreen) {
         textureAtlas = playScreen.getTextureAtlas();
-        frames = new Array<TextureRegion>();
-        currentBulletType = bulletType;
-        switch(currentBulletType) {
-            case NONE: {
-                break;
-            }
-            case GREEN: {
-                maxBullets = GREEN_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                // clear our entities by setting by setting all shipTypes to NONE.
-                for (int index = 0; index < maxBullets; index++) {
-                    this.bulletType[index] = BulletType.NONE;
-                }
-                textureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
-
-                // get bullet texture region
-                bulletTextureRegion = new TextureRegion(textureRegion,
-                        GREEN_BULLET_TEXTURE_X + (GREEN_BULLET_FRAME * GREEN_BULLET_TEXTURE_WIDTH),
-                        GREEN_BULLET_TEXTURE_Y, GREEN_BULLET_TEXTURE_WIDTH,
-                        GREEN_BULLET_TEXTURE_HEIGHT);
-
-                collider = new Polygon(new float[]{0, 0, GREEN_BULLET_TEXTURE_WIDTH, 0,
-                        GREEN_BULLET_TEXTURE_WIDTH, GREEN_BULLET_TEXTURE_HEIGHT, 0,
-                        GREEN_BULLET_TEXTURE_HEIGHT});
-                break;
-            }
-            case ORANGE: {
-                maxBullets = ORANGE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                // clear our entities by setting by setting all shipTypes to NONE.
-                for (int index = 0; index < maxBullets; index++) {
-                    this.bulletType[index] = BulletType.NONE;
-                }
-                textureRegion = textureAtlas.findRegion(ORANGE_BULLET_TEXTURE_ATLAS_REGION);
-
-                // get bullet texture region
-                bulletTextureRegion = new TextureRegion(textureRegion,
-                        ORANGE_BULLET_TEXTURE_X + (ORANGE_BULLET_FRAME * ORANGE_BULLET_TEXTURE_WIDTH),
-                        ORANGE_BULLET_TEXTURE_Y, ORANGE_BULLET_TEXTURE_WIDTH,
-                        ORANGE_BULLET_TEXTURE_HEIGHT);
-
-                collider = new Polygon(new float[]{0, 0, ORANGE_BULLET_TEXTURE_WIDTH, 0,
-                        ORANGE_BULLET_TEXTURE_WIDTH, ORANGE_BULLET_TEXTURE_HEIGHT, 0,
-                        ORANGE_BULLET_TEXTURE_HEIGHT});
-
-                break;
-            }
-            case PURPLE: {
-                maxBullets = PURPLE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                // clear our entities by setting by setting all shipTypes to NONE.
-                for (int index = 0; index < maxBullets; index++) {
-                    this.bulletType[index] = BulletType.NONE;
-                }
-                textureRegion = textureAtlas.findRegion(PURPLE_BULLET_TEXTURE_ATLAS_REGION);
-
-                // get bullet texture region
-                bulletTextureRegion =new TextureRegion(textureRegion,
-                        PURPLE_BULLET_TEXTURE_X + (PURPLE_BULLET_FRAME * PURPLE_BULLET_TEXTURE_WIDTH),
-                        PURPLE_BULLET_TEXTURE_Y, PURPLE_BULLET_TEXTURE_WIDTH,
-                        PURPLE_BULLET_TEXTURE_HEIGHT);
-
-                collider = new Polygon(new float[]{0, 0, PURPLE_BULLET_TEXTURE_WIDTH, 0,
-                        PURPLE_BULLET_TEXTURE_WIDTH, PURPLE_BULLET_TEXTURE_HEIGHT, 0,
-                        PURPLE_BULLET_TEXTURE_HEIGHT});
-
-                break;
-            }
-            case BLUE: {
-                maxBullets = BLUE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                // clear our entities by setting by setting all shipTypes to NONE.
-                for (int index = 0; index < maxBullets; index++) {
-                    this.bulletType[index] = BulletType.NONE;
-                }
-                textureRegion = textureAtlas.findRegion(BLUE_BULLET_TEXTURE_ATLAS_REGION);
-
-                // get bullet texture region
-                bulletTextureRegion = new TextureRegion(textureRegion,
-                        BLUE_BULLET_TEXTURE_X + (BLUE_BULLET_FRAME * BLUE_BULLET_TEXTURE_WIDTH),
-                        BLUE_BULLET_TEXTURE_Y, BLUE_BULLET_TEXTURE_WIDTH,
-                        BLUE_BULLET_TEXTURE_HEIGHT);
-
-                collider = new Polygon(new float[]{0, 0, BLUE_BULLET_TEXTURE_WIDTH, 0,
-                        BLUE_BULLET_TEXTURE_WIDTH, BLUE_BULLET_TEXTURE_HEIGHT, 0,
-                        BLUE_BULLET_TEXTURE_HEIGHT});
-                break;
-            }
+        instantiateEntities(MAX_BULLETS);
+        // clear our entities by setting by setting all shipTypes to NONE.
+        for (int index = 0; index < MAX_BULLETS; index++) {
+            this.bulletType[index] = SpaceStationBlaster.BulletType.NONE;
         }
+
+        // get bullet texture region
+        greenBulletTextureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
+
+        greenBulletCollider = new Polygon(new float[]{0, 0, GREEN_BULLET_TEXTURE_WIDTH, 0,
+                GREEN_BULLET_TEXTURE_WIDTH, GREEN_BULLET_TEXTURE_HEIGHT, 0,
+                GREEN_BULLET_TEXTURE_HEIGHT});
+
+        // get orange bullet texture region
+        orangeBulletTextureRegion = textureAtlas.findRegion(ORANGE_BULLET_TEXTURE_ATLAS_REGION);
+
+        orangeBulletCollider = new Polygon(new float[]{0, 0, ORANGE_BULLET_TEXTURE_WIDTH, 0,
+                ORANGE_BULLET_TEXTURE_WIDTH, ORANGE_BULLET_TEXTURE_HEIGHT, 0,
+                ORANGE_BULLET_TEXTURE_HEIGHT});
+
+        // get purple bullet texture region
+        purpleBulletTextureRegion = textureAtlas.findRegion(PURPLE_BULLET_TEXTURE_ATLAS_REGION);
+
+        purpleBulletCollider = new Polygon(new float[]{0, 0, PURPLE_BULLET_TEXTURE_WIDTH, 0,
+                PURPLE_BULLET_TEXTURE_WIDTH, PURPLE_BULLET_TEXTURE_HEIGHT, 0,
+                PURPLE_BULLET_TEXTURE_HEIGHT});
+
+        // get blue bullet texture region
+        blueBulletTextureRegion = textureAtlas.findRegion(BLUE_BULLET_TEXTURE_ATLAS_REGION);
+
+        blueBulletCollider = new Polygon(new float[]{0, 0, BLUE_BULLET_TEXTURE_WIDTH, 0,
+                BLUE_BULLET_TEXTURE_WIDTH, BLUE_BULLET_TEXTURE_HEIGHT, 0,
+                BLUE_BULLET_TEXTURE_HEIGHT});
     }
 
     private void instantiateEntities(int maxSize) {
-        this.bulletType = new BulletType[maxSize];
+        this.bulletType = new SpaceStationBlaster.BulletType[maxSize];
         position = new Vector2[maxSize];
         direction = new Vector2[maxSize];
         radians = new float[maxSize];
         lifeTime = new float[maxSize];
     }
 
-    public int spawn(float radians) {
-        //bulletType should not be null
-        if (currentBulletType == null) return -1;
-        //Find a free index by looping through from the beginning
+    public int spawn(SpaceStationBlaster.BulletType bulletType, float radians) {
+        // bulletType should not be null
+        if (bulletType == null) return -1;
+        // find a free index by looping through from the beginning
         int index = -1;
-        for (int free = 0; free < maxBullets; free++) {
-            if (this.bulletType[free] == BulletType.NONE) {
+        for (int free = 0; free < MAX_BULLETS; free++) {
+            if (this.bulletType[free] == SpaceStationBlaster.BulletType.NONE) {
                 index = free;
                 break;
             }
         }
 
-        //Return a fail indicator if no free index was found
+        // return a fail indicator if no free index was found
         if (index < 0) return -1;
 
         //Register the index as in-use
-        bulletType[index] = currentBulletType;
-        position[index].x = 0f;
-        position[index].y = 0f;
+        this.bulletType[index] = bulletType;
+        position[index] = new Vector2(0f, 0f);
+        direction[index] = new Vector2(0f, 0f);
         this.radians[index] = radians;
 
         // initialise for different types of bullets
-        switch(currentBulletType) {
+        switch(bulletType) {
             case NONE: {
                 break;
             }
             case GREEN: {
-                direction[index].x = MathUtils.cos(radians) * GREEN_BULLET_SPEED;
-                direction[index].y = MathUtils.sin(radians) * GREEN_BULLET_SPEED;
+                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * GREEN_BULLET_SPEED;
+                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * GREEN_BULLET_SPEED;
                 lifeTime[index] = 2f;
                 break;
             }
             case ORANGE: {
-                //TODO initialisation for Green UFO
+                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * ORANGE_BULLET_SPEED;
+                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * ORANGE_BULLET_SPEED;
+                lifeTime[index] = 2f;
                 break;
             }
             case PURPLE: {
-                //TODO initialisation for Red UFO
+                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * PURPLE_BULLET_SPEED;
+                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * PURPLE_BULLET_SPEED;
+                lifeTime[index] = 2f;
                 break;
             }
             case BLUE: {
-                //TODO initialisation for Battlecruiser
+                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * BLUE_BULLET_SPEED;
+                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * BLUE_BULLET_SPEED;
+                lifeTime[index] = 2f;
                 break;
             }
-        }
 
+        }
         return index;
     }
 
     public void update(float deltaTime) {
-        for (int index = 0; index < maxBullets; index++) {
-            if (bulletType[index] == BulletType.NONE) {
+        for (int index = 0; index < MAX_BULLETS; index++) {
+            if (bulletType[index] == SpaceStationBlaster.BulletType.NONE) {
                 continue;
             }
 
-            //Recycle dead bullets to free their memory for use by new bullets;
+            // recycle dead bullets to free their memory for use by new bullets;
             if (lifeTime[index] < 0f) {
-                bulletType[index] = BulletType.NONE;
+                bulletType[index] = SpaceStationBlaster.BulletType.NONE;
                 continue;
             }
 
             lifeTime[index] -= deltaTime;
             position[index].x += direction[index].x * deltaTime;
             position[index].y += direction[index].y * deltaTime;
+
+            int width = 0;
+            int height = 0;
+
+            switch(bulletType[index]) {
+                case GREEN: {
+                    width = GREEN_BULLET_TEXTURE_WIDTH;
+                    height = GREEN_BULLET_TEXTURE_HEIGHT;
+                    refCollider = greenBulletCollider;
+                    break;
+                }
+                case ORANGE: {
+                    width = ORANGE_BULLET_TEXTURE_WIDTH;
+                    height = ORANGE_BULLET_TEXTURE_HEIGHT;
+                    refCollider = orangeBulletCollider;
+                    break;
+                }
+                case PURPLE: {
+                    width = PURPLE_BULLET_TEXTURE_WIDTH;
+                    height = PURPLE_BULLET_TEXTURE_HEIGHT;
+                    refCollider = purpleBulletCollider;
+                    break;
+                }
+                case BLUE: {
+                    width = BLUE_BULLET_TEXTURE_HEIGHT;
+                    height = BLUE_BULLET_TEXTURE_HEIGHT;
+                    refCollider = blueBulletCollider;
+                    break;
+                }
+            }
+            refCollider.setOrigin(width / 2, height / 2);
+            refCollider.setPosition(position[index].x, position[index].y);
+            refCollider.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
         }
     }
 
     public void render(SpriteBatch spriteBatch) {
-        for (int index = 0; index < maxBullets; index++) {
-            if (this.bulletType[index] == BulletType.NONE) {
-                continue;
+        for (int index = 0; index < MAX_BULLETS; index++) {
+            switch(bulletType[index]) {
+                case NONE: {
+                    continue;
+                }
+                case GREEN: {
+                    bulletSprite = new Sprite(greenBulletTextureRegion);
+                    break;
+                }
+                case ORANGE: {
+                    bulletSprite = new Sprite(orangeBulletTextureRegion);
+                    break;
+                }
+                case PURPLE: {
+                    bulletSprite = new Sprite(purpleBulletTextureRegion);
+                    break;
+                }
+                case BLUE: {
+                    bulletSprite = new Sprite(blueBulletTextureRegion);
+                    break;
+                }
             }
-            spriteBatch.draw(bulletTextureRegion, position[index].x - bulletTextureRegion.getRegionWidth() / 2f,
-                    position[index].y - bulletTextureRegion.getRegionHeight() / 2f);
+            bulletSprite.setOrigin(bulletSprite.getWidth() / 2, bulletSprite.getHeight() / 2);
+            bulletSprite.setPosition(position[index].x, position[index].y);
+            bulletSprite.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
+            bulletSprite.draw(spriteBatch);
         }
     }
 }

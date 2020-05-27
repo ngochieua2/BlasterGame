@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.Bullets;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
@@ -30,8 +32,9 @@ public class PlayScreen implements Screen {
     private Walls walls;
     // game sprites
     private Player player;
+    private Bullets bullets;
 
-    ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private ShapeRenderer shapeRenderer;
 
     public PlayScreen(SpaceStationBlaster game) {
         this.game = game;
@@ -55,8 +58,9 @@ public class PlayScreen implements Screen {
         gameHud = new Hud(game.spriteBatch, this);
 
         walls = new Walls(this);
-
+        bullets = new Bullets(this);
         player = new Player(this);
+
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -71,14 +75,25 @@ public class PlayScreen implements Screen {
         return tiledMap;
     }
 
+    public Bullets getBullets() {
+        return bullets;
+    }
+
     @Override
     public void show() {
 
     }
 
-    public void update(float deltaTime) {
+    private void handleInput(float deltaTime) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+    }
 
+    public void update(float deltaTime) {
+        handleInput(deltaTime);
         player.update(deltaTime);
+        bullets.update(deltaTime);
 
         // attach game camera x and y position to players x and y position
         gameCamera.position.x = player.getSprite().getX();
@@ -106,6 +121,7 @@ public class PlayScreen implements Screen {
         // draw our sprites onto the screen
         game.spriteBatch.begin();
         player.render(game.spriteBatch);
+        bullets.render(game.spriteBatch);
         game.spriteBatch.end();
 
         // set camera to draw what the HUD camera can see
@@ -130,6 +146,14 @@ public class PlayScreen implements Screen {
             shapeRenderer.end();
         }
 
+        // testing the bullet bounds
+        if (bullets.refCollider != null) {
+            shapeRenderer.setProjectionMatrix(gameCamera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.BLUE);
+            shapeRenderer.polygon(bullets.refCollider.getTransformedVertices());
+            shapeRenderer.end();
+        }
     }
 
     @Override

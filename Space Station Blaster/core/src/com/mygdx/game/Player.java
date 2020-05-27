@@ -43,15 +43,19 @@ public class Player {
     private TiledMap tiledMap;
 
     public Polygon playerBounds;
+    public Bullets bullets;
+
+    float shootingCooldown = 0f;
+    float shootingCooldownSlow = 0.5f;
 
     public Player(PlayScreen playScreen) {
         this.textureAtlas = playScreen.getTextureAtlas();
         this.tiledMap = playScreen.getTiledMap();
+        this.bullets = playScreen.getBullets();
         state = State.NORMAL;
         position = new Vector2();
         direction = new Vector2();
         radians = 0;
-        //radians = (float) Math.PI / 2;
 
         playScreen.getTextureAtlas();
         textureRegion = textureAtlas.findRegion(PLAYER_TEXTURE_ATLAS_REGION);
@@ -67,7 +71,6 @@ public class Player {
 
         playerBounds.setPosition(position.x, position.y);
         playerBounds.setOrigin(playerRectangle.getWidth() / 2, playerRectangle.getHeight() / 2);
-        playerSprite.setOrigin(playerRectangle.getWidth() / 2, playerRectangle.getHeight() / 2);
 
         playerSprite.setRegion(playerSprite);
     }
@@ -85,6 +88,16 @@ public class Player {
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
             direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+        }
+
+        // player shooting
+        if (shootingCooldown <= 0f && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            int index = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+            bullets.position[index].x = position.x;
+            bullets.position[index].y = position.y;
+            shootingCooldown = shootingCooldownSlow;
+        } else {
+            shootingCooldown -= deltaTime;
         }
 
         // player deceleration
@@ -114,7 +127,6 @@ public class Player {
         // set sprite position and rotation
         playerSprite.setPosition(position.x, position.y);
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
-        // set bounds position and rotation
         playerBounds.setPosition(position.x, position.y);
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
     }
@@ -138,8 +150,5 @@ public class Player {
     public int getScore() {
         return score;
     }
-
-
-
 
 }

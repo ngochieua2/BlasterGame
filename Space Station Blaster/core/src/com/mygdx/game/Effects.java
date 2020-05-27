@@ -112,6 +112,8 @@ public class Effects {
             case PLAYER: {
                 maxBullets = GREEN_MAX_BULLETS;
                 instantiateEntities(maxBullets);
+
+
                 textureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
 
                 for (int index = 0; index < GREEN_MAX_BULLETS; index++) {
