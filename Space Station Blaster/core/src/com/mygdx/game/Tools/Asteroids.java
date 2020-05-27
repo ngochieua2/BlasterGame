@@ -32,8 +32,8 @@ public class Asteroids {
     private float x;
     private float y;
     private float radians;
-    private float VectorX;
-    private float VectorY;
+    private float dx;
+    private float dy;
     private Vector2[] position;
     private Vector2[] direction;
 
@@ -60,11 +60,11 @@ public class Asteroids {
                 speed = 32f;
                 health = 3f;
 
-                VectorX = MathUtils.cos(radians) * speed;
-                VectorY = MathUtils.sin(radians) * speed;
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
 
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
 
                 break;
 
@@ -74,10 +74,11 @@ public class Asteroids {
                 speed = 32f;
                 health = 3f;
 
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
 
-
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
                 break;
 
             case BROWN_MEDIUM:
@@ -86,8 +87,11 @@ public class Asteroids {
                 speed = 64f;
                 health = 1.5f;
 
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
+
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
                 break;
 
             case GREY_MEDIUM:
@@ -96,10 +100,11 @@ public class Asteroids {
                 speed = 64f;
                 health = 1.5f;
 
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
 
-
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
                 break;
 
             case BROWN_SMALL:
@@ -108,10 +113,11 @@ public class Asteroids {
                 speed = 96f;
                 health = 0.75f;
 
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
 
-
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
                 break;
 
             case GREY_SMALL:
@@ -120,9 +126,11 @@ public class Asteroids {
                 speed = 96f;
                 health = 0.75f;
 
+                dx = MathUtils.cos(radians) * speed;
+                dy = MathUtils.sin(radians) * speed;
 
-                asteroidSprite.setOrigin(VectorX,VectorY);
-                asteroidSprite.setCenter(VectorX,VectorY);
+                asteroidSprite.setOrigin(dx,dy);
+                asteroidSprite.setCenter(dx,dy);
                 break;
 
             case NONE:
@@ -135,8 +143,8 @@ public class Asteroids {
 
 
     public void update(float dt){
-        x = VectorX * dt;
-        y = VectorY * dt;
+        x = dx * dt;
+        y = dy * dt;
 
     }
 
@@ -195,7 +203,4 @@ public class Asteroids {
     }
 
 
-    public void SpawnNewAsteroids(float dt){
-
-    }
 }
