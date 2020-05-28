@@ -120,6 +120,7 @@ public class PlayScreen implements Screen {
         game.spriteBatch.setProjectionMatrix(gameCamera.combined);
         // draw our sprites onto the screen
         game.spriteBatch.begin();
+
         player.render(game.spriteBatch);
         bullets.render(game.spriteBatch);
         game.spriteBatch.end();

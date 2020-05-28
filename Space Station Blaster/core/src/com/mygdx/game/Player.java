@@ -46,7 +46,7 @@ public class Player {
     public Bullets bullets;
 
     float shootingCooldown = 0f;
-    float shootingCooldownSlow = 0.5f;
+    float shootingCooldownSlow = 0.3f;
 
     public Player(PlayScreen playScreen) {
         this.textureAtlas = playScreen.getTextureAtlas();
@@ -75,6 +75,27 @@ public class Player {
         playerSprite.setRegion(playerSprite);
     }
 
+    /* currentOrbitDegrees: the degrees around the orbit that the satellite is(can greater that 360(361 would be equivalent to 1))
+     * distanceFromCenterPoint: the distance in world units from the center point that the satellite is
+     * centerPoint: the vector of the center point of the orbit system
+     */
+
+    /**
+     *
+     * @param currentOrbitRadians the angle in radians arround the orbit of the satellite is
+     * @param distanceFromCenterPoint the distance in world units from the center point that the satellite is
+     * @param centerPoint the vector of the center point of the orbit system
+     * @return a vector of the calculated orbit position
+     */
+    public Vector2 calculateOrbit(float currentOrbitRadians, float distanceFromCenterPoint, Vector2 centerPoint) {
+        float radians = currentOrbitRadians;
+
+        float x = (float) ((Math.cos(radians) * distanceFromCenterPoint) + centerPoint.x);
+        float y = (float) ((Math.sin(radians) * distanceFromCenterPoint) + centerPoint.y);
+
+        return new Vector2(x, y);
+    }
+
     private void handleInput(float deltaTime) {
 
         // player turning right or left
@@ -93,8 +114,12 @@ public class Player {
         // player shooting
         if (shootingCooldown <= 0f && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             int index = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
-            bullets.position[index].x = position.x;
-            bullets.position[index].y = position.y;
+            //bullets.position[index].set(getTipPosition());
+            // set bullets position to the centre of the player position
+            bullets.position[index].x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 + playerSprite.getWidth() / 2;
+            bullets.position[index].y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 + playerSprite.getHeight() / 2;
+            bullets.position[index] = calculateOrbit((float) (radians + Math.PI / 2), playerSprite.getHeight() / 2 - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2, bullets.position[index]);
+
             shootingCooldown = shootingCooldownSlow;
         } else {
             shootingCooldown -= deltaTime;

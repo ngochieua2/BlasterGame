@@ -20,9 +20,9 @@ public class Bullets {
 
     // constants for green bullet
     private static final String GREEN_BULLET_TEXTURE_ATLAS_REGION = "shot1_asset";
-    private static final int GREEN_BULLET_TEXTURE_WIDTH = 32;
-    private static final int GREEN_BULLET_TEXTURE_HEIGHT = 32;
-    private static final float GREEN_BULLET_SPEED = 350;
+    public static final int GREEN_BULLET_TEXTURE_WIDTH = 32;
+    public static final int GREEN_BULLET_TEXTURE_HEIGHT = 32;
+    private static final float GREEN_BULLET_SPEED = 500;
 
     // constants for orange bullet
     private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot4_asset";
@@ -123,11 +123,12 @@ public class Bullets {
             }
         }
 
-        // return a fail indicator if no free index was found
+        // return a fail indicator if no free index was founffd
         if (index < 0) return -1;
 
         //Register the index as in-use
         this.bulletType[index] = bulletType;
+
         position[index] = new Vector2(0f, 0f);
         direction[index] = new Vector2(0f, 0f);
         this.radians[index] = radians;
