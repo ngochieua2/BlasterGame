@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,240 +16,173 @@ import com.mygdx.game.Screens.PlayScreen;
  * TODO Still barebone. Needs allot more work.
  */
 public class Effects {
-    private enum BulletType { NONE, FIRE, BULLET, IMPACT}
-    private enum ShipType { NONE, PLAYER, GREEN_UFO, RED_UFO, JUDGEMENT }
+    private enum EffectsType { NONE, GREEN_FIRE, ORANGE_FIRE, PURPLE_FIRE, BLUE_FIRE, GREEN_IMPACT,
+        ORANGE_IMPACT, PURPLE_IMPACT, BLUE_IMPACT, GREEN_TRAIL, ORANGE_TRAIL, PURPLE_TRAIL,
+        BLUE_TRAIL, PLAYER_EXPLOSION, SMALL_ASTEROID_EXPLOSION, ENEMY_EXPLOSION };
 
-    // constants for green bullet
-    private static final String GREEN_BULLET_TEXTURE_ATLAS_REGION = "shot-green";
-    private static final int GREEN_BULLET_TEXTURE_X = 1396;
-    private static final int GREEN_BULLET_TEXTURE_Y = 0;
-    private static final int GREEN_BULLET_TEXTURE_WIDTH = 32;
-    private static final int GREEN_BULLET_TEXTURE_HEIGHT = 32;
-    private static final int GREEN_FIRE_BULLET_START_FRAME = 0;
-    private static final int GREEN_FIRE_BULLET_END_FRAME = 3;
-    private static final int GREEN_BULLET_FRAME = 4;
-    private static final int GREEN_IMPACT_BULLET_START_FRAME = 5;
-    private static final int GREEN_IMPACT_BULLET_END_FRAME = 9;
-    private static final float GREEN_FIRE_BULLET_FRAME_DURATION = 0.1f;
-    private static final float GREEN_IMPACT_BULLET_FRAME_DURATION = 0.1f;
-    private static final int GREEN_MAX_BULLETS = 4;
-    private static final int GREEN_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int GREEN_BULLET_RECTANGLE_HEIGHT = 0;
+    public static final int MAX_EFFECTS = 200;
+    public static final float TRAIL_LIFETIME = 0.1f;
+    public static final float IMPACT_LIFETIME = 0.2f;
+    public static final float EXPLOSION_LIFETIME = 0.6f;
 
-    // constants for orange bullet
-    private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot-orange";
-    private static final int ORANGE_BULLET_TEXTURE_X = 768;
-    private static final int ORANGE_BULLET_TEXTURE_Y = 104;
-    private static final int ORANGE_BULLET_TEXTURE_WIDTH = 64;
-    private static final int ORANGE_BULLET_TEXTURE_HEIGHT = 64;
-    private static final int ORANGE_FIRE_BULLET_START_FRAME = 0;
-    private static final int ORANGE_FIRE_BULLET_END_FRAME = 4;
-    private static final int ORANGE_BULLET_FRAME = 5;
-    private static final int ORANGE_IMPACT_BULLET_START_FRAME = 6;
-    private static final int ORANGE_IMPACT_BULLET_END_FRAME = 13;
-    private static final float ORANGE_FIRE_BULLET_FRAME_DURATION = 0.1f;
-    private static final float ORANGE_IMPACT_BULLET_FRAME_DURATION = 0.1f;
-    private static final int ORANGE_MAX_BULLETS = 2;
-    private static final int ORANGE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int ORANGE_BULLET_RECTANGLE_HEIGHT = 0;
+    // constants for fire frames
+    private static final int GREEN_FIRE_FRAMES = 4;
+    private static final int ORANGE_FIRE_FRAMES = 5;
+    private static final int PURPLE_FIRE_FRAMES = 4;
+    private static final int BLUE_FIRE_FRAMES = 6;
 
-    // constants for purple bullet
-    private static final String PURPLE_BULLET_TEXTURE_ATLAS_REGION = "shot-purple";
-    private static final int PURPLE_BULLET_TEXTURE_X = 0;
-    private static final int PURPLE_BULLET_TEXTURE_Y = 348;
-    private static final int PURPLE_BULLET_TEXTURE_WIDTH = 128;
-    private static final int PURPLE_BULLET_TEXTURE_HEIGHT = 128;
-    private static final int PURPLE_FIRE_BULLET_START_FRAME = 0;
-    private static final int PURPLE_FIRE_BULLET_END_FRAME = 3;
-    private static final int PURPLE_BULLET_FRAME = 1;
-    private static final int PURPLE_IMPACT_BULLET_START_FRAME = 5;
-    private static final int PURPLE_IMPACT_BULLET_END_FRAME = 14;
-    private static final float PURPLE_FIRE_BULLET_FRAME_DURATION = 0.1f;
-    private static final float PURPLE_IMPACT_BULLET_FRAME_DURATION = 0.1f;
-    private static final int PURPLE_MAX_BULLETS = 2;
-    private static final int PURPLE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int PURPLE_BULLET_RECTANGLE_HEIGHT = 0;
+    // constants for impact frames
+    private static final int GREEN_IMPACT_FRAMES = 5;
+    private static final int ORANGE_IMPACT_FRAMES = 8;
+    private static final int PURPLE_IMPACT_FRAMES = 10;
+    private static final int BLUE_IMPACT_FRAMES = 5;
 
-    // constants for blue bullet
-    private static final String BLUE_BULLET_TEXTURE_ATLAS_REGION = "shot-green";
-    private static final int BLUE_BULLET_TEXTURE_X = 0;
-    private static final int BLUE_BULLET_TEXTURE_Y = 104;
-    private static final int BLUE_BULLET_TEXTURE_WIDTH = 64;
-    private static final int BLUE_BULLET_TEXTURE_HEIGHT = 64;
-    private static final int BLUE_FIRE_BULLET_START_FRAME = 0;
-    private static final int BLUE_FIRE_BULLET_END_FRAME = 5;
-    private static final int BLUE_BULLET_FRAME = 6;
-    private static final int BLUE_IMPACT_BULLET_START_FRAME = 7;
-    private static final int BLUE_IMPACT_BULLET_END_FRAME = 11;
-    private static final float BLUE_FIRE_BULLET_FRAME_DURATION = 0.1f;
-    private static final float BLUE_IMPACT_BULLET_FRAME_DURATION = 0.1f;
-    private static final int BLUE_MAX_BULLETS = 2;
-    private static final int BLUE_BULLET_RECTANGLE_WIDTH = 0;
-    private static final int BLUE_BULLET_RECTANGLE_HEIGHT = 0;
+    // constants for trail frames
+    private static final int GREEN_TRAIL_FRAMES = 4;
+    private static final int ORANGE_TRAIL_FRAMES = 4;
+    private static final int PURPLE_TRAIL_FRAMES = 4;
+    private static final int BLUE_TRAIL_FRAMES = 4;
 
-    private TextureAtlas textureAtlas;
-    private TextureRegion textureRegion;
+    // constants for explosion frames
+    private static final int PLAYER_EXPLOSION_COL_FRAMES = 8;
+    private static final int PLAYER_EXPLOSION_ROW_FRAMES = 8;
+    private static final int SMALL_ASTEROID_EXPLOSION_ROW_FRAMES = 8;
+    private static final int SMALL_ASTEROID_EXPLOSION_COL_FRAMES = 8;
+    private static final int ENEMY_EXPLOSION_ROW_FRAMES = 8;
+    private static final int ENEMY_EXPLOSION_COL_FRAMES = 8;
 
-    Array<TextureRegion> frames;
-    private ShipType currentShipType;
-    private int maxBullets;
+    // constants for fire TextureAtlas
+    private static final String GREEN_FIRE_TEXTURE_ATLAS = "shot1";
+    private static final String ORANGE_FIRE_TEXTURE_ATLAS = "shot4";
+    private static final String PURPLE_FIRE_TEXTURE_ATLAS = "shot6";
+    private static final String BLUE_FIRE_TEXTURE_ATLAS = "shot2";
 
-    // bullet entities
-    private Effects.BulletType[] bulletType;
-    private Effects.ShipType[] shipTypes;
-    private Sprite[] sprite;
-    private Polygon[] collider;
-    private TextureRegion[] bulletTextureRegion;
-    private Animation[] fireBulletAnimation;
-    private Animation[] impactBulletAnimation;
-    Vector2[] position; // bullets current position
-    Vector2[] direction; // direction the bullet is travelling
-    float[] radians; // the angle in radians the bullet is
+    // constants for impact TextureAtlas
+    private static final String GREEN_IMPACT_TEXTURE_ATLAS = "shot1_exp";
+    private static final String ORANGE_IMPACT_TEXTURE_ATLAS = "shot4_exp";
+    private static final String PURPLE_IMPACT_TEXTURE_ATLAS = "shot6_exp";
+    private static final String BLUE_IMPACT_TEXTURE_ATLAS = "shot2_exp";
 
-    public Effects(PlayScreen playScreen, ShipType shipType) {
+    // constants for trail TextureAtlas
+    private static final String GREEN_TRAIL_TEXTURE_ATLAS = "Ship1_normal_flight";
+    private static final String ORANGE_TRAIL_TEXTURE_ATLAS = "Ship4_normal_flight";
+    private static final String PURPLE_TRAIL_TEXTURE_ATLAS = "Ship6_normal_flight";
+    private static final String BLUE_TRAIL_TEXTURE_ATLAS = "Ship2_normal_flight";
+
+    // constants for explosion sprite sheet
+    private static final String PLAYER_EXPLOSION_SPRITE_SHEET = "Explosion2/1.png";
+    private static final String SMALL_ASTEROID_EXPLOSION_SPRITE_SHEET = "Explosion2/4.png";
+    private static final String ENEMY_EXPLOSION_SPRITE_SHEET = "Explosion2/2.png";
+
+    // effects type data
+    // fire bullet textures
+    private TextureRegion[] greenFireBulletTextures;
+    private TextureRegion[] orangeFireBulletTextures;
+    private TextureRegion[] purpleFireBulletTextures;
+    private TextureRegion[] blueFireBulletTextures;
+
+    // impact bullet textures
+    private TextureRegion[] greenImpactBulletTextures;
+    private TextureRegion[] orangeImpactBulletTextures;
+    private TextureRegion[] purpleImpactBulletTextures;
+    private TextureRegion[] blueImpactBulletTextures;
+
+    // trail ship textures
+    private TextureRegion[] greenTrailTextures;
+    private TextureRegion[] orangeTrailTextures;
+    private TextureRegion[] purpleTrailTextures;
+    private TextureRegion[] blueTrailTextures;
+
+    private Animation<TextureRegion> playerExplosionAnimation;
+    private Animation<TextureRegion> smallAsteroidExplosionAnimation;
+    private Animation<TextureRegion> enemyExplosionAnimation;
+
+    TextureAtlas textureAtlas;
+    // effects entity data
+    private Effects.EffectsType[] effectsType;
+    private Vector2[] position; // bullets current position
+    private Vector2[] direction; // direction the bullet is travelling
+    private float[] radians; // the angle in radians the bullet is
+    private float[] lifeTime; // the time the animation is alive
+
+    public Effects(PlayScreen playScreen) {
         textureAtlas = playScreen.getTextureAtlas();
-        frames = new Array<TextureRegion>();
-        currentShipType = shipType;
-        switch(shipType) {
-            case PLAYER: {
-                maxBullets = GREEN_MAX_BULLETS;
-                instantiateEntities(maxBullets);
+
+        // initialise type data
+        greenFireBulletTextures = new TextureRegion[GREEN_FIRE_FRAMES];
+        orangeFireBulletTextures = new TextureRegion[ORANGE_FIRE_FRAMES];
+        purpleFireBulletTextures = new TextureRegion[PURPLE_FIRE_FRAMES];
+        blueFireBulletTextures = new TextureRegion[BLUE_FIRE_FRAMES];
+        greenImpactBulletTextures = new TextureRegion[GREEN_IMPACT_FRAMES];
+        orangeImpactBulletTextures = new TextureRegion[ORANGE_IMPACT_FRAMES];
+        purpleImpactBulletTextures = new TextureRegion[PURPLE_IMPACT_FRAMES];
+        blueImpactBulletTextures = new TextureRegion[BLUE_IMPACT_FRAMES];
+        greenTrailTextures = new TextureRegion[GREEN_TRAIL_FRAMES];
+        orangeTrailTextures = new TextureRegion[ORANGE_TRAIL_FRAMES];
+        purpleTrailTextures = new TextureRegion[PURPLE_TRAIL_FRAMES];
+        blueTrailTextures = new TextureRegion[BLUE_TRAIL_FRAMES];
 
 
-                textureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
+        instantiateEntities(MAX_EFFECTS);
+        for (int index = 0; index < MAX_EFFECTS; index++) {
+            effectsType[index] = EffectsType.NONE;
+        }
 
-                for (int index = 0; index < GREEN_MAX_BULLETS; index++) {
-                    clearEntities(index);
+        createFrames(greenFireBulletTextures, GREEN_FIRE_FRAMES, GREEN_FIRE_TEXTURE_ATLAS);
+        createFrames(orangeFireBulletTextures, ORANGE_FIRE_FRAMES, ORANGE_FIRE_TEXTURE_ATLAS);
+        createFrames(purpleFireBulletTextures, PURPLE_FIRE_FRAMES, PURPLE_FIRE_TEXTURE_ATLAS);
+        createFrames(blueFireBulletTextures, BLUE_FIRE_FRAMES, BLUE_FIRE_TEXTURE_ATLAS);
+        createFrames(greenImpactBulletTextures, GREEN_IMPACT_FRAMES, GREEN_IMPACT_TEXTURE_ATLAS);
+        createFrames(orangeImpactBulletTextures, ORANGE_IMPACT_FRAMES, ORANGE_IMPACT_TEXTURE_ATLAS);
+        createFrames(purpleImpactBulletTextures, PURPLE_IMPACT_FRAMES, PURPLE_IMPACT_TEXTURE_ATLAS);
+        createFrames(blueImpactBulletTextures, BLUE_IMPACT_FRAMES, BLUE_IMPACT_TEXTURE_ATLAS);
+        createFrames(greenTrailTextures, GREEN_TRAIL_FRAMES, GREEN_TRAIL_TEXTURE_ATLAS);
+        createFrames(orangeTrailTextures, ORANGE_TRAIL_FRAMES, ORANGE_TRAIL_TEXTURE_ATLAS);
+        createFrames(purpleTrailTextures, PURPLE_TRAIL_FRAMES, PURPLE_TRAIL_TEXTURE_ATLAS);
+        createFrames(blueTrailTextures, BLUE_TRAIL_FRAMES, BLUE_TRAIL_TEXTURE_ATLAS);
 
-                    // get the fire bullet animation frames and add them to fireBulletAnimation
-                    fireBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            GREEN_FIRE_BULLET_START_FRAME, GREEN_FIRE_BULLET_END_FRAME,
-                            GREEN_BULLET_TEXTURE_X, GREEN_BULLET_TEXTURE_Y, GREEN_BULLET_TEXTURE_WIDTH,
-                            GREEN_BULLET_TEXTURE_HEIGHT, GREEN_FIRE_BULLET_FRAME_DURATION);
+        playerExplosionAnimation = createAnimation(PLAYER_EXPLOSION_SPRITE_SHEET,
+                PLAYER_EXPLOSION_COL_FRAMES, PLAYER_EXPLOSION_ROW_FRAMES);
+        smallAsteroidExplosionAnimation = createAnimation(SMALL_ASTEROID_EXPLOSION_SPRITE_SHEET,
+                SMALL_ASTEROID_EXPLOSION_COL_FRAMES, SMALL_ASTEROID_EXPLOSION_ROW_FRAMES);
+        enemyExplosionAnimation = createAnimation(ENEMY_EXPLOSION_SPRITE_SHEET,
+                ENEMY_EXPLOSION_COL_FRAMES, ENEMY_EXPLOSION_ROW_FRAMES);
+    }
 
-                    frames.clear();
-
-                    // get the impact bullet animation and add them to impactBulletAnimation
-                    impactBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            GREEN_IMPACT_BULLET_START_FRAME, GREEN_IMPACT_BULLET_END_FRAME,
-                            GREEN_BULLET_TEXTURE_X, GREEN_BULLET_TEXTURE_Y, GREEN_BULLET_TEXTURE_WIDTH,
-                            GREEN_BULLET_TEXTURE_HEIGHT, GREEN_IMPACT_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-                }
-                break;
-            }
-            case GREEN_UFO: {
-                maxBullets = ORANGE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                textureRegion = textureAtlas.findRegion(ORANGE_BULLET_TEXTURE_ATLAS_REGION);
-
-                for (int index = 0; index < ORANGE_MAX_BULLETS; index++) {
-                    clearEntities(index);
-
-                    // get the fire bullet animation frames and add them to fireBulletAnimation
-                    fireBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            ORANGE_FIRE_BULLET_START_FRAME, ORANGE_FIRE_BULLET_END_FRAME,
-                            ORANGE_BULLET_TEXTURE_X, ORANGE_BULLET_TEXTURE_Y, ORANGE_BULLET_TEXTURE_WIDTH,
-                            ORANGE_BULLET_TEXTURE_HEIGHT, ORANGE_FIRE_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-
-                    // get the impact bullet animation and add them to impactBulletAnimation
-                    impactBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            ORANGE_IMPACT_BULLET_START_FRAME, ORANGE_IMPACT_BULLET_END_FRAME,
-                            ORANGE_BULLET_TEXTURE_X, ORANGE_BULLET_TEXTURE_Y, ORANGE_BULLET_TEXTURE_WIDTH,
-                            ORANGE_BULLET_TEXTURE_HEIGHT, ORANGE_IMPACT_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-                }
-                break;
-            }
-            case RED_UFO: {
-                maxBullets = PURPLE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                textureRegion = textureAtlas.findRegion(PURPLE_BULLET_TEXTURE_ATLAS_REGION);
-
-                for (int index = 0; index < PURPLE_MAX_BULLETS; index++) {
-                    clearEntities(index);
-
-                    // get the fire bullet animation frames and add them to fireBulletAnimation
-                    fireBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            PURPLE_FIRE_BULLET_START_FRAME, PURPLE_FIRE_BULLET_END_FRAME,
-                            PURPLE_BULLET_TEXTURE_X, PURPLE_BULLET_TEXTURE_Y, PURPLE_BULLET_TEXTURE_WIDTH,
-                            PURPLE_BULLET_TEXTURE_HEIGHT, PURPLE_FIRE_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-
-                    // get the impact bullet animation and add them to impactBulletAnimation
-                    impactBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            PURPLE_IMPACT_BULLET_START_FRAME, PURPLE_IMPACT_BULLET_END_FRAME,
-                            PURPLE_BULLET_TEXTURE_X, PURPLE_BULLET_TEXTURE_Y, PURPLE_BULLET_TEXTURE_WIDTH,
-                            PURPLE_BULLET_TEXTURE_HEIGHT, PURPLE_IMPACT_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-                }
-                break;
-            }
-            case JUDGEMENT: {
-                maxBullets = BLUE_MAX_BULLETS;
-                instantiateEntities(maxBullets);
-                textureRegion = textureAtlas.findRegion(BLUE_BULLET_TEXTURE_ATLAS_REGION);
-
-                for (int index = 0; index < PURPLE_MAX_BULLETS; index++) {
-                    clearEntities(index);
-
-                    // get the fire bullet animation frames and add them to fireBulletAnimation
-                    fireBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            BLUE_FIRE_BULLET_START_FRAME, BLUE_FIRE_BULLET_END_FRAME,
-                            BLUE_BULLET_TEXTURE_X, BLUE_BULLET_TEXTURE_Y, BLUE_BULLET_TEXTURE_WIDTH,
-                            BLUE_BULLET_TEXTURE_HEIGHT, BLUE_FIRE_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-
-                    // get the impact bullet animation and add them to impactBulletAnimation
-                    impactBulletAnimation[index] = createAnimation(frames, textureRegion,
-                            BLUE_IMPACT_BULLET_START_FRAME, BLUE_IMPACT_BULLET_END_FRAME,
-                            BLUE_BULLET_TEXTURE_X, BLUE_BULLET_TEXTURE_Y, BLUE_BULLET_TEXTURE_WIDTH,
-                            BLUE_BULLET_TEXTURE_HEIGHT, BLUE_IMPACT_BULLET_FRAME_DURATION);
-
-                    frames.clear();
-                }
-                break;
-            }
+    private void createFrames(TextureRegion[] frames, int frameSize, String regionName) {
+        for (int index = 1; index <= frameSize; index++) {
+            frames[index - 1] = textureAtlas.findRegion(regionName, index);
         }
     }
 
-    private Animation createAnimation(Array<TextureRegion> frames, TextureRegion texture, int startFrame,
-    int endFrame, int textureX, int textureY, int width,
-    int height, float frameDuration) {
-        for (int index = startFrame; index <= endFrame; index++) {
-            frames.add(new TextureRegion(texture, textureX + index * width, textureY,
-                    height, height));
-        }
+    private Animation<TextureRegion> createAnimation(String path, int cols, int rows) {
+        Texture spriteSheet = new Texture(Gdx.files.internal(path));
+        TextureRegion[][] temp = TextureRegion.split(spriteSheet,
+                spriteSheet.getWidth() / cols,spriteSheet.getHeight() / rows);
 
-        return new Animation(frameDuration, frames);
+        TextureRegion[] spriteSheetFrames = new TextureRegion[cols * rows];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                spriteSheetFrames[index++] = temp[i][j];
+            }
+        }
+        return new Animation<TextureRegion>(0.025f, spriteSheetFrames);
     }
 
     private void instantiateEntities(int maxSize) {
-        shipTypes = new ShipType[maxSize];
+        effectsType = new EffectsType[maxSize];
         position = new Vector2[maxSize];
         direction = new Vector2[maxSize];
         radians = new float[maxSize];
-    }
-
-    private void clearEntities(int index) {
-        shipTypes[index] = ShipType.NONE;
-        position[index] = new Vector2();
-        direction[index] = new Vector2();
-        radians[index] = 0f;
+        lifeTime = new float[maxSize];
     }
 
     private int findFreeIndex(int maxSize) {
         //Find a free index by looping through from the beginning
         int index = -1;
         for (int free = 0; free < maxSize; free++) {
-            if (bulletType[free] == BulletType.NONE) {
+            if (effectsType[free] == EffectsType.NONE) {
                 index = free;
                 break;
             }
