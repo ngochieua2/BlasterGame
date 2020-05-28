@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class SpaceStationBlaster extends Game {
+	public enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE }
 
 	public static final int V_WIDTH = 1280; // virtual height of screen;
 	public static final int V_HEIGHT = 800; // virtual width of screen;
