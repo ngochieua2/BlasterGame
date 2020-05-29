@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -16,13 +17,16 @@ import com.mygdx.game.Screens.PlayScreen;
  * TODO Still barebone. Needs allot more work.
  */
 public class Effects {
-    private enum EffectsType { NONE, GREEN_FIRE, ORANGE_FIRE, PURPLE_FIRE, BLUE_FIRE, GREEN_IMPACT,
-        ORANGE_IMPACT, PURPLE_IMPACT, BLUE_IMPACT, GREEN_TRAIL, ORANGE_TRAIL, PURPLE_TRAIL,
-        BLUE_TRAIL, PLAYER_EXPLOSION, SMALL_ASTEROID_EXPLOSION, ENEMY_EXPLOSION };
-
     public static final int MAX_EFFECTS = 200;
+    public static final float GREEN_FIRE_LIFETIME = 0.1f;
+    public static final float ORANGE_FIRE_LIFETIME = 0.1f;
+    public static final float PURPLE_FIRE_LIFETIME = 0.1f;
+    public static final float BLUE_FIRE_LIFETIME = 0.1f;
+    public static final float GREEN_IMPACT_LIFETIME = 0.2f;
+    public static final float ORANGE_IMPACT_LIFETIME = 0.2f;
+    public static final float PURPLE_IMPACT_LIFETIME = 0.2f;
+    public static final float BLUE_IMPACT_LIFETIME = 0.2f;
     public static final float TRAIL_LIFETIME = 0.1f;
-    public static final float IMPACT_LIFETIME = 0.2f;
     public static final float EXPLOSION_LIFETIME = 0.6f;
 
     // constants for fire frames
@@ -99,7 +103,7 @@ public class Effects {
 
     TextureAtlas textureAtlas;
     // effects entity data
-    private Effects.EffectsType[] effectsType;
+    private SpaceStationBlaster.EffectType[] effectType;
     private Vector2[] position; // bullets current position
     private Vector2[] direction; // direction the bullet is travelling
     private float[] radians; // the angle in radians the bullet is
@@ -125,7 +129,7 @@ public class Effects {
 
         instantiateEntities(MAX_EFFECTS);
         for (int index = 0; index < MAX_EFFECTS; index++) {
-            effectsType[index] = EffectsType.NONE;
+            effectType[index] = SpaceStationBlaster.EffectType.NONE;
         }
 
         createFrames(greenFireBulletTextures, GREEN_FIRE_FRAMES, GREEN_FIRE_TEXTURE_ATLAS);
@@ -147,6 +151,80 @@ public class Effects {
                 SMALL_ASTEROID_EXPLOSION_COL_FRAMES, SMALL_ASTEROID_EXPLOSION_ROW_FRAMES);
         enemyExplosionAnimation = createAnimation(ENEMY_EXPLOSION_SPRITE_SHEET,
                 ENEMY_EXPLOSION_COL_FRAMES, ENEMY_EXPLOSION_ROW_FRAMES);
+    }
+
+    public int spawn(SpaceStationBlaster.EffectType effectType, float radians) {
+        // effectType should not be null
+        if (effectType == null) return -1;
+        // find a free index by looping through from the beginning
+        int index = -1;
+        for (int free = 0; free < MAX_EFFECTS; free++) {
+            if (this.effectType[free] == SpaceStationBlaster.EffectType.NONE) {
+                index = free;
+                break;
+            }
+        }
+
+        // return a fail indicator if no free index was founffd
+        if (index < 0) return -1;
+
+        //Register the index as in-use
+        this.effectType[index] = effectType;
+        position[index] = new Vector2(0f, 0f);
+        direction[index] = new Vector2(0f, 0f);
+        this.radians[index] = radians;
+
+        switch(this.effectType[index]) {
+            case GREEN_FIRE: {
+                lifeTime[index] = GREEN_FIRE_LIFETIME;
+                break;
+            }
+            case ORANGE_FIRE: {
+                lifeTime[index] = ORANGE_FIRE_LIFETIME;
+                break;
+            }
+            case PURPLE_FIRE: {
+                lifeTime[index] = PURPLE_FIRE_LIFETIME;
+                break;
+            }
+            case BLUE_FIRE: {
+                lifeTime[index] = BLUE_FIRE_LIFETIME;
+                break;
+            }
+            case GREEN_IMPACT: {
+                lifeTime[index] = GREEN_IMPACT_LIFETIME;
+                break;
+            }
+            case ORANGE_IMPACT: {
+                lifeTime[index] = ORANGE_IMPACT_LIFETIME;
+                break;
+            }
+            case PURPLE_IMPACT: {
+                lifeTime[index] = PURPLE_IMPACT_LIFETIME;
+                break;
+            }
+            case BLUE_IMPACT: {
+                lifeTime[index] = BLUE_IMPACT_LIFETIME;
+                break;
+            }
+            case GREEN_TRAIL: { }
+            case ORANGE_TRAIL: { }
+            case PURPLE_TRAIL: { }
+            case BLUE_TRAIL: {
+                lifeTime[index] = TRAIL_LIFETIME;
+                break;
+            }
+            case PLAYER_EXPLOSION: { }
+            case SMALL_ASTEROID_EXPLOSION: { }
+            case ENEMY_EXPLOSION: {
+                lifeTime[index] = EXPLOSION_LIFETIME;
+                break;
+            }
+        }
+        direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2));
+        direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2));
+
+        return index;
     }
 
     private void createFrames(TextureRegion[] frames, int frameSize, String regionName) {
@@ -171,22 +249,10 @@ public class Effects {
     }
 
     private void instantiateEntities(int maxSize) {
-        effectsType = new EffectsType[maxSize];
+        effectType = new SpaceStationBlaster.EffectType[maxSize];
         position = new Vector2[maxSize];
         direction = new Vector2[maxSize];
         radians = new float[maxSize];
         lifeTime = new float[maxSize];
-    }
-
-    private int findFreeIndex(int maxSize) {
-        //Find a free index by looping through from the beginning
-        int index = -1;
-        for (int free = 0; free < maxSize; free++) {
-            if (effectsType[free] == EffectsType.NONE) {
-                index = free;
-                break;
-            }
-        }
-        return index;
     }
 }
