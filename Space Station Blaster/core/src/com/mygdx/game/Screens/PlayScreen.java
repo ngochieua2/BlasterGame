@@ -18,6 +18,7 @@ import com.mygdx.game.Bullets;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
+import com.mygdx.game.Tools.Asteroids;
 import com.mygdx.game.Tools.Enemies;
 import com.mygdx.game.Walls;
 
@@ -35,6 +36,7 @@ public class PlayScreen implements Screen {
     private Player player;
     private Bullets bullets;
     private Enemies enemies;
+    private Asteroids asteroids;
 
     private ShapeRenderer shapeRenderer;
 
@@ -63,6 +65,7 @@ public class PlayScreen implements Screen {
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
+        asteroids.InitSpawnAsteroids();
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -97,6 +100,7 @@ public class PlayScreen implements Screen {
         player.update(deltaTime);
         bullets.update(deltaTime);
         enemies.update(deltaTime);
+        asteroids.update(deltaTime);
 
         // attach game camera x and y position to players x and y position
         gameCamera.position.x = player.getSprite().getX();
@@ -127,6 +131,7 @@ public class PlayScreen implements Screen {
         player.render(game.spriteBatch);
         bullets.render(game.spriteBatch);
         enemies.render(game.spriteBatch);
+        asteroids.render(game.spriteBatch);
         game.spriteBatch.end();
 
         // set camera to draw what the HUD camera can see
