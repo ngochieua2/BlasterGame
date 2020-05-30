@@ -2,12 +2,14 @@ package com.mygdx.game.Tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Sprites.LargeBrownAsteroids;
 import com.mygdx.game.Sprites.LargeGreyAsteroids;
 import com.mygdx.game.Sprites.MediumBrownAsteroids;
@@ -40,6 +42,7 @@ public class Asteroids {
     private float health;
 
     private float speed;
+    private float rotationSpeed;
     private float timeSpawn = MathUtils.random(MIN_TIME_SPAWN, MAX_TIME_SPAWN);;
 
     ArrayList<Asteroids> asteroids = new ArrayList<Asteroids>();
@@ -52,6 +55,7 @@ public class Asteroids {
         position = new Vector2[Asteroids_Max];
         direction = new Vector2[Asteroids_Max];
         radians = MathUtils.random(2 * 3.1415f);
+        rotationSpeed = MathUtils.random(-1,1);
 
         switch (type){
             case BROWN_LARGE:
@@ -146,6 +150,8 @@ public class Asteroids {
         x = dx * dt;
         y = dy * dt;
 
+        radians += rotationSpeed * dt;
+        HitWall();
     }
 
     public void InitSpawnAsteroids(){
@@ -179,6 +185,7 @@ public class Asteroids {
     }
 
     public TYPE getType () {return type;}
+
     public float getX(){return x;}
     public float getY(){return y;}
 
@@ -202,5 +209,19 @@ public class Asteroids {
         }
     }
 
+    public void HitWall(){
+        if (getX() < 0) { x = SpaceStationBlaster.MAP_WIDTH;}
+        if (getX() > SpaceStationBlaster.MAP_WIDTH){x = 0;}
+        if (getY() < 0) {y = SpaceStationBlaster.MAP_HEIGHT;}
+        if (getY() > SpaceStationBlaster.MAP_HEIGHT){y = 0;}
+    }
+
+    public void render(SpriteBatch batch) {
+        for (int i=0; i<asteroids.size(); i++) {
+            if (asteroids.get(i).getType() != TYPE.NONE) {
+                asteroids.get(i).asteroidSprite.draw(batch);
+            }
+        }
+    }
 
 }
