@@ -28,7 +28,7 @@ public class Effects {
     public static final float ORANGE_FIRE_LIFETIME = 0.1f;
     public static final float PURPLE_FIRE_LIFETIME = 0.1f;
     public static final float BLUE_FIRE_LIFETIME = 0.1f;
-    public static final float GREEN_IMPACT_LIFETIME = 0.2f;
+    public static final float GREEN_IMPACT_LIFETIME = 1f/30f;
     public static final float ORANGE_IMPACT_LIFETIME = 0.2f;
     public static final float PURPLE_IMPACT_LIFETIME = 0.2f;
     public static final float BLUE_IMPACT_LIFETIME = 0.2f;

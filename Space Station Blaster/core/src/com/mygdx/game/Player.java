@@ -58,11 +58,13 @@ public class Player {
     public float fireElapsedTime;
 
     public Animation impactAnimation;
+    public Animation impactAnimation2;
     public Vector2 impactPosition;
     public Vector2 impactDirection;
     public float impactRadians;
     public TextureRegion impactCurrentFrame;
     public float impactElapsedTime;
+    public float impactElapsedTime2;
 
     public Animation trailAnimation;
     public Vector2 trailPosition;
@@ -75,7 +77,7 @@ public class Player {
     public int currentBulletIndex;
 
     float shootingCooldown = 0f;
-    float shootingCooldownSlow = 0.3f;
+    float shootingCooldownSpeed = 0.5f;
 
     private PlayScreen playScreen;
 
@@ -165,27 +167,13 @@ public class Player {
         // player shooting
         if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             bulletFired = true;
-            // set the fireDirection
-            fireRadians = radians;
-            fireDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
-            fireDirection.y = MathUtils.sin((float) (radians + Math.PI / 2));
-            // set firePosition to center of playerSprite
-            firePosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
-                    playerSprite.getWidth() / 2;
-            firePosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
-                    playerSprite.getHeight() / 2;
-
-            // calculate firePositions orbit
-            firePosition = calculateOrbit((float) (radians + Math.PI / 2),
-                    playerSprite.getHeight() /
-                            2, firePosition);
 
         // spawn the bullet when animation is finished
         } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
             currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
             bullets.position[currentBulletIndex].set(firePosition);
 
-            shootingCooldown = shootingCooldownSlow;
+            shootingCooldown = shootingCooldownSpeed;
         } else {
             shootingCooldown -= deltaTime;
         }
@@ -230,6 +218,23 @@ public class Player {
             // set trailPosition to center of playerSprite
             impactPosition.x = bullets.position[currentBulletIndex].x;
             impactPosition.y = bullets.position[currentBulletIndex].y;
+        }
+
+        if (bulletFired) {
+            // set the fireDirection
+            fireRadians = radians;
+            fireDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
+            fireDirection.y = MathUtils.sin((float) (radians + Math.PI / 2));
+            // set firePosition to center of playerSprite
+            firePosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
+                    playerSprite.getWidth() / 2;
+            firePosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
+                    playerSprite.getHeight() / 2;
+
+            // calculate firePositions orbit
+            firePosition = calculateOrbit((float) (radians + Math.PI / 2),
+                    playerSprite.getHeight() /
+                            2, firePosition);
         }
 
         // trail effects
