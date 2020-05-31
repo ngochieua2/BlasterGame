@@ -206,7 +206,7 @@ public class Enemies {
 
     //Collision detection between Circle and Polygon
     //https://stackoverflow.com/questions/15323719/circle-and-polygon-collision-with-libgdx
-    private static boolean overlaps(Polygon polygon, Circle circle) {
+    public static boolean overlaps(Polygon polygon, Circle circle) {
         float []vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(circle.x, circle.y);
         float squareRadius = circle.radius * circle.radius;

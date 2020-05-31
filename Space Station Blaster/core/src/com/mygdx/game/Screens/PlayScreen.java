@@ -258,6 +258,10 @@ public class PlayScreen implements Screen {
         return walls;
     }
 
+    public Enemies getEnemies() {
+        return enemies;
+    }
+
     public OrthographicCamera getCamera() {
         return gameCamera;
     }
