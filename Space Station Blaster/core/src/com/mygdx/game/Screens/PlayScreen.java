@@ -157,6 +157,33 @@ public class PlayScreen implements Screen {
             player.fireElapsedTime = 0;
         }
 
+        if (player.bulletHit && !player.impactAnimation.isAnimationFinished(player.impactElapsedTime)) {
+            game.spriteBatch.begin();
+            player.impactCurrentFrame = (TextureRegion) player.impactAnimation.getKeyFrame(player.impactElapsedTime, false);
+            game.spriteBatch.draw(player.impactCurrentFrame, player.impactPosition.x, player.impactPosition.y,
+                    player.impactCurrentFrame.getRegionWidth() / 2,
+                    player.impactCurrentFrame.getRegionHeight() / 2,
+                    player.impactCurrentFrame.getRegionWidth(),
+                    player.impactCurrentFrame.getRegionHeight(), 1, 1,
+                    (float) (player.impactRadians + Math.PI / 2) * MathUtils.radiansToDegrees);
+            game.spriteBatch.end();
+            player.impactElapsedTime += delta;
+        } else {
+            player.bulletHit = false;
+            player.impactElapsedTime = 0;
+        }
+
+        game.spriteBatch.begin();
+        player.trailCurrentFrame = (TextureRegion) player.trailAnimation.getKeyFrame(player.elapsedTime, true);
+        game.spriteBatch.draw(player.trailCurrentFrame, player.trailPosition.x, player.trailPosition.y,
+                player.trailCurrentFrame.getRegionWidth() / 2,
+                player.trailCurrentFrame.getRegionHeight() / 2,
+                player.trailCurrentFrame.getRegionWidth(),
+                player.trailCurrentFrame.getRegionHeight(), 1, 1,
+                (float) (player.trailRadians + 3 *Math.PI / 2) * MathUtils.radiansToDegrees);
+        game.spriteBatch.end();
+        player.elapsedTime += delta;
+
         // set camera to draw what the HUD camera can see
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);
         gameHud.stage.draw();
