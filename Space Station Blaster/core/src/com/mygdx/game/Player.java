@@ -102,6 +102,7 @@ public class Player {
                 playScreen.getTextureAtlas();
         textureRegion = textureAtlas.findRegion(PLAYER_TEXTURE_ATLAS_REGION);
         fireAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_FIRE);
+        trailAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_TRAIL);
         playerSprite = new Sprite(textureRegion);
 
         Rectangle playerRectangle = tiledMap.getLayers().get(TILED_MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
@@ -157,11 +158,11 @@ public class Player {
         // player shooting
         if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             bulletFired = true;
-            // set the fireDirection of the texture region
+            // set the fireDirection
             fireRadians = radians;
             fireDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
             fireDirection.y = MathUtils.cos((float) (radians + Math.PI / 2));
-            // set firePosition to center of texture region
+            // set firePosition to center of playerSprite
             firePosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
                     playerSprite.getWidth() / 2;
             firePosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
@@ -216,13 +217,20 @@ public class Player {
         elapsedTime += deltaTime;
 
         // trail effects
+        // set the trailDirection
+        trailRadians = radians;
+        trailDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
+        trailDirection.y = MathUtils.cos((float) (radians + Math.PI / 2));
+        // set trailPosition to center of playerSprite
+        trailPosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
+                playerSprite.getWidth() / 2;
+        trailPosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
+                playerSprite.getHeight() / 2;
 
-
-//        int trailAnimationIndex = effects.spawn(SpaceStationBlaster.EffectType.GREEN_TRAIL, radians);
-//        effects.position[trailAnimationIndex] = position;
-//        effects.position[trailAnimationIndex] = calculateOrbit((float) (radians + Math.PI / 2),
-//                playerSprite.getHeight() / 2, effects.position[trailAnimationIndex]);
-
+        // calculate trailPositions orbit
+        trailPosition = calculateOrbit((float) (radians + 3 * Math.PI / 2),
+                playerSprite.getHeight() /
+                        2 + 12, trailPosition);
     }
 
     public void render(SpriteBatch spriteBatch) {

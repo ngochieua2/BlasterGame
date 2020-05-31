@@ -157,6 +157,17 @@ public class PlayScreen implements Screen {
             player.fireElapsedTime = 0;
         }
 
+        game.spriteBatch.begin();
+        player.trailCurrentFrame = (TextureRegion) player.trailAnimation.getKeyFrame(player.elapsedTime, true);
+        game.spriteBatch.draw(player.trailCurrentFrame, player.trailPosition.x, player.trailPosition.y,
+                player.trailCurrentFrame.getRegionWidth() / 2,
+                player.trailCurrentFrame.getRegionHeight() / 2,
+                player.trailCurrentFrame.getRegionWidth(),
+                player.trailCurrentFrame.getRegionHeight(), 1, 1,
+                (float) (player.trailRadians + 3 *Math.PI / 2) * MathUtils.radiansToDegrees);
+        game.spriteBatch.end();
+        player.elapsedTime += delta;
+
         // set camera to draw what the HUD camera can see
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);
         gameHud.stage.draw();
