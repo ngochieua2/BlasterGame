@@ -18,7 +18,7 @@ import com.mygdx.game.Bullets;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
-import com.mygdx.game.Tools.Asteroids;
+import com.mygdx.game.Asteroids;
 import com.mygdx.game.Tools.Enemies;
 import com.mygdx.game.Walls;
 
@@ -65,7 +65,7 @@ public class PlayScreen implements Screen {
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
-        asteroids.InitSpawnAsteroids();
+        asteroids = new Asteroids(this);
     }
 
     public TextureAtlas getTextureAtlas() {
