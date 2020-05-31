@@ -6,15 +6,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
+import com.mygdx.game.Effects;
 import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
@@ -35,6 +39,9 @@ public class PlayScreen implements Screen {
     private Player player;
     private Bullets bullets;
     private Enemies enemies;
+    private Effects effects;
+
+    private float elapsedTime;
 
     private ShapeRenderer shapeRenderer;
 
@@ -60,6 +67,7 @@ public class PlayScreen implements Screen {
         gameHud = new Hud(game.spriteBatch, this);
 
         walls = new Walls(this);
+        effects = new Effects(this);
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
@@ -79,6 +87,10 @@ public class PlayScreen implements Screen {
 
     public Bullets getBullets() {
         return bullets;
+    }
+
+    public Effects getEffects() {
+        return effects;
     }
 
     @Override
@@ -111,7 +123,7 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-
+        elapsedTime += delta;
         // clear the game screen with Black
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -128,6 +140,22 @@ public class PlayScreen implements Screen {
         bullets.render(game.spriteBatch);
         enemies.render(game.spriteBatch);
         game.spriteBatch.end();
+
+        if (player.bulletFired && !player.fireAnimation.isAnimationFinished(player.fireElapsedTime)) {
+            game.spriteBatch.begin();
+            player.fireCurrentFrame = (TextureRegion) player.fireAnimation.getKeyFrame(player.fireElapsedTime, false);
+            game.spriteBatch.draw(player.fireCurrentFrame, player.firePosition.x, player.firePosition.y,
+                    player.fireCurrentFrame.getRegionWidth() / 2,
+                    player.fireCurrentFrame.getRegionHeight() / 2,
+                    player.fireCurrentFrame.getRegionWidth(),
+                    player.fireCurrentFrame.getRegionHeight(), 1, 1,
+                    (float) (player.fireRadians + Math.PI / 2) * MathUtils.radiansToDegrees);
+            game.spriteBatch.end();
+            player.fireElapsedTime += delta;
+        } else {
+            player.bulletFired = false;
+            player.fireElapsedTime = 0;
+        }
 
         // set camera to draw what the HUD camera can see
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);

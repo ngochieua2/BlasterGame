@@ -123,10 +123,10 @@ public class Bullets {
             }
         }
 
-        // return a fail indicator if no free index was founffd
+        // return a fail indicator if no free index was found
         if (index < 0) return -1;
 
-        //Register the index as in-use
+        // register the index as in-use
         this.bulletType[index] = bulletType;
 
         position[index] = new Vector2(0f, 0f);
