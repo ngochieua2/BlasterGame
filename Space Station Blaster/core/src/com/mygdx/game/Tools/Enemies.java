@@ -194,6 +194,7 @@ public class Enemies {
                     if (velocity[i].len() > RED_UFO_SPEED) {
                         velocity[i].setLength(RED_UFO_SPEED);
                     }
+                    radians[i] = velocity[i].angleRad() - MathUtils.PI / 2;
                 }
                 sprite[i].translate(velocity[i].x * deltaTime, velocity[i].y * deltaTime);
                 circleColliders[i].setPosition(sprite[i].getX() + greenUFOTexture.getRegionWidth()/2, sprite[i].getY() + greenUFOTexture.getRegionWidth() /2);
