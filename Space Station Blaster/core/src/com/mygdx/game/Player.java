@@ -2,12 +2,14 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,7 +17,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
-    enum State { NORMAL, DESTROYED }
+    private enum PlayerState { NORMAL, DESTROYED, }
+    public boolean bulletFired;
+    public boolean bulletHit;
 
     private static final float MAX_SPEED = 300; // the maximum speed the player can travel
     private static final float ACCELERATION = 200; // how fast the player can accelerate
@@ -25,7 +29,7 @@ public class Player {
     public static final String PLAYER_TEXTURE_ATLAS_REGION = "playerShip1_blue";
     public static final String TILED_MAP_PLAYER = "PlayerShip";
 
-    State state;
+    PlayerState playerState;
 
     private int hp; // players number of hit points left
     private int lives; // players number of lives left
@@ -44,21 +48,70 @@ public class Player {
 
     public Polygon playerBounds;
     public Bullets bullets;
+    private Effects effects;
+
+    public Animation fireAnimation;
+    public Vector2 firePosition;
+    public Vector2 fireDirection;
+    public float fireRadians;
+    public TextureRegion fireCurrentFrame;
+    public float fireElapsedTime;
+
+    public Animation impactAnimation;
+    public Animation impactAnimation2;
+    public Vector2 impactPosition;
+    public Vector2 impactDirection;
+    public float impactRadians;
+    public TextureRegion impactCurrentFrame;
+    public float impactElapsedTime;
+    public float impactElapsedTime2;
+
+    public Animation trailAnimation;
+    public Vector2 trailPosition;
+    public Vector2 trailDirection;
+    public float trailRadians;
+    public TextureRegion trailCurrentFrame;
+
+    public float elapsedTime;
+
+    public int currentBulletIndex;
 
     float shootingCooldown = 0f;
-    float shootingCooldownSlow = 0.3f;
+    float shootingCooldownSpeed = 0.5f;
+
+    private PlayScreen playScreen;
 
     public Player(PlayScreen playScreen) {
+        this.playScreen = playScreen;
         this.textureAtlas = playScreen.getTextureAtlas();
         this.tiledMap = playScreen.getTiledMap();
         this.bullets = playScreen.getBullets();
-        state = State.NORMAL;
+        this.effects = playScreen.getEffects();
+        playerState = PlayerState.NORMAL;
+        bulletFired = false;
+        bulletHit = false;
         position = new Vector2();
         direction = new Vector2();
         radians = 0;
+        firePosition = new Vector2();
+        fireDirection = new Vector2();
+        fireRadians  = 0;
+        impactPosition= new Vector2();
+        impactDirection = new Vector2();
+        impactRadians = 0;
+        trailPosition = new Vector2();
+        trailDirection = new Vector2();
+        trailRadians = 0;
+
+        fireElapsedTime = 0;
+        impactElapsedTime = 0;
+        elapsedTime = 0;
 
         playScreen.getTextureAtlas();
         textureRegion = textureAtlas.findRegion(PLAYER_TEXTURE_ATLAS_REGION);
+        fireAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_FIRE);
+        trailAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_TRAIL);
+        impactAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
         playerSprite = new Sprite(textureRegion);
 
         Rectangle playerRectangle = tiledMap.getLayers().get(TILED_MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
@@ -112,15 +165,15 @@ public class Player {
         }
 
         // player shooting
-        if (shootingCooldown <= 0f && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            int index = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
-            //bullets.position[index].set(getTipPosition());
-            // set bullets position to the centre of the player position
-            bullets.position[index].x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 + playerSprite.getWidth() / 2;
-            bullets.position[index].y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 + playerSprite.getHeight() / 2;
-            bullets.position[index] = calculateOrbit((float) (radians + Math.PI / 2), playerSprite.getHeight() / 2 - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2, bullets.position[index]);
+        if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            bulletFired = true;
 
-            shootingCooldown = shootingCooldownSlow;
+        // spawn the bullet when animation is finished
+        } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
+            currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+            bullets.position[currentBulletIndex].set(firePosition);
+
+            shootingCooldown = shootingCooldownSpeed;
         } else {
             shootingCooldown -= deltaTime;
         }
@@ -144,6 +197,7 @@ public class Player {
         // set position
         position.x += direction.x * deltaTime;
         position.y += direction.y * deltaTime;
+
     }
 
     public void update(float deltaTime) {
@@ -154,6 +208,50 @@ public class Player {
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
         playerBounds.setPosition(position.x, position.y);
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
+
+        elapsedTime += deltaTime;
+
+        if (bulletHit) {
+            impactRadians = bullets.radians[currentBulletIndex];
+            impactDirection.x = bullets.direction[currentBulletIndex].x;
+            impactDirection.y = bullets.direction[currentBulletIndex].y;
+            // set trailPosition to center of playerSprite
+            impactPosition.x = bullets.position[currentBulletIndex].x;
+            impactPosition.y = bullets.position[currentBulletIndex].y;
+        }
+
+        if (bulletFired) {
+            // set the fireDirection
+            fireRadians = radians;
+            fireDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
+            fireDirection.y = MathUtils.sin((float) (radians + Math.PI / 2));
+            // set firePosition to center of playerSprite
+            firePosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
+                    playerSprite.getWidth() / 2;
+            firePosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
+                    playerSprite.getHeight() / 2;
+
+            // calculate firePositions orbit
+            firePosition = calculateOrbit((float) (radians + Math.PI / 2),
+                    playerSprite.getHeight() /
+                            2, firePosition);
+        }
+
+        // trail effects
+        // set the trailDirection
+        trailRadians = radians;
+        trailDirection.x = MathUtils.cos((float) (radians + Math.PI / 2));
+        trailDirection.y = MathUtils.sin((float) (radians + Math.PI / 2));
+        // set trailPosition to center of playerSprite
+        trailPosition.x = position.x - Bullets.GREEN_BULLET_TEXTURE_WIDTH / 2 +
+                playerSprite.getWidth() / 2;
+        trailPosition.y = position.y - Bullets.GREEN_BULLET_TEXTURE_HEIGHT / 2 +
+                playerSprite.getHeight() / 2;
+
+        // calculate trailPositions orbit
+        trailPosition = calculateOrbit((float) (radians + 3 * Math.PI / 2),
+                playerSprite.getHeight() /
+                        2 + 12, trailPosition);
     }
 
     public void render(SpriteBatch spriteBatch) {

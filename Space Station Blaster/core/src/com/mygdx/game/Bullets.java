@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Screens.PlayScreen;
@@ -66,7 +68,10 @@ public class Bullets {
     float[] radians; // the angle in radians the bullet is
     private float[] lifeTime; // the time the bullet is alive
 
+    private PlayScreen playScreen;
+
     public Bullets(PlayScreen playScreen) {
+        this.playScreen = playScreen;
         textureAtlas = playScreen.getTextureAtlas();
         instantiateEntities(MAX_BULLETS);
         // clear our entities by setting by setting all shipTypes to NONE.
@@ -123,10 +128,10 @@ public class Bullets {
             }
         }
 
-        // return a fail indicator if no free index was founffd
+        // return a fail indicator if no free index was found
         if (index < 0) return -1;
 
-        //Register the index as in-use
+        // register the index as in-use
         this.bulletType[index] = bulletType;
 
         position[index] = new Vector2(0f, 0f);
@@ -215,6 +220,34 @@ public class Bullets {
             refCollider.setOrigin(width / 2, height / 2);
             refCollider.setPosition(position[index].x, position[index].y);
             refCollider.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
+
+            for (Rectangle wall : playScreen.getWalls().colliders) {
+                Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
+                        wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
+                polygonWall.setPosition(wall.x, wall.y);
+                if (Intersector.overlapConvexPolygons(polygonWall, refCollider)) {
+                    switch(bulletType[index]) {
+                        case GREEN: {
+                            playScreen.getPlayer().bulletHit = true;
+                            playScreen.getPlayer().currentBulletIndex = index;
+                            bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                            break;
+                        }
+                        case ORANGE: {
+                            //TODO Clayton
+                            break;
+                        }
+                        case PURPLE: {
+                            //TODO Clayton
+                            break;
+                        }
+                        case BLUE: {
+                            //TODO Clayton
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
