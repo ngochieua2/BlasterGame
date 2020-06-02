@@ -202,6 +202,7 @@ public class Enemies {
                 //Collision with player
                 if (overlaps(playScreen.getPlayer().playerBounds, circleColliders[i])) {
                     type[i] = Type.NONE;
+                    circleColliders[i].setPosition(0, 0);
                 }
                 //Collision with boundary
                 for (Rectangle wall : playScreen.getWalls().colliders) {
