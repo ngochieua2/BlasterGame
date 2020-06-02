@@ -46,7 +46,6 @@ public class PlayScreen implements Screen {
 
     private float elapsedTime;
 
-
     private ShapeRenderer shapeRenderer;
 
     public PlayScreen(SpaceStationBlaster game) {
