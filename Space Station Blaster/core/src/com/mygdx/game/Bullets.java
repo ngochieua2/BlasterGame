@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
@@ -221,30 +222,62 @@ public class Bullets {
             refCollider.setPosition(position[index].x, position[index].y);
             refCollider.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
-            for (Rectangle wall : playScreen.getWalls().colliders) {
-                Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
-                        wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
-                polygonWall.setPosition(wall.x, wall.y);
-                if (Intersector.overlapConvexPolygons(polygonWall, refCollider)) {
-                    switch(bulletType[index]) {
-                        case GREEN: {
-                            playScreen.getPlayer().bulletHit = true;
-                            playScreen.getPlayer().currentBulletIndex = index;
-                            bulletType[index] = SpaceStationBlaster.BulletType.NONE;
-                            break;
-                        }
-                        case ORANGE: {
-                            //TODO Clayton
-                            break;
-                        }
-                        case PURPLE: {
-                            //TODO Clayton
-                            break;
-                        }
-                        case BLUE: {
-                            //TODO Clayton
-                            break;
-                        }
+            checkWallCollision(index);
+            checkUFOCollision(index);
+        }
+    }
+
+    private void checkWallCollision(int index) {
+        for (Rectangle wall : playScreen.getWalls().colliders) {
+            Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
+                    wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
+            polygonWall.setPosition(wall.x, wall.y);
+            if (Intersector.overlapConvexPolygons(polygonWall, refCollider))
+            {
+                switch(bulletType[index]) {
+                    case GREEN: {
+                        playScreen.getPlayer().bulletHit = true;
+                        playScreen.getPlayer().currentBulletIndex = index;
+                        bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                        break;
+                    }
+                    case ORANGE: {
+                        //TODO Clayton
+                        break;
+                    }
+                    case PURPLE: {
+                        //TODO Clayton
+                        break;
+                    }
+                    case BLUE: {
+                        //TODO Clayton
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkUFOCollision(int index) {
+        for (Circle enemy : playScreen.getEnemies().circleColliders) {
+            if (playScreen.getEnemies().overlaps(refCollider, enemy)) {
+                switch(bulletType[index]) {
+                    case GREEN: {
+                        playScreen.getPlayer().bulletHit = true;
+                        playScreen.getPlayer().currentBulletIndex = index;
+                        bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                    }
+                    case ORANGE: {
+                        //TODO Clayton
+                        break;
+                    }
+                    case PURPLE: {
+                        //TODO Clayton
+                        break;
+                    }
+                    case BLUE: {
+                        //TODO Clayton
+                        break;
                     }
                 }
             }
