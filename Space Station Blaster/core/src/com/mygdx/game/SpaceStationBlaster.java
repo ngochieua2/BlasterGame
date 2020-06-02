@@ -23,7 +23,7 @@ public class SpaceStationBlaster extends Game {
 	public static final int MAP_HEIGHT = 2500;
 
 	public SpriteBatch spriteBatch; // public to allow access to batch from SpaceStationBlaster
-									// instance
+	// instance
 
 	/**
 	 * create: sets the Game Screen as a new PlayScreen
