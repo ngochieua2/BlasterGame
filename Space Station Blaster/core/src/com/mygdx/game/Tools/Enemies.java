@@ -27,7 +27,7 @@ public class Enemies {
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 30f;
-    private static final float ENEMY_SHOOT_INTERVAL = 1f;
+    private static final float ENEMY_SHOOT_INTERVAL = 0.8f;
     private static final float ROTATION_SPEED = 3;
 
     private PlayScreen playScreen;
@@ -145,10 +145,7 @@ public class Enemies {
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpawnPoint();
                 }
-
-                sprite[freeIndex].setOrigin(spawnPoint.x, spawnPoint.y);
                 sprite[freeIndex].setCenter(spawnPoint.x, spawnPoint.y);
-
                 break;
             default:
                 break;
@@ -195,6 +192,7 @@ public class Enemies {
                         velocity[i].setLength(RED_UFO_SPEED);
                     }
                     radians[i] = velocity[i].angleRad() - MathUtils.PI / 2;
+                    sprite[i].setRotation(radians[i] * MathUtils.radiansToDegrees);
                 }
                 sprite[i].translate(velocity[i].x * deltaTime, velocity[i].y * deltaTime);
                 circleColliders[i].setPosition(sprite[i].getX() + greenUFOTexture.getRegionWidth()/2, sprite[i].getY() + greenUFOTexture.getRegionWidth() /2);
