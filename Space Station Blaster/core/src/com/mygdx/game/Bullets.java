@@ -29,8 +29,8 @@ public class Bullets {
 
     // constants for orange bullet
     private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot4_asset";
-    private static final int ORANGE_BULLET_TEXTURE_WIDTH = 64;
-    private static final int ORANGE_BULLET_TEXTURE_HEIGHT = 64;
+    public static final int ORANGE_BULLET_TEXTURE_WIDTH = 64;
+    public static final int ORANGE_BULLET_TEXTURE_HEIGHT = 64;
     private static final float ORANGE_BULLET_SPEED = 300;
 
     // constants for purple bullet

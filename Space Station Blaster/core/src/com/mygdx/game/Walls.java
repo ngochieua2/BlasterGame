@@ -13,6 +13,11 @@ public class Walls {
     private static final String MAP_BOUNDS = "Bounds";
     private static final int MAX_WALLS = 8;
 
+    public static final int TOP_WALL = 4;
+    public static final int BOTTOM_WALL = 5;
+    public static final int LEFT_WALL = 7;
+    public static final int RIGHT_WALL = 6;
+
     // Entity data
     private Array<RectangleMapObject> rectangleMapObjects;
     public ArrayList<Rectangle> colliders;
