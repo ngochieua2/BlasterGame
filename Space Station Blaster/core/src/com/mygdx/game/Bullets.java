@@ -287,6 +287,13 @@ public class Bullets {
                         //playScreen.getPlayer().currentBulletIndex = index;
                         //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
 
+                        // update the score for destroying Red and Green UFOs
+                        if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
+                            playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
+                        } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
+                            playScreen.getGameHud().updateScore(Player.GREEN_UFO_POINTS);
+                        }
+
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
 
