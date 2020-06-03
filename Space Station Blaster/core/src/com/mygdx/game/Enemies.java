@@ -50,8 +50,6 @@ public class Enemies {
     private TextureRegion greenUFOTexture;
     private TextureRegion redUFOTexture;
 
-    private Animation orangeBulletImpactAnimation;
-
     public Type[] type;
     private Sprite[] sprite;
     public Animation[] animations;
@@ -72,7 +70,6 @@ public class Enemies {
         timeInterval = 0f;
         greenUFOTexture = playScreen.getTextureAtlas().findRegion("ufoGreen");
         redUFOTexture = playScreen.getTextureAtlas().findRegion("ufoRed");
-        orangeBulletImpactAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
 
         bullets = playScreen.getBullets();
 
@@ -192,7 +189,6 @@ public class Enemies {
                     }
                 }
 
-
                 if (type[i] == Type.RED_UFO) {
                     Sprite player = playScreen.getPlayer().getSprite();
                     float dx = player.getX() - sprite[i].getX();
@@ -222,12 +218,21 @@ public class Enemies {
                     circleColliders[i].setPosition(0, 0);
                 }
                 //Collision with boundary
+                Walls walls = playScreen.getWalls();
+                int wallIndex = -1;
                 for (Rectangle wall : playScreen.getWalls().colliders) {
+                    wallIndex++;
                     if (Intersector.overlaps(circleColliders[i], wall)) {
-                        type[i] = Type.NONE;
-                        spawn(Type.getRandomType());
+                        //Bounce off the wall by negating velocity;
+                        if (wallIndex == walls.TOP_WALL || wallIndex == walls.BOTTOM_WALL) {
+                            velocity[i].y = -velocity[i].y;
+                        }
+                        if (wallIndex == walls.LEFT_WALL || wallIndex == walls.RIGHT_WALL) {
+                            velocity[i].x = -velocity[i].x;
+                        }
                     }
                 }
+
                 if (circleColliders[i].x < 0 || circleColliders[i].x > SpaceStationBlaster.MAP_WIDTH
                         || circleColliders[i].y < 0 || circleColliders[i].y > SpaceStationBlaster.MAP_HEIGHT) {
                     type[i] = Type.NONE;
@@ -283,8 +288,8 @@ public class Enemies {
     }
 
     private Vector2 generateSpawnPoint() {
-        float spawnX = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH - greenUFOTexture.getRegionWidth());
-        float spawnY = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT - greenUFOTexture.getRegionHeight());
+        float spawnX = MathUtils.random(0 + greenUFOTexture.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - greenUFOTexture.getRegionWidth());
+        float spawnY = MathUtils.random(0 + greenUFOTexture.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - greenUFOTexture.getRegionHeight());
 
         return new Vector2(spawnX, spawnY);
     }
