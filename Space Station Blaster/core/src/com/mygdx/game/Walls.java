@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Walls {
     private static final String MAP_BOUNDS = "Bounds";
-    private static final int MAX_WALLS = 8;
+    public static final int MAX_WALLS = 8;
 
     public static final int TOP_WALL = 4;
     public static final int BOTTOM_WALL = 5;
