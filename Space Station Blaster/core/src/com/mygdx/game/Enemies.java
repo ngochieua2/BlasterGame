@@ -1,8 +1,9 @@
-package com.mygdx.game.Tools;
+package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
+import com.mygdx.game.Effects;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
@@ -31,6 +33,8 @@ public class Enemies {
     private static final float ROTATION_SPEED = 3;
 
     private PlayScreen playScreen;
+    private Effects effects;
+    private Bullets bullets;
     private OrthographicCamera camera;
     private float timeInterval;
 
@@ -43,10 +47,10 @@ public class Enemies {
             return values()[random.nextInt(values().length-1) + 1];
         }
     }
-    private Bullets bullets;
-
     private TextureRegion greenUFOTexture;
     private TextureRegion redUFOTexture;
+
+    private Animation orangeBulletImpactAnimation;
 
     private Type[] type;
     private Sprite[] sprite;
@@ -59,10 +63,12 @@ public class Enemies {
 
     public Enemies(PlayScreen playScreen) {
         this.playScreen = playScreen;
+        effects = playScreen.getEffects();
         camera = playScreen.getCamera();
         timeInterval = 0f;
         greenUFOTexture = playScreen.getTextureAtlas().findRegion("ufoGreen");
         redUFOTexture = playScreen.getTextureAtlas().findRegion("ufoRed");
+        orangeBulletImpactAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
 
         bullets = playScreen.getBullets();
 
@@ -74,7 +80,6 @@ public class Enemies {
         rectangleColliders = new Rectangle[MAX_ENEMIES];
         health = new int[MAX_ENEMIES];
         shootInterval = new float[MAX_ENEMIES];
-
         init();
     }
 
@@ -86,7 +91,6 @@ public class Enemies {
             circleColliders[i] = new Circle();
             circleColliders[i].setRadius(greenUFOTexture.getRegionWidth() / 2);
             rectangleColliders[i] = new Rectangle();
-            shootInterval[i] = 0f;
         }
     }
 
@@ -171,15 +175,17 @@ public class Enemies {
                 shootInterval[i] += deltaTime;
                 if (shootInterval[i] >= ENEMY_SHOOT_INTERVAL) {
                     currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.PURPLE, radians[i]);
-                    //bullets.position[currentBulletIndex].set(sprite[i].getX() - Bullets.ORANGE_BULLET_TEXTURE_WIDTH / 2 + greenUFOTexture.getRegionWidth() / 2,
-                    //        sprite[i].getY() - Bullets.ORANGE_BULLET_TEXTURE_HEIGHT / 2 + greenUFOTexture.getRegionHeight() / 2);
-                    bullets.position[currentBulletIndex].set(sprite[i].getX(), sprite[i].getY());
-                    shootInterval[i] = 0f;
+                    if (currentBulletIndex >= 0) {
+                        bullets.position[currentBulletIndex].set(sprite[i].getX(), sprite[i].getY());
+                        shootInterval[i] = 0f;
+                    }
                 }
 
+
                 if (type[i] == Type.RED_UFO) {
-                    float dx = playScreen.getPlayer().getSprite().getX() - sprite[i].getX();
-                    float dy = playScreen.getPlayer().getSprite().getY() - sprite[i].getY();
+                    Sprite player = playScreen.getPlayer().getSprite();
+                    float dx = player.getX() - sprite[i].getX();
+                    float dy = player.getY() - sprite[i].getY();
                     float distance = (float) Math.sqrt(dx*dx + dy*dy);
 
                     dx *= RED_UFO_SPEED / distance;

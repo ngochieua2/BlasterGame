@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,7 +22,7 @@ import com.mygdx.game.Player;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Asteroids;
-import com.mygdx.game.Tools.Enemies;
+import com.mygdx.game.Enemies;
 import com.mygdx.game.Walls;
 
 public class PlayScreen implements Screen {
@@ -142,7 +141,7 @@ public class PlayScreen implements Screen {
         game.spriteBatch.begin();
 
         player.render(game.spriteBatch);
-        bullets.render(game.spriteBatch);
+        bullets.render(game.spriteBatch, delta);
         enemies.render(game.spriteBatch);
         asteroids.render(game.spriteBatch);
         game.spriteBatch.end();

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class SpaceStationBlaster extends Game {
-	public enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE }
+	public enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE, RESERVED }
 	public enum EffectType { NONE, GREEN_FIRE, ORANGE_FIRE, PURPLE_FIRE, BLUE_FIRE, GREEN_IMPACT,
 		ORANGE_IMPACT, PURPLE_IMPACT, BLUE_IMPACT, GREEN_TRAIL, ORANGE_TRAIL, PURPLE_TRAIL,
 		BLUE_TRAIL, PLAYER_EXPLOSION, SMALL_ASTEROID_EXPLOSION, ENEMY_EXPLOSION };
