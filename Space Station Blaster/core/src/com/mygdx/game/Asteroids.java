@@ -371,16 +371,16 @@ public class Asteroids {
     private Vector2 SpawnPosition() {
         float x = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH);
         //Make sure spawn position x is not too close with player
-        while (x > SpaceStationBlaster.MAP_WIDTH/2  + playScreen.getPlayer().getSprite().getX() * 2
-                && x < SpaceStationBlaster.MAP_WIDTH/2 + playScreen.getPlayer().getSprite().getX() * 2 )
+        while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH * 2
+                && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH * 2  )
         {
             x = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH);
         }
 
         float y = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT);
         //Make sure spawn position y is not too close with player
-        while (y > SpaceStationBlaster.MAP_HEIGHT/2  + playScreen.getPlayer().getSprite().getY() * 2
-                && y < SpaceStationBlaster.MAP_HEIGHT/2  + playScreen.getPlayer().getSprite().getY() * 2 )
+        while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT * 2
+                && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT * 2  )
         {
                 y = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT);
         }
