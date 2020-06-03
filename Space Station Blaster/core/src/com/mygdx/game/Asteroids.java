@@ -138,6 +138,10 @@ public class Asteroids {
 
         init(Asteroids_Max);
 
+        //Spawns 20 asteroids when start
+        /*for (int i = 0; i < 20; i++){
+            spawn(TYPE.getRandomType());
+        }*/
 
     }
 
@@ -305,6 +309,7 @@ public class Asteroids {
         }
 
 
+
         //all asteroids movement
         for (int index = 0; index < Asteroids_Max; index ++) {
             if (type[index] != TYPE.NONE) {
@@ -353,10 +358,30 @@ public class Asteroids {
                         wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
                     polygonWall.setPosition(wall.x, wall.y);
                     if (Intersector.overlapConvexPolygons(polygonWall, collider[index])) {
-                        radians[index] = radians[index] + 3.1415f/2;
-                        direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                        direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                        //radians[index] = MathUtils.random(2 * 3.1415f);
+                        if (collider[index].getX() > SpaceStationBlaster.MAP_WIDTH - wall.getWidth() - 6) {
+                            radians[index] = radians[index] - 3.1415f / 2;
+                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
+                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
+
+                        }
+                        if (collider[index].getX() < wall.getWidth()) {
+                            radians[index] = radians[index] + 3.1415f / 2;
+                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
+                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
+
+                        }
+                        if (collider[index].getY() < wall.getHeight() + 4) {
+                            radians[index] = radians[index] - 3.1415f / 2;
+                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
+                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
+
+                        }
+                        if (collider[index].getY() > SpaceStationBlaster.MAP_HEIGHT - wall.getHeight() - 5) {
+                            radians[index] = radians[index] + 3.1415f / 2;
+                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
+                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
+                            
+                        }
                     }
 
 
@@ -369,20 +394,20 @@ public class Asteroids {
     }
 
     private Vector2 SpawnPosition() {
-        float x = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH);
+        float x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH );
         //Make sure spawn position x is not too close with player
-        while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH * 2
-                && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH * 2  )
+        while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH
+                && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH)
         {
-            x = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH);
+            x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH );
         }
 
-        float y = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT);
+        float y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT );
         //Make sure spawn position y is not too close with player
-        while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT * 2
-                && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT * 2  )
+        while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT
+                && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT)
         {
-                y = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT);
+            y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT );
         }
 
         return new Vector2(x, y);
