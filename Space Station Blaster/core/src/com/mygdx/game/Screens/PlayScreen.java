@@ -263,6 +263,10 @@ public class PlayScreen implements Screen {
         return walls;
     }
 
+    public Hud getGameHud() {
+        return gameHud;
+    }
+
     public Enemies getEnemies() {
         return enemies;
     }

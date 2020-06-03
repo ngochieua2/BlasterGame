@@ -21,6 +21,15 @@ public class Player {
     public boolean bulletFired;
     public boolean bulletHit;
 
+    public static final int GREEN_UFO_POINTS = 700;
+    public static final int RED_UFO_POINTS = 1000;
+    public static final int BATTLE_CRUISER = 500;
+    public static final int LARGE_ASTEROID_POINTS = 100;
+    public static final int MEDIUM_ASTEROID_POINTS = 200;
+    public static final int SMALL_ASTEROID_POINTS = 300;
+    public static final int EXTRA_LIFE_FIRST = 5000;
+    public static final int EXTRA_LIFE_SECOND = 50000;
+
     private static final float MAX_SPEED = 300; // the maximum speed the player can travel
     private static final float ACCELERATION = 200; // how fast the player can accelerate
     private static final float DECELERATION = 10; // how fast the player can decelerate
@@ -31,9 +40,9 @@ public class Player {
 
     PlayerState playerState;
 
-    private int hp; // players number of hit points left
-    private int lives; // players number of lives left
-    private int score; // players current score
+    public int hp; // players number of hit points left
+    public int lives; // players number of lives left
+    public int score; // players current score
 
     Vector2 position; // players current position
     Vector2 direction; // direction the player is travelling
@@ -260,18 +269,6 @@ public class Player {
 
     public Sprite getSprite() {
         return playerSprite;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public int getScore() {
-        return score;
     }
 
 }
