@@ -275,24 +275,37 @@ public class Bullets {
     }
 
     private void checkUFOCollision(int index) {
-        for (Circle enemy : playScreen.getEnemies().circleColliders) {
-            if (playScreen.getEnemies().overlaps(refCollider, enemy)) {
+        for (int enemyIndex = 0; enemyIndex < Enemies.MAX_ENEMIES; enemyIndex++) {
+            Enemies enemies = playScreen.getEnemies();
+
+            if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
+                //TODO delet this, implement HP
+
                 switch(bulletType[index]) {
                     case GREEN: {
-                        playScreen.getPlayer().bulletHit = true;
-                        playScreen.getPlayer().currentBulletIndex = index;
-                        bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                        //playScreen.getPlayer().bulletHit = true;
+                        //playScreen.getPlayer().currentBulletIndex = index;
+                        //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+
+                        enemies.type[enemyIndex] = Enemies.Type.NONE;
+                        enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
                     }
                     case ORANGE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
                         break;
                     }
                     case PURPLE: {
-                        //TODO Clayton
+                        //bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        //animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
                         break;
                     }
                     case BLUE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_IMPACT);
                         break;
                     }
                 }

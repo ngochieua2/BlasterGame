@@ -33,7 +33,7 @@ public class Effects {
     public static final float PURPLE_IMPACT_LIFETIME = 0.2f;
     public static final float BLUE_IMPACT_LIFETIME = 0.2f;
     public static final float TRAIL_LIFETIME = 0.1f;
-    public static final float EXPLOSION_LIFETIME = 0.6f;
+    public static final float EXPLOSION_LIFETIME = 1f/30f;
 
     // constants for explosion frames
     private static final int PLAYER_EXPLOSION_COL_FRAMES = 8;

@@ -142,7 +142,7 @@ public class PlayScreen implements Screen {
 
         player.render(game.spriteBatch);
         bullets.render(game.spriteBatch, delta);
-        enemies.render(game.spriteBatch);
+        enemies.render(game.spriteBatch, delta);
         asteroids.render(game.spriteBatch);
         game.spriteBatch.end();
 
