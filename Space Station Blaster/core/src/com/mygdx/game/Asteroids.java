@@ -139,9 +139,9 @@ public class Asteroids {
         init(Asteroids_Max);
 
         //Spawns 20 asteroids when start
-        /*for (int i = 0; i < 20; i++){
+        for (int i = 0; i < 20; i++){
             spawn(TYPE.getRandomType());
-        }*/
+        }
 
     }
 
@@ -303,13 +303,6 @@ public class Asteroids {
 
     public void update(float dt){
 
-        //Spawns 20 asteroids when start
-        for (int i = 0; i < 20; i++){
-            spawn(TYPE.getRandomType());
-        }
-
-
-
         //all asteroids movement
         for (int index = 0; index < Asteroids_Max; index ++) {
             if (type[index] != TYPE.NONE) {
@@ -380,7 +373,7 @@ public class Asteroids {
                             radians[index] = radians[index] + 3.1415f / 2;
                             direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                             direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                            
+
                         }
                     }
 
