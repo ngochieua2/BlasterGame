@@ -28,7 +28,7 @@ public class Enemies {
     private static final int RED_UFO_HEALTH = 3;
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
-    private static final float ENEMY_SPAWN_INTERVAL = 30f;
+    private static final float ENEMY_SPAWN_INTERVAL = 5f;
     private static final float ENEMY_SHOOT_INTERVAL = 0.8f;
     private static final float ROTATION_SPEED = 3;
 
@@ -213,10 +213,10 @@ public class Enemies {
                 position[i].set(circleColliders[i].x, circleColliders[i].y);
 
                 //Collision with player
-                if (overlaps(playScreen.getPlayer().playerBounds, circleColliders[i])) {
-                    type[i] = Type.NONE;
-                    circleColliders[i].setPosition(0, 0);
-                }
+//                if (overlaps(playScreen.getPlayer().playerBounds, circleColliders[i])) {
+//                    type[i] = Type.NONE;
+//                    circleColliders[i].setPosition(0, 0);
+//                }
                 //Collision with boundary
                 Walls walls = playScreen.getWalls();
                 int wallIndex = -1;
