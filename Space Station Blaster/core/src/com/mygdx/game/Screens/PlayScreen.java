@@ -229,6 +229,15 @@ public class PlayScreen implements Screen {
             shapeRenderer.polygon(bullets.refCollider.getTransformedVertices());
             shapeRenderer.end();
         }
+
+        //testing the Asteroids bounds
+//        for (int i=0; i < asteroids.Astcollider.length; i++){
+//            shapeRenderer.setProjectionMatrix(gameCamera.combined);
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//            shapeRenderer.setColor(Color.YELLOW);
+//            shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
+//            shapeRenderer.end();
+//        }
     }
 
     @Override

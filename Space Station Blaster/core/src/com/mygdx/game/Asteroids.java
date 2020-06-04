@@ -80,19 +80,19 @@ public class Asteroids {
     private Polygon MediumGreyAstCollider;
     private Polygon SmallBrownAstCollider;
     private Polygon SmallGreyAstCollider;
-    public Polygon[] collider;
+    public Polygon[] Astcollider;
 
 
 
     private PlayScreen playScreen;
-
     private Sprite[] asteroidSprite;
-    //public Vector2[] position;
+    public Vector2[] position;
     public Vector2[] direction;
     public float[] radians;
     private float[] health;
     private float[] speed;
-    private float[] rotationSpeed;
+    private float[] rollSpeed;
+
 
     private enum  TYPE {
         BROWN_LARGE, GREY_LARGE, BROWN_MEDIUM, GREY_MEDIUM, BROWN_SMALL, GREY_SMALL, NONE;
@@ -149,18 +149,19 @@ public class Asteroids {
 
         asteroidSprite = new Sprite[size];
         type = new TYPE[size];
-
+        position = new  Vector2[size];
         direction = new Vector2[size];
         radians = new float[size];
-        rotationSpeed = new float[size];
         health = new float[size];
         speed = new float[size];
-        collider = new Polygon[size];
+        Astcollider = new Polygon[size];
+        rollSpeed = new  float[size];
 
         for (int i = 0; i < size; i++){
             type[i] = TYPE.NONE;
-
+            position[i] = new Vector2();
             direction[i] = new Vector2();
+
         }
     }
 
@@ -181,40 +182,45 @@ public class Asteroids {
 
 
         type[index] = t;
+
+
         // initialise for different types of asteroid
         switch (t){
             case GREY_LARGE:
-                asteroidSprite[index] = new Sprite(LargeBrownAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
-
-                speed[index] = 32f;
-                health[index] = 3f;
-                radians[index] = MathUtils.random(2 * 3.1415f);
-
-                direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
-
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
-
-                break;
-
-            case BROWN_LARGE:
                 asteroidSprite[index] = new Sprite(LargeGreyAstTexture);
                 if (t == TYPE.NONE) {
                     return -1;
                 }
+
                 speed[index] = 32f;
                 health[index] = 3f;
-                radians[index] = MathUtils.random(2 * 3.1415f);
+                rollSpeed[index] = MathUtils.random(-2f,2f);;
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
+
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
+                position[index] = SpawnPosition();
+
+                asteroidSprite[index].setOrigin(MeteorGrey_Big1_TEXTURE_WIDTH/2, MeteorGrey_Big1_TEXTURE_HEIGHT/2);
+                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+
+                break;
+
+            case BROWN_LARGE:
+                asteroidSprite[index] = new Sprite(LargeBrownAstTexture);
+                if (t == TYPE.NONE) {
+                    return -1;
+                }
+                speed[index] = 32f;
+                health[index] = 3f;
+                rollSpeed[index] = MathUtils.random(-2f,2f);
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
+                direction[index].x = MathUtils.cos(radians[index]) * speed[index];
+                direction[index].y = MathUtils.sin(radians[index]) * speed[index];
+
+                asteroidSprite[index].setOrigin(MeteorBrown_Big1_TEXTURE_WIDTH/2, MeteorBrown_Big1_TEXTURE_HEIGHT/2);
                 asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
 
                 break;
@@ -226,14 +232,16 @@ public class Asteroids {
                 }
                 speed[index] = 64f;
                 health[index] = 1.5f;
-
-                radians[index] = MathUtils.random(2 * 3.1415f);
+                rollSpeed[index] = MathUtils.random(-3f,3f);
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                position[index] = SpawnPosition();
+
+                asteroidSprite[index].setOrigin(MeteorGrey_Med1_TEXTURE_WIDTH/2, MeteorGrey_Med1_TEXTURE_HEIGHT/2);
+                asteroidSprite[index].setCenter(position[index].x, position[index].y);
 
                 break;
 
@@ -244,14 +252,16 @@ public class Asteroids {
                 }
                 speed[index] = 64f;
                 health[index] = 1.5f;
-
-                radians[index] = MathUtils.random(2 * 3.1415f);
+                rollSpeed[index] = MathUtils.random(-3f,3f);
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                position[index] = SpawnPosition();
+
+                asteroidSprite[index].setOrigin(MeteorBrown_Med1_TEXTURE_WIDTH/2, MeteorBrown_Med1_TEXTURE_HEIGHT/2);
+                asteroidSprite[index].setCenter(position[index].x, position[index].y);
 
                 break;
 
@@ -262,15 +272,16 @@ public class Asteroids {
                 }
                 speed[index] = 96f;
                 health[index] = 0.75f;
-
-                radians[index] = MathUtils.random(2 * 3.1415f);
+                rollSpeed[index] = MathUtils.random(-4f,4f);
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
+                position[index] = SpawnPosition();
 
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                asteroidSprite[index].setOrigin(MeteorBrown_Small1_TEXTURE_WIDTH/2, MeteorBrown_Small1_TEXTURE_HEIGHT/2);
+                asteroidSprite[index].setCenter(position[index].x, position[index].y);
 
                 break;
 
@@ -280,16 +291,17 @@ public class Asteroids {
                     return -1;
                 }
                 speed[index] = 96f;
-                health[index] = 0.75f;
-
-                radians[index] = MathUtils.random(2 * 3.1415f);
+                health[index] = 0f;
+                rollSpeed[index] = MathUtils.random(-4f,4f);
+                radians[index] = MathUtils.random((float) (2 * Math.PI));
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
+                position[index] = SpawnPosition();
 
-                asteroidSprite[index].setOrigin(SpawnPosition().x, SpawnPosition().y);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                asteroidSprite[index].setOrigin(MeteorGrey_Small1_TEXTURE_WIDTH/2, MeteorGrey_Small1_TEXTURE_HEIGHT/2);
+                asteroidSprite[index].setCenter(position[index].x, position[index].y);
                 break;
 
             case NONE:
@@ -311,69 +323,76 @@ public class Asteroids {
                     case BROWN_LARGE:
                         width = MeteorBrown_Big1_TEXTURE_WIDTH;
                         height = MeteorBrown_Big1_TEXTURE_HEIGHT;
-                        collider[index] = LargeBrownAstCollider;
+                        Astcollider[index] = LargeBrownAstCollider;
                         break;
                     case GREY_LARGE:
                         width = MeteorGrey_Big1_TEXTURE_WIDTH;
                         height = MeteorGrey_Big1_TEXTURE_HEIGHT;
-                        collider[index] = LargeGreyAstCollider;
+                        Astcollider[index] = LargeGreyAstCollider;
                         break;
                     case BROWN_MEDIUM:
                         width = MeteorBrown_Med1_TEXTURE_WIDTH;
                         height = MeteorBrown_Med1_TEXTURE_HEIGHT;
-                        collider[index] = MediumBrownAstCollider;
+                        Astcollider[index] = MediumBrownAstCollider;
                         break;
                     case GREY_MEDIUM:
                         width = MeteorGrey_Med1_TEXTURE_WIDTH;
                         height = MeteorGrey_Med1_TEXTURE_HEIGHT;
-                        collider[index] = MediumGreyAstCollider;
+                        Astcollider[index] = MediumGreyAstCollider;
                         break;
                     case BROWN_SMALL:
                         width = MeteorBrown_Small1_TEXTURE_WIDTH;
                         height = MeteorBrown_Small1_TEXTURE_HEIGHT;
-                        collider[index] = SmallBrownAstCollider;
+                        Astcollider[index] = SmallBrownAstCollider;
                         break;
                     case GREY_SMALL:
                         width = MeteorGrey_Small1_TEXTURE_WIDTH;
                         height = MeteorGrey_Small1_TEXTURE_HEIGHT;
-                        collider[index] = SmallGreyAstCollider;
+                        Astcollider[index] = SmallGreyAstCollider;
                         break;
 
                 }
-                asteroidSprite[index].translate(direction[index].x * dt, direction[index].y * dt);
-
-                collider[index].setOrigin(width / 2, height / 2);
-                collider[index].setPosition(asteroidSprite[index].getX() + width/2, asteroidSprite[index].getY() + height/2);
-                collider[index].setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
+                position[index].x = direction[index].x *dt;
+                position[index].y = direction[index].y *dt;
+                radians[index] += rollSpeed[index] * dt;
+                asteroidSprite[index].translate(position[index].x, position[index].y);
+                asteroidSprite[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
+                Astcollider[index].setOrigin(width / 2, height / 2);
+                Astcollider[index].setPosition(asteroidSprite[index].getX() + width/2, asteroidSprite[index].getY() + height/2);
+                Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
 
                 for (Rectangle wall : playScreen.getWalls().colliders) {
                     Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
                         wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
                     polygonWall.setPosition(wall.x, wall.y);
-                    if (Intersector.overlapConvexPolygons(polygonWall, collider[index])) {
-                        if (collider[index].getX() > SpaceStationBlaster.MAP_WIDTH - wall.getWidth() - 6) {
-                            radians[index] = radians[index] - 3.1415f / 2;
+                    if (Intersector.overlapConvexPolygons(polygonWall, Astcollider[index])) {
+                        if (Astcollider[index].getX() > SpaceStationBlaster.MAP_WIDTH - wall.getWidth()) {
+                            radians[index] = (float) (radians[index] + Math.PI / 2);
                             direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                             direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                            rollSpeed[index] = rollSpeed[index] * -1;
+                            radians[index] += rollSpeed[index] * dt;
                         }
-                        if (collider[index].getX() < wall.getWidth()) {
-                            radians[index] = radians[index] + 3.1415f / 2;
+                        if (Astcollider[index].getX() < wall.getWidth() ) {
+                            radians[index] = (float) (radians[index] - Math.PI / 2);
                             direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                             direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                            rollSpeed[index] = rollSpeed[index] * -1;
+                            radians[index] += rollSpeed[index] * dt;
                         }
-                        if (collider[index].getY() < wall.getHeight() + 4) {
-                            radians[index] = radians[index] - 3.1415f / 2;
+                        if (Astcollider[index].getY() < wall.getHeight() ) {
+                            radians[index] = (float) (radians[index] - Math.PI / 2);
                             direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                             direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                            rollSpeed[index] = rollSpeed[index] * -1;
+                            radians[index] += rollSpeed[index] * dt;
                         }
-                        if (collider[index].getY() > SpaceStationBlaster.MAP_HEIGHT - wall.getHeight() - 5) {
-                            radians[index] = radians[index] + 3.1415f / 2;
+                        if (Astcollider[index].getY() > SpaceStationBlaster.MAP_HEIGHT - wall.getHeight() ) {
+                            radians[index] = (float) (radians[index] + Math.PI / 2);
                             direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                             direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                            rollSpeed[index] = rollSpeed[index] * -1;
+                            radians[index] += rollSpeed[index] * dt;
                         }
                     }
 
