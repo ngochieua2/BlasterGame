@@ -422,79 +422,37 @@ public class Asteroids {
     }
 
 
-//    public void split(int index){
-//
-//        if (type[index] == TYPE.BROWN_LARGE){
-//            type[index] = TYPE.NONE;
-//
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.BROWN_MEDIUM;
-//                    break;
-//                }
-//            }
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.BROWN_MEDIUM;
-//                    break;
-//                }
-//            }
-//        }
-//        if (type[index] == TYPE.GREY_LARGE){
-//            type[index] = TYPE.NONE;
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.GREY_MEDIUM;
-//                    break;
-//                }
-//            }
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.GREY_MEDIUM;
-//                    break;
-//                }
-//            }
-//        }
-//        if (type[index] == TYPE.BROWN_MEDIUM){
-//            type[index] = TYPE.NONE;
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.BROWN_SMALL;
-//                    break;
-//                }
-//            }
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.BROWN_SMALL;
-//                    break;
-//                }
-//            }
-//        }
-//        if (type[index] == TYPE.GREY_MEDIUM){
-//            type[index] = TYPE.NONE;
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.GREY_SMALL;
-//                    break;
-//                }
-//            }
-//            for (int i = index + 1; i < Asteroids_Max; i ++) {
-//                if (type[i] == TYPE.NONE) {
-//                    position[i] = position[index];
-//                    type[i] = TYPE.GREY_SMALL;
-//                    break;
-//                }
-//            }
-//        }
-//    }
-
+    public void split(int index){
+        int i = -1;
+        if (type[index] == TYPE.BROWN_LARGE){
+            type[index] = TYPE.NONE;
+            i = spawn(TYPE.BROWN_MEDIUM);
+            position[i] = position[index];
+            i = spawn(TYPE.BROWN_MEDIUM);
+            position[i] = position[index];
+        }
+        if (type[index] == TYPE.GREY_LARGE){
+            type[index] = TYPE.NONE;
+            i = spawn(TYPE.GREY_MEDIUM);
+            position[i] = position[index];
+            i = spawn(TYPE.GREY_MEDIUM);
+            position[i] = position[index];
+        }
+        if (type[index] == TYPE.BROWN_MEDIUM){
+            type[index] = TYPE.NONE;
+            i = spawn(TYPE.BROWN_SMALL);
+            position[i] = position[index];
+            i = spawn(TYPE.BROWN_SMALL);
+            position[i] = position[index];
+        }
+        if (type[index] == TYPE.GREY_MEDIUM){
+            type[index] = TYPE.NONE;
+            i = spawn(TYPE.GREY_SMALL);
+            position[i] = position[index];
+            i = spawn(TYPE.GREY_SMALL);
+            position[i] = position[index];
+        }
+    }
 
 
     public void render(SpriteBatch batch) {
