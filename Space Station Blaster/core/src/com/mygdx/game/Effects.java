@@ -33,7 +33,7 @@ public class Effects {
     public static final float PURPLE_IMPACT_LIFETIME = 0.2f;
     public static final float BLUE_IMPACT_LIFETIME = 0.2f;
     public static final float TRAIL_LIFETIME = 0.1f;
-    public static final float EXPLOSION_LIFETIME = 0.6f;
+    public static final float EXPLOSION_LIFETIME = 1f/30f;
 
     // constants for explosion frames
     private static final int PLAYER_EXPLOSION_COL_FRAMES = 8;
@@ -191,82 +191,6 @@ public class Effects {
         return refAnimation;
     }
 
-//    public int spawn(SpaceStationBlaster.EffectType effectType, float radians) {
-//        // effectType should not be null
-//        if (effectType == null) return -1;
-//        // find a free index by looping through from the beginning
-//        int index = -1;
-//        for (int free = 0; free < MAX_EFFECTS; free++) {
-//            if (this.effectType[free] == SpaceStationBlaster.EffectType.NONE) {
-//                index = free;
-//                break;
-//            }
-//        }
-//
-//        // return a fail indicator if no free index was found
-//        if (index < 0) return -1;
-//
-//        // register the index as in-use
-//        this.effectType[index] = effectType;
-//        elapsedTime[index] = 0f;
-//        position[index] = new Vector2(0f, 0f);
-//        direction[index] = new Vector2(0f, 0f);
-//        this.radians[index] = radians;
-//
-//        switch (effectType) {
-//            case GREEN_FIRE: {
-//                lifeTime[index] = GREEN_FIRE_LIFETIME;
-//                break;
-//            }
-//            case ORANGE_FIRE: {
-//                lifeTime[index] = ORANGE_FIRE_LIFETIME;
-//                break;
-//            }
-//            case PURPLE_FIRE: {
-//                lifeTime[index] = PURPLE_FIRE_LIFETIME;
-//                break;
-//            }
-//            case BLUE_FIRE: {
-//                lifeTime[index] = BLUE_FIRE_LIFETIME;
-//                break;
-//            }
-//            case GREEN_IMPACT: {
-//                lifeTime[index] = GREEN_IMPACT_LIFETIME;
-//                break;
-//            }
-//            case ORANGE_IMPACT: {
-//                lifeTime[index] = ORANGE_IMPACT_LIFETIME;
-//                break;
-//            }
-//            case PURPLE_IMPACT: {
-//                lifeTime[index] = PURPLE_IMPACT_LIFETIME;
-//                break;
-//            }
-//            case BLUE_IMPACT: {
-//                lifeTime[index] = BLUE_IMPACT_LIFETIME;
-//                break;
-//            }
-//            case GREEN_TRAIL:
-//            case ORANGE_TRAIL:
-//            case PURPLE_TRAIL:
-//            case BLUE_TRAIL: {
-//                lifeTime[index] = TRAIL_LIFETIME;
-//                break;
-//            }
-//            case PLAYER_EXPLOSION:
-//            case SMALL_ASTEROID_EXPLOSION:
-//            case ENEMY_EXPLOSION: {
-//                lifeTime[index] = EXPLOSION_LIFETIME;
-//                break;
-//            }
-//
-//        }
-//        direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2));
-//        direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2));
-//
-//        return index;
-//    }
-
     private Animation createAnimation(TextureAtlas textureAtlas, String regionName,
                                       float frameDuration) {
 
@@ -292,101 +216,6 @@ public class Effects {
         return new Animation(frameDuration, frames);
 
     }
-
-//    public void update(float deltaTime) {
-//        for (int index = 0; index < MAX_EFFECTS; index++) {
-//            if (effectType[index] == SpaceStationBlaster.EffectType.NONE) continue;
-//            // recycle dead effects to free their memory for use by new effects
-//            if (lifeTime[index] < 0f) {
-//                effectType[index] = SpaceStationBlaster.EffectType.NONE;
-//                continue;
-//            }
-//            lifeTime[index] -= deltaTime;
-//            elapsedTime[index] += deltaTime;
-//            Gdx.app.log("elapsedTime[index]: ", Float.toString(elapsedTime[index]));
-//            position[index].x += direction[index].x * deltaTime;
-//            position[index].y += direction[index].y * deltaTime;
-//        }
-//    }
-
-//    public void render(SpriteBatch spriteBatch) {
-//        for (int index = 0; index < MAX_EFFECTS; index++) {
-//            // get current animations
-//            TextureRegion currentFrame = null;
-//            switch(effectType[index]) {
-//                case NONE: {
-//                    continue;
-//                }
-//                case GREEN_FIRE: {
-//                    refAnimation = greenFireBulletAnimation;
-//                    break;
-//                }
-//                case ORANGE_FIRE: {
-//                    refAnimation = orangeFireBulletAnimation;
-//                    break;
-//                }
-//                case PURPLE_FIRE: {
-//                    refAnimation = purpleFireBulletAnimation;
-//                    break;
-//                }
-//                case BLUE_FIRE: {
-//                    refAnimation = blueFireBulletAnimation;
-//                    break;
-//                }
-//                case GREEN_IMPACT: {
-//                    refAnimation = greenImpactBulletAnimation;
-//                    break;
-//                }
-//                case ORANGE_IMPACT: {
-//                    refAnimation = orangeImpactBulletAnimation;
-//                    break;
-//                }
-//                case PURPLE_IMPACT: {
-//                    refAnimation = purpleImpactBulletAnimation;
-//                    break;
-//                }
-//                case BLUE_IMPACT: {
-//                    refAnimation = blueImpactBulletAnimation;
-//                    break;
-//                }
-//                case GREEN_TRAIL: {
-//                    refAnimation = greenTrailAnimation;
-//                    break;
-//                }
-//                case ORANGE_TRAIL: {
-//                    refAnimation = orangeTrailAnimation;
-//                    break;
-//                }
-//                case PURPLE_TRAIL: {
-//                    refAnimation = purpleTrailAnimation;
-//                    break;
-//                }
-//                case BLUE_TRAIL: {
-//                    refAnimation = blueTrailAnimation;
-//                    break;
-//                }
-//                case PLAYER_EXPLOSION: {
-//                    refAnimation = playerExplosionAnimation;
-//                    break;
-//                }
-//                case SMALL_ASTEROID_EXPLOSION: {
-//                    refAnimation = smallAsteroidExplosionAnimation;
-//                    break;
-//                }
-//                case ENEMY_EXPLOSION: {
-//                    refAnimation = enemyExplosionAnimation;
-//                    break;
-//                }
-//            }
-//            currentFrame = (TextureRegion) refAnimation.getKeyFrame(elapsedTime[index]);
-//            effectSprite = new Sprite(currentFrame);
-//            effectSprite.setOrigin(effectSprite.getWidth() / 2, effectSprite.getHeight() / 2);
-//            effectSprite.setPosition(position[index].x, position[index].y);
-//            effectSprite.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
-//
-//            effectSprite.draw(spriteBatch);
-//        }
-//    }
 
     private void dispose() {
         textureAtlas.dispose();

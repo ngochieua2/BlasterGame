@@ -25,7 +25,7 @@ public class Hud implements Disposable {
     private static final int FONT_SIZE = 24;
     private static final int DEF_SCORE = 0;
     private static final int DEF_SHIELD = 3;
-    private static final int DEF_SHIPS = 3;
+    private static final int DEF_SHIPS = 2;
     private static final int MAX_SHIELD = 5;
     private static final int MAX_SHIPS = 4;
 
@@ -39,9 +39,9 @@ public class Hud implements Disposable {
     private Image[] playerLifeImages;
     private Image[] shieldImages;
 
-    private Integer score;
-    private Integer shield;
-    private Integer ships;
+    public int score; // players current score
+    public int shield; // players number of hit points left
+    public int ships; // players number of lives left
 
     private Label currentScoreLabel;
     private Label shieldLevelLabel;
@@ -132,13 +132,17 @@ public class Hud implements Disposable {
         stage.addActor(table);
     }
 
+    public void updateScore(int scoreIncrease) {
+        score += scoreIncrease;
+        currentScoreLabel.setText(String.format("SCORE: %06d", score));
+    }
+
     private NinePatch getNinePatch() {
         // get the image
         final TextureAtlas.AtlasRegion region = uiTextureAtlas.findRegion("glassPanel");
 
         return new NinePatch(new TextureRegion(region, 0, 0, region.getRegionWidth(), region.getRegionHeight()), 10, 10, 10, 10);
     }
-
 
     @Override
     public void dispose() {

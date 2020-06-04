@@ -63,21 +63,28 @@ public class Bullets {
     public Sprite bulletSprite;
 
     // bullet entities
-    private SpaceStationBlaster.BulletType[] bulletType;
+    public SpaceStationBlaster.BulletType[] bulletType;
     public Vector2[] position; // bullets current position
     public Vector2[] direction; // direction the bullet is travelling
     float[] radians; // the angle in radians the bullet is
     private float[] lifeTime; // the time the bullet is alive
+    private TextureRegion[] currentFrame;
+    private Animation[] animations;
+    private float[] animationElapsedTime;
 
     private PlayScreen playScreen;
+    private Effects effects;
 
     public Bullets(PlayScreen playScreen) {
         this.playScreen = playScreen;
+        effects = playScreen.getEffects();
         textureAtlas = playScreen.getTextureAtlas();
         instantiateEntities(MAX_BULLETS);
         // clear our entities by setting by setting all shipTypes to NONE.
         for (int index = 0; index < MAX_BULLETS; index++) {
             this.bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+            currentFrame[index] = new TextureRegion();
+            animationElapsedTime[index] = 0f;
         }
 
         // get bullet texture region
@@ -115,6 +122,9 @@ public class Bullets {
         direction = new Vector2[maxSize];
         radians = new float[maxSize];
         lifeTime = new float[maxSize];
+        currentFrame = new TextureRegion[maxSize];
+        animations = new Animation[maxSize];
+        animationElapsedTime = new float[maxSize];
     }
 
     public int spawn(SpaceStationBlaster.BulletType bulletType, float radians) {
@@ -175,12 +185,12 @@ public class Bullets {
 
     public void update(float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
-            if (bulletType[index] == SpaceStationBlaster.BulletType.NONE) {
+            if (bulletType[index] == SpaceStationBlaster.BulletType.NONE || bulletType[index] == SpaceStationBlaster.BulletType.RESERVED) {
                 continue;
             }
 
             // recycle dead bullets to free their memory for use by new bullets;
-            if (lifeTime[index] < 0f) {
+            if (lifeTime[index] < 0f && bulletType[index] != SpaceStationBlaster.BulletType.RESERVED) {
                 bulletType[index] = SpaceStationBlaster.BulletType.NONE;
                 continue;
             }
@@ -236,21 +246,27 @@ public class Bullets {
             {
                 switch(bulletType[index]) {
                     case GREEN: {
-                        playScreen.getPlayer().bulletHit = true;
-                        playScreen.getPlayer().currentBulletIndex = index;
-                        bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                        //playScreen.getPlayer().bulletHit = true;
+                        //playScreen.getPlayer().currentBulletIndex = index;
+                        //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
                         break;
                     }
                     case ORANGE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
                         break;
                     }
                     case PURPLE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
                         break;
                     }
                     case BLUE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_IMPACT);
                         break;
                     }
                 }
@@ -259,24 +275,44 @@ public class Bullets {
     }
 
     private void checkUFOCollision(int index) {
-        for (Circle enemy : playScreen.getEnemies().circleColliders) {
-            if (playScreen.getEnemies().overlaps(refCollider, enemy)) {
+        for (int enemyIndex = 0; enemyIndex < Enemies.MAX_ENEMIES; enemyIndex++) {
+            Enemies enemies = playScreen.getEnemies();
+
+            if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
+                //TODO delet this, implement HP
+
                 switch(bulletType[index]) {
                     case GREEN: {
-                        playScreen.getPlayer().bulletHit = true;
-                        playScreen.getPlayer().currentBulletIndex = index;
-                        bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                        //playScreen.getPlayer().bulletHit = true;
+                        //playScreen.getPlayer().currentBulletIndex = index;
+                        //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+
+                        // update the score for destroying Red and Green UFOs
+                        if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
+                            playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
+                        } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
+                            playScreen.getGameHud().updateScore(Player.GREEN_UFO_POINTS);
+                        }
+
+                        enemies.type[enemyIndex] = Enemies.Type.NONE;
+                        enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
                     }
                     case ORANGE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
                         break;
                     }
                     case PURPLE: {
-                        //TODO Clayton
+                        //bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        //animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
                         break;
                     }
                     case BLUE: {
-                        //TODO Clayton
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_IMPACT);
                         break;
                     }
                 }
@@ -284,7 +320,8 @@ public class Bullets {
         }
     }
 
-    public void render(SpriteBatch spriteBatch) {
+
+    public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
             switch(bulletType[index]) {
                 case NONE: {
@@ -312,6 +349,27 @@ public class Bullets {
             bulletSprite.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
             bulletSprite.draw(spriteBatch);
+
+
+            //Impact Animations
+            if (bulletType[index] == SpaceStationBlaster.BulletType.RESERVED) {
+                if (!animations[index].isAnimationFinished(animationElapsedTime[index])) {
+                    currentFrame[index] = (TextureRegion) animations[index].getKeyFrame(animationElapsedTime[index], false);
+                    spriteBatch.draw(currentFrame[index], position[index].x, position[index].y,
+                            currentFrame[index].getRegionWidth() / 2,
+                            currentFrame[index].getRegionHeight() / 2,
+                            currentFrame[index].getRegionWidth(),
+                            currentFrame[index].getRegionHeight(), 1, 1,
+                            (float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
+                    animationElapsedTime[index] += deltaTime;
+                }
+                else {
+                    bulletType[index] = SpaceStationBlaster.BulletType.NONE;
+                    animationElapsedTime[index] = 0f;
+                    currentFrame[index] = null;
+                    animations[index] = null;
+                }
+            }
         }
     }
 }
