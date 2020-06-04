@@ -74,6 +74,7 @@ public class PlayScreen implements Screen {
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
+        gameHud.clearStageNumberDisplay(); // clear the stage number after 4 seconds;
     }
 
     public TextureAtlas getTextureAtlas() {
