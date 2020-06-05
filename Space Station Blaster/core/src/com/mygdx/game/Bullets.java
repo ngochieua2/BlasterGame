@@ -295,6 +295,7 @@ public class Bullets {
                         }
 
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
+                        enemies.circleColliders[enemyIndex].setPosition(0, 0);
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
 
                         bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;

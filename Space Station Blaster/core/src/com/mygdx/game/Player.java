@@ -96,6 +96,7 @@ public class Player {
     float shootingCooldownSpeed = 0.5f;
 
     private Walls walls;
+    private Enemies enemies;
 
     private PlayScreen playScreen;
 
@@ -265,9 +266,11 @@ public class Player {
         }
 
         // collision with enemy
-        for (int index = 0; index < playScreen.getEnemies().circleColliders.length; index++) {
-            if (playScreen.getEnemies().overlaps(playerBounds, playScreen.getEnemies().circleColliders[index])) {
-
+        enemies = playScreen.getEnemies();
+        for (int index = 0; index < enemies.circleColliders.length; index++) {
+            if (playScreen.getEnemies().overlaps(playerBounds, enemies.circleColliders[index])) {
+                enemies.type[index] = Enemies.Type.NONE;
+                enemies.circleColliders[index].setPosition(0, 0);
                 playerState = PlayerState.DESTROYED;
             }
         }
