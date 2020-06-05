@@ -204,6 +204,11 @@ public class PlayScreen implements Screen {
             player.explosionElapsedTime += delta;
             if (player.explosionAnimation.isAnimationFinished(player.explosionElapsedTime)) {
                 reloadStage();
+                if (gameHud.ships > 0) {
+                    gameHud.removeShip();
+                } else {
+                    Gdx.app.exit();
+                }
             }
         } else {
             player.explosionElapsedTime = 0;

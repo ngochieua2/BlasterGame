@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -59,6 +60,8 @@ public class Hud implements Disposable {
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameterStage;
     private BitmapFont bitmapFontStage;
     private Label.LabelStyle labelStyleStage;
+
+    private Table table;
 
     public Hud(SpriteBatch spriteBatch, PlayScreen playScreen) {
         this.textureAtlas = playScreen.getTextureAtlas();
@@ -114,19 +117,13 @@ public class Hud implements Disposable {
             }
         }
 
-        playerLifeImages = new Image[MAX_SHIPS];
-        for (int index = 0; index < playerLifeImages.length; index++)
-            if (index < ships) {
-                playerLifeImages[index] = new Image(textureAtlas.findRegion("playerLife1_blue"));
-            }
-
         // set the label text
         currentScoreLabel = new Label(String.format("SCORE: %06d", score), labelStyle);
         shieldLevelLabel = new Label(String.format("SHIELD: "), labelStyle);
-        shipsCountLabel = new Label(String.format("SHIPS: ", ships), labelStyle);
+        shipsCountLabel = new Label(String.format("SHIPS: %d", ships), labelStyle);
         stageNumberLabel = new Label(String.format("STAGE: %d", stageNumber), labelStyleStage);
 
-        Table table = new Table();
+        table = new Table();
 
         table.setHeight(50);
         table.setWidth(SpaceStationBlaster.V_WIDTH);
@@ -139,14 +136,8 @@ public class Hud implements Disposable {
         }
 
         table.add(currentScoreLabel).expandX();
-        table.add(shipsCountLabel).width(100).right();
-        for (int index = 0; index < ships; index++) {
-            if (index == ships - 1) {
-                table.add(playerLifeImages[index]).width(30).right().padRight(10);
-            } else {
-                table.add(playerLifeImages[index]).width(30).right();
-            }
-        }
+        table.add(shipsCountLabel).width(100).right().padRight(20);
+
         table.row();
         table.setOriginX(0);
         table.setOriginY(0);
@@ -167,6 +158,11 @@ public class Hud implements Disposable {
     public void setStageNumber(int stageNumber) {
         this.stageNumber = stageNumber;
         stageNumberLabel.setText(String.format("STAGE: %d", stageNumber));
+    }
+
+    public void removeShip() {
+        ships--;
+        shipsCountLabel.setText(String.format("SHIPS: %d", ships));
     }
 
     public void clearStageNumberDisplay() {
