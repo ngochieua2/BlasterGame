@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
-    private enum PlayerState { NORMAL, DESTROYED, }
+    public enum PlayerState { NORMAL, DESTROYED, }
     public boolean bulletFired;
     public boolean bulletHit;
 
@@ -38,18 +38,18 @@ public class Player {
     public static final String PLAYER_TEXTURE_ATLAS_REGION = "playerShip1_blue";
     public static final String TILED_MAP_PLAYER = "PlayerShip";
 
-    PlayerState playerState;
+    public PlayerState playerState;
 
     public int hp; // players number of hit points left
     public int lives; // players number of lives left
     public int score; // players current score
 
-    Vector2 position; // players current position
-    Vector2 direction; // direction the player is travelling
-    float radians; // the angle in radians the player is
+    public Vector2 position; // players current position
+    public Vector2 direction; // direction the player is travelling
+    public float radians; // the angle in radians the player is
 
-    private Sprite playerSprite; // hold the texture for the player
-    Rectangle playerRectangle; // hold the texture collider
+    public Sprite playerSprite; // hold the texture for the player
+    private Rectangle playerRectangle; // hold the texture collider
 
     private TextureAtlas textureAtlas;
     private TextureRegion textureRegion;
@@ -81,12 +81,22 @@ public class Player {
     public float trailRadians;
     public TextureRegion trailCurrentFrame;
 
+    public Animation explosionAnimation;
+    public Vector2 explosionPosition;
+    public Vector2 explosionDirection;
+    public float explosionRadians;
+    public float explosionElapsedTime;
+    public TextureRegion explosionCurrentFrame;
+
     public float elapsedTime;
 
     public int currentBulletIndex;
 
     float shootingCooldown = 0f;
     float shootingCooldownSpeed = 0.5f;
+
+    private Walls walls;
+    private Enemies enemies;
 
     private PlayScreen playScreen;
 
@@ -96,6 +106,7 @@ public class Player {
         this.tiledMap = playScreen.getTiledMap();
         this.bullets = playScreen.getBullets();
         this.effects = playScreen.getEffects();
+        this.walls = playScreen.getWalls();
         playerState = PlayerState.NORMAL;
         bulletFired = false;
         bulletHit = false;
@@ -111,6 +122,9 @@ public class Player {
         trailPosition = new Vector2();
         trailDirection = new Vector2();
         trailRadians = 0;
+        explosionPosition = new Vector2();
+        explosionDirection = new Vector2();
+        explosionRadians = 0;
 
         fireElapsedTime = 0;
         impactElapsedTime = 0;
@@ -121,6 +135,8 @@ public class Player {
         fireAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_FIRE);
         trailAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_TRAIL);
         impactAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+        explosionAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.PLAYER_EXPLOSION);
+
         playerSprite = new Sprite(textureRegion);
 
         Rectangle playerRectangle = tiledMap.getLayers().get(TILED_MAP_PLAYER).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
@@ -161,20 +177,21 @@ public class Player {
     private void handleInput(float deltaTime) {
 
         // player turning right or left
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && playerState == PlayerState.NORMAL) {
             radians -= ROTATION_SPEED * deltaTime;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && playerState == PlayerState.NORMAL) {
             radians += ROTATION_SPEED * deltaTime;
         }
 
         // player accelerating
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && playerState == PlayerState.NORMAL) {
             direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
             direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
         }
 
         // player shooting
-        if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                && playerState == PlayerState.NORMAL) {
             bulletFired = true;
 
         // spawn the bullet when animation is finished
@@ -204,8 +221,10 @@ public class Player {
         }
 
         // set position
-        position.x += direction.x * deltaTime;
-        position.y += direction.y * deltaTime;
+        if (playerState == PlayerState.NORMAL) {
+            position.x += direction.x * deltaTime;
+            position.y += direction.y * deltaTime;
+        }
 
     }
 
@@ -244,6 +263,33 @@ public class Player {
             firePosition = calculateOrbit((float) (radians + Math.PI / 2),
                     playerSprite.getHeight() /
                             2, firePosition);
+        }
+
+        // collision with enemy
+        enemies = playScreen.getEnemies();
+        for (int index = 0; index < enemies.circleColliders.length; index++) {
+            if (playScreen.getEnemies().overlaps(playerBounds, enemies.circleColliders[index])) {
+                enemies.type[index] = Enemies.Type.NONE;
+                enemies.circleColliders[index].setPosition(0, 0);
+                playerState = PlayerState.DESTROYED;
+            }
+        }
+
+        // collision with walls
+        for (int index = 0; index < walls.colliders.size(); index++) {
+            Polygon polygonWall = new Polygon(new float[] { 0, 0,
+                    walls.colliders.get(index).getWidth(), 0,
+                    walls.colliders.get(index).getWidth(), walls.colliders.get(index).getHeight(),
+                    0, walls.colliders.get(index).getHeight() });
+            polygonWall.setPosition(walls.colliders.get(index).x,
+                    walls.colliders.get(index).y);
+            if (Intersector.overlapConvexPolygons(polygonWall, playerBounds)) {
+                if (index == walls.TOP_WALL || index == walls.BOTTOM_WALL) {
+                    direction.y = -direction.y;
+                } else if (index == walls.LEFT_WALL || index == walls.RIGHT_WALL) {
+                    direction.x = -direction.x;
+                }
+            }
         }
 
         // trail effects
