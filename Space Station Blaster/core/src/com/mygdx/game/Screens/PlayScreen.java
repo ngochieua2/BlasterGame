@@ -236,6 +236,7 @@ public class PlayScreen implements Screen {
                 shapeRenderer.setProjectionMatrix(gameCamera.combined);
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 shapeRenderer.setColor(Color.YELLOW);
+
                 shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
                 //Gdx.app.log("draw", Integer.toString(i));
                 shapeRenderer.end();

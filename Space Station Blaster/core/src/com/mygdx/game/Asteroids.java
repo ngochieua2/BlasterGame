@@ -146,9 +146,10 @@ public class Asteroids {
 
         //Spawns 20 asteroids when start
         for (int i = 0; i < 20; i++){
-            String j;
+            //String j;
+            //j = Integer.toString(spawn(TYPE.getRandomType()));
+            //Gdx.app.log("asteroids", j);
             spawn(TYPE.getRandomType());
-
         }
 
     }
@@ -375,48 +376,28 @@ public class Asteroids {
                 Astcollider[index].setPosition(asteroidSprite[index].getX(), asteroidSprite[index].getY());
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
 
+                //Check collider with wall
+                Walls walls = playScreen.getWalls();
+                int wallIndex = -1;
                 for (Rectangle wall : playScreen.getWalls().colliders) {
                     Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
                         wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
                     polygonWall.setPosition(wall.x, wall.y);
+                    wallIndex++;
                     if (Intersector.overlapConvexPolygons(polygonWall, Astcollider[index])) {
-                        if (Astcollider[index].getX() > SpaceStationBlaster.MAP_WIDTH - wall.getWidth()) {
-                            radians[index] = (float) (radians[index] + Math.PI / 2);
-                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                            rollSpeed[index] = rollSpeed[index] * -1;
-                            radians[index] += rollSpeed[index] * dt;
+
+                        if (wallIndex == walls.TOP_WALL || wallIndex == walls.BOTTOM_WALL) {
+
+                            direction[index].y = -direction[index].y;
                         }
-                        if (Astcollider[index].getX() < wall.getWidth() ) {
-                            radians[index] = (float) (radians[index] - Math.PI / 2);
-                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                            rollSpeed[index] = rollSpeed[index] * -1;
-                            radians[index] += rollSpeed[index] * dt;
-                        }
-                        if (Astcollider[index].getY() < wall.getHeight() ) {
-                            radians[index] = (float) (radians[index] - Math.PI / 2);
-                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                            rollSpeed[index] = rollSpeed[index] * -1;
-                            radians[index] += rollSpeed[index] * dt;
-                        }
-                        if (Astcollider[index].getY() > SpaceStationBlaster.MAP_HEIGHT - wall.getHeight() ) {
-                            radians[index] = (float) (radians[index] + Math.PI / 2);
-                            direction[index].x = MathUtils.cos(radians[index]) * speed[index];
-                            direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-                            rollSpeed[index] = rollSpeed[index] * -1;
-                            radians[index] += rollSpeed[index] * dt;
+                        if (wallIndex == walls.LEFT_WALL || wallIndex == walls.RIGHT_WALL) {
+
+                            direction[index].x = - direction[index].x;
                         }
                     }
-
-
                 }
-
             }
-
         }
-
     }
 
     private Vector2 SpawnPosition() {
