@@ -143,7 +143,7 @@ public class PlayScreen implements Screen {
         player.render(game.spriteBatch);
         bullets.render(game.spriteBatch, delta);
         enemies.render(game.spriteBatch, delta);
-        asteroids.render(game.spriteBatch);
+        asteroids.render(game.spriteBatch, delta);
         game.spriteBatch.end();
 
         if (player.bulletFired && !player.fireAnimation.isAnimationFinished(player.fireElapsedTime)) {
@@ -230,13 +230,18 @@ public class PlayScreen implements Screen {
         }
 
         //testing the Asteroids bounds
-//        for (int i=0; i < asteroids.Astcollider.length; i++){
-//            shapeRenderer.setProjectionMatrix(gameCamera.combined);
-//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//            shapeRenderer.setColor(Color.YELLOW);
-//            shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
-//            shapeRenderer.end();
-//        }
+        for (int i=0; i < asteroids.Asteroids_Max; i++){
+            //if (asteroids.type[i] != Asteroids.TYPE.NONE ){
+
+                shapeRenderer.setProjectionMatrix(gameCamera.combined);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.YELLOW);
+                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
+                //Gdx.app.log("draw", Integer.toString(i));
+                shapeRenderer.end();
+            //}
+
+        }
     }
 
     @Override
@@ -284,4 +289,5 @@ public class PlayScreen implements Screen {
         return gameCamera;
     }
 
+    public  Asteroids getAsteroids(){ return asteroids;}
 }

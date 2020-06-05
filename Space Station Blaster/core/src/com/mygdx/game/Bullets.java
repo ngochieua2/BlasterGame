@@ -234,6 +234,7 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
+            //checkAsteroidsCollision(index);
         }
     }
 
@@ -320,6 +321,10 @@ public class Bullets {
         }
     }
 
+
+    private void checkAsteroidsCollision(int index) {
+
+    }
 
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {

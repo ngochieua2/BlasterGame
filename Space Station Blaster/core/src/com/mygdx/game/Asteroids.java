@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -59,7 +61,7 @@ public class Asteroids {
     private static final float MeteorGrey_Small1_SPEED = 96;
 
 
-    private static final int Asteroids_Max = 100;
+    public static final int Asteroids_Max = 20;
 
     //TextureRegion of all asteroids
     private TextureRegion LargeBrownAstTexture;
@@ -88,16 +90,24 @@ public class Asteroids {
     private float[] health;
     private float[] speed;
     private float[] rollSpeed;
+    public Animation[] asteroidAnimation;
+    private TextureRegion[] currentFrame;
+    private float[] animationElapsedTime;
 
 
-    private enum  TYPE {
+    public enum  TYPE {
         BROWN_LARGE, GREY_LARGE, BROWN_MEDIUM, GREY_MEDIUM, BROWN_SMALL, GREY_SMALL, NONE;
         public static TYPE getRandomType() {
             Random random = new Random();
-            return values()[random.nextInt(values().length-1) + 1];
+            TYPE rtype;
+            rtype = values()[random.nextInt(values().length-1) + 1];
+            while (rtype == NONE){
+                rtype = values()[random.nextInt(values().length-1) + 1];
+            }
+            return rtype;
         }
     };
-    private TYPE[] type;
+    public TYPE[] type;
     private int width = 0;
     private int height = 0;
 
@@ -136,7 +146,9 @@ public class Asteroids {
 
         //Spawns 20 asteroids when start
         for (int i = 0; i < 20; i++){
+            String j;
             spawn(TYPE.getRandomType());
+
         }
 
     }
@@ -152,11 +164,16 @@ public class Asteroids {
         speed = new float[size];
         Astcollider = new Polygon[size];
         rollSpeed = new  float[size];
+        asteroidAnimation = new Animation[size];
+        animationElapsedTime = new float[size];
+        currentFrame = new TextureRegion[size];
 
         for (int i = 0; i < size; i++){
             type[i] = TYPE.NONE;
             position[i] = new Vector2();
             direction[i] = new Vector2();
+            animationElapsedTime[i] = 0f;
+            currentFrame[i] = new TextureRegion();
 
         }
     }
@@ -353,8 +370,9 @@ public class Asteroids {
                 radians[index] += rollSpeed[index] * dt;
                 asteroidSprite[index].translate(position[index].x, position[index].y);
                 asteroidSprite[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
+
                 Astcollider[index].setOrigin(width / 2, height / 2);
-                Astcollider[index].setPosition(asteroidSprite[index].getX() + width/2, asteroidSprite[index].getY() + height/2);
+                Astcollider[index].setPosition(asteroidSprite[index].getX(), asteroidSprite[index].getY());
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
 
                 for (Rectangle wall : playScreen.getWalls().colliders) {
@@ -425,40 +443,62 @@ public class Asteroids {
     public void split(int index){
         int i = -1;
         if (type[index] == TYPE.BROWN_LARGE){
+
+            i = spawn(TYPE.BROWN_MEDIUM);
+            position[i] = position[index];
+            i = spawn(TYPE.BROWN_MEDIUM);
+            position[i] = position[index];
             type[index] = TYPE.NONE;
-            i = spawn(TYPE.BROWN_MEDIUM);
-            position[i] = position[index];
-            i = spawn(TYPE.BROWN_MEDIUM);
-            position[i] = position[index];
         }
         if (type[index] == TYPE.GREY_LARGE){
+
+            i = spawn(TYPE.GREY_MEDIUM);
+            position[i] = position[index];
+            i = spawn(TYPE.GREY_MEDIUM);
+            position[i] = position[index];
             type[index] = TYPE.NONE;
-            i = spawn(TYPE.GREY_MEDIUM);
-            position[i] = position[index];
-            i = spawn(TYPE.GREY_MEDIUM);
-            position[i] = position[index];
         }
         if (type[index] == TYPE.BROWN_MEDIUM){
+
+            i = spawn(TYPE.BROWN_SMALL);
+            position[i] = position[index];
+            i = spawn(TYPE.BROWN_SMALL);
+            position[i] = position[index];
             type[index] = TYPE.NONE;
-            i = spawn(TYPE.BROWN_SMALL);
-            position[i] = position[index];
-            i = spawn(TYPE.BROWN_SMALL);
-            position[i] = position[index];
         }
         if (type[index] == TYPE.GREY_MEDIUM){
+
+            i = spawn(TYPE.GREY_SMALL);
+            position[i] = position[index];
+            i = spawn(TYPE.GREY_SMALL);
+            position[i] = position[index];
             type[index] = TYPE.NONE;
-            i = spawn(TYPE.GREY_SMALL);
-            position[i] = position[index];
-            i = spawn(TYPE.GREY_SMALL);
-            position[i] = position[index];
         }
     }
 
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float dt) {
         for (int i=0; i<Asteroids_Max; i++) {
             if (type[i] != TYPE.NONE) {
                 asteroidSprite[i].draw(batch);
+            }
+
+            if (asteroidAnimation[i] != null) {
+                if (!asteroidAnimation[i].isAnimationFinished(animationElapsedTime[i])) {
+                    currentFrame[i] = (TextureRegion) asteroidAnimation[i].getKeyFrame(animationElapsedTime[i], false);
+                    batch.draw(currentFrame[i], position[i].x - currentFrame[i].getRegionWidth()/2, position[i].y - currentFrame[i].getRegionHeight()/2,
+                            currentFrame[i].getRegionWidth() / 2,
+                            currentFrame[i].getRegionHeight() / 2,
+                            currentFrame[i].getRegionWidth(),
+                            currentFrame[i].getRegionHeight(), 1, 1,
+                             radians[i] * MathUtils.radiansToDegrees);
+                    animationElapsedTime[i] += dt;
+                }
+                else {
+                    animationElapsedTime[i] = 0f;
+                    currentFrame[i] = null;
+                    asteroidAnimation[i] = null;
+                }
             }
         }
 
