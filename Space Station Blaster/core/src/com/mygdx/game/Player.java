@@ -231,10 +231,15 @@ public class Player {
     public void update(float deltaTime) {
         handleInput(deltaTime);
 
+
         // set sprite position and rotation
         playerSprite.setPosition(position.x, position.y);
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
-        playerBounds.setPosition(position.x, position.y);
+        if (playerState == PlayerState.NORMAL) {
+            playerBounds.setPosition(position.x, position.y);
+        } else { // PlayerState.DESTROYED
+            playerBounds.setPosition(-50, -50);
+        }
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
 
         elapsedTime += deltaTime;
