@@ -95,6 +95,8 @@ public class Player {
     float shootingCooldown = 0f;
     float shootingCooldownSpeed = 0.5f;
 
+    private Walls walls;
+
     private PlayScreen playScreen;
 
     public Player(PlayScreen playScreen) {
@@ -103,6 +105,7 @@ public class Player {
         this.tiledMap = playScreen.getTiledMap();
         this.bullets = playScreen.getBullets();
         this.effects = playScreen.getEffects();
+        this.walls = playScreen.getWalls();
         playerState = PlayerState.NORMAL;
         bulletFired = false;
         bulletHit = false;
@@ -261,11 +264,28 @@ public class Player {
                             2, firePosition);
         }
 
-        //collision with enemy
+        // collision with enemy
         for (int index = 0; index < playScreen.getEnemies().circleColliders.length; index++) {
             if (playScreen.getEnemies().overlaps(playerBounds, playScreen.getEnemies().circleColliders[index])) {
 
                 playerState = PlayerState.DESTROYED;
+            }
+        }
+
+        // collision with walls
+        for (int index = 0; index < walls.colliders.size(); index++) {
+            Polygon polygonWall = new Polygon(new float[] { 0, 0,
+                    walls.colliders.get(index).getWidth(), 0,
+                    walls.colliders.get(index).getWidth(), walls.colliders.get(index).getHeight(),
+                    0, walls.colliders.get(index).getHeight() });
+            polygonWall.setPosition(walls.colliders.get(index).x,
+                    walls.colliders.get(index).y);
+            if (Intersector.overlapConvexPolygons(polygonWall, playerBounds)) {
+                if (index == walls.TOP_WALL || index == walls.BOTTOM_WALL) {
+                    direction.y = -direction.y;
+                } else if (index == walls.LEFT_WALL || index == walls.RIGHT_WALL) {
+                    direction.x = -direction.x;
+                }
             }
         }
 
