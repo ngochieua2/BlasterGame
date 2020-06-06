@@ -97,6 +97,7 @@ public class Player {
 
     private Walls walls;
     private Enemies enemies;
+    private Asteroids asteroids;
 
     private PlayScreen playScreen;
 
@@ -291,6 +292,17 @@ public class Player {
                 }
             }
         }
+
+
+        // collision with asteroids
+//        asteroids = playScreen.getAsteroids();
+//        for (int index = 0; index < asteroids.Astcollider.length; index++) {
+//            if (Intersector.overlapConvexPolygons(playerBounds,asteroids.Astcollider[index])) {
+//                //asteroids.type[index] = Asteroids.TYPE.NONE;
+//                //asteroids.Astcollider[index].setPosition(0, 0);
+//                //playerState = PlayerState.DESTROYED;
+//            }
+//        }
 
         // trail effects
         // set the trailDirection

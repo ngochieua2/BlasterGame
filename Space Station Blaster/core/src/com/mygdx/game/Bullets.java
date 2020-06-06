@@ -234,7 +234,7 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
-            checkAsteroidsCollision(index);
+            //checkAsteroidsCollision(index);
             checkPlayerCollision(index);
 
         }
@@ -353,7 +353,7 @@ public class Bullets {
     private void checkAsteroidsCollision(int index) {
         for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
             Asteroids asteroids = playScreen.getAsteroids();
-            if (Intersector.overlapConvexPolygons(asteroids.Astcollider[asteroidIndex], refCollider)){
+            if (Intersector.overlapConvexPolygons( refCollider, asteroids.Astcollider[asteroidIndex])){
 
                 switch(bulletType[index]) {
                     case GREEN:
