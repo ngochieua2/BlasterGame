@@ -318,7 +318,7 @@ public class Asteroids {
                 asteroidSprite[index].setCenter(position[index].x, position[index].y);
                 break;
 
-            case NONE:
+            default:
                 break;
 
         }
@@ -332,7 +332,6 @@ public class Asteroids {
         //all asteroids movement
         for (int index = 0; index < Asteroids_Max; index ++) {
             if (type[index] != TYPE.NONE) {
-
                 switch (type[index]){
                     case BROWN_LARGE:
                         width = MeteorBrown_Big1_TEXTURE_WIDTH;
@@ -386,15 +385,20 @@ public class Asteroids {
                     wallIndex++;
                     if (Intersector.overlapConvexPolygons(polygonWall, Astcollider[index])) {
 
+                        //Collider with top and bot
                         if (wallIndex == walls.TOP_WALL || wallIndex == walls.BOTTOM_WALL) {
-
                             direction[index].y = -direction[index].y;
                         }
+                        //Collider with left and right
                         if (wallIndex == walls.LEFT_WALL || wallIndex == walls.RIGHT_WALL) {
-
                             direction[index].x = - direction[index].x;
                         }
                     }
+                }
+
+                //Collision with player
+                if (Intersector.overlapConvexPolygons(playScreen.getPlayer().playerBounds, Astcollider[index])) {
+                    //split
                 }
             }
         }
@@ -423,38 +427,53 @@ public class Asteroids {
 
     public void split(int index){
         int i = -1;
+        //brown large will split into 2 brown mediums
         if (type[index] == TYPE.BROWN_LARGE){
-
             i = spawn(TYPE.BROWN_MEDIUM);
             position[i] = position[index];
             i = spawn(TYPE.BROWN_MEDIUM);
             position[i] = position[index];
             type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
         }
+        //grey large will split into 2 grey mediums
         if (type[index] == TYPE.GREY_LARGE){
-
             i = spawn(TYPE.GREY_MEDIUM);
             position[i] = position[index];
             i = spawn(TYPE.GREY_MEDIUM);
             position[i] = position[index];
             type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
         }
+        //brown medium will split into 2 brown smallers
         if (type[index] == TYPE.BROWN_MEDIUM){
-
             i = spawn(TYPE.BROWN_SMALL);
             position[i] = position[index];
             i = spawn(TYPE.BROWN_SMALL);
             position[i] = position[index];
             type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
         }
+        //grey medium will split into 2 grey smallers
         if (type[index] == TYPE.GREY_MEDIUM){
-
             i = spawn(TYPE.GREY_SMALL);
             position[i] = position[index];
             i = spawn(TYPE.GREY_SMALL);
             position[i] = position[index];
             type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
         }
+        // brown small will disappear
+        if (type[index] == TYPE.BROWN_SMALL){
+            type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
+        }
+        // grey small will disappear
+        if (type[index] == TYPE.GREY_SMALL){
+            type[index] = TYPE.NONE;
+            Astcollider[index].setPosition(0, 0);
+        }
+
     }
 
 

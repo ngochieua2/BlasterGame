@@ -234,7 +234,7 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
-            //checkAsteroidsCollision(index);
+            checkAsteroidsCollision(index);
         }
     }
 
@@ -323,7 +323,30 @@ public class Bullets {
 
 
     private void checkAsteroidsCollision(int index) {
+        for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
+            Asteroids asteroids = playScreen.getAsteroids();
+            if (Intersector.overlapConvexPolygons(asteroids.Astcollider[asteroidIndex], refCollider)){
 
+                switch(bulletType[index]) {
+                    case GREEN:
+                        asteroids.type[asteroidIndex] = Asteroids.TYPE.NONE;
+                        asteroids.Astcollider[asteroidIndex].setPosition(0, 0);
+                        //asteroids.asteroidAnimation[1] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
+
+                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+                        break;
+                    case ORANGE:
+                        break;
+                    case PURPLE:
+                        break;
+                    case BLUE:
+                        break;
+                }
+
+            }
+
+        }
     }
 
     public void render(SpriteBatch spriteBatch, float deltaTime) {
