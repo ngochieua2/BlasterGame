@@ -403,9 +403,9 @@ public class Asteroids {
                 //Collision with player
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
-
                     animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
                     player.playerState = Player.PlayerState.DESTROYED;
+
                     split(index);
                 }
 
