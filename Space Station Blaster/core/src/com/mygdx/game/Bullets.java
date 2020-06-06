@@ -45,7 +45,7 @@ public class Bullets {
     private static final int BLUE_BULLET_TEXTURE_HEIGHT = 64;
     private static final float BLUE_BULLET_SPEED = 300;
 
-    private static final int MAX_BULLETS = 120;
+    public static final int MAX_BULLETS = 120;
 
     private TextureAtlas textureAtlas;
     // TextureRegion of the bullet frames
@@ -350,32 +350,31 @@ public class Bullets {
     }
 
 
-    private void checkAsteroidsCollision(int index) {
-        for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
-            Asteroids asteroids = playScreen.getAsteroids();
-            if (Intersector.overlapConvexPolygons( refCollider, asteroids.Astcollider[asteroidIndex])){
-
-                switch(bulletType[index]) {
-                    case GREEN:
-                        asteroids.type[asteroidIndex] = Asteroids.TYPE.NONE;
-                        asteroids.Astcollider[asteroidIndex].setPosition(0, 0);
-                        //asteroids.asteroidAnimation[1] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-
-                        bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
-                        animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
-                        break;
-                    case ORANGE:
-                        break;
-                    case PURPLE:
-                        break;
-                    case BLUE:
-                        break;
-                }
-
-            }
-
-        }
-    }
+//    private void checkAsteroidsCollision(int index) {
+//        for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
+//            Asteroids asteroids = playScreen.getAsteroids();
+//            if (asteroids.type[asteroidIndex] != Asteroids.TYPE.NONE){
+//                if (Intersector.overlapConvexPolygons( refCollider, asteroids.Astcollider[asteroidIndex])) {
+//
+//                    switch (bulletType[index]) {
+//                        case GREEN:
+//                            //asteroids.split(asteroidIndex);
+//                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+//                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+//
+//                            break;
+//                        case ORANGE:
+//                            break;
+//                        case PURPLE:
+//                            break;
+//                        case BLUE:
+//                            break;
+//                    }
+//                }
+//            }
+//
+//        }
+//    }
 
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
