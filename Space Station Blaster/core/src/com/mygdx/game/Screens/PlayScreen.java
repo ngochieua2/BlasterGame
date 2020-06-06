@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -74,6 +75,14 @@ public class PlayScreen implements Screen {
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
+        gameHud.clearStageNumberDisplay(); // clear the stage number after 4 seconds;
+    }
+
+    public void reloadStage() {
+        player = new Player(this);
+        enemies = new Enemies(this);
+        asteroids = new Asteroids(this);
+        gameHud.clearStageNumberDisplay();
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -164,7 +173,7 @@ public class PlayScreen implements Screen {
 
         if (player.bulletHit && !player.impactAnimation.isAnimationFinished(player.impactElapsedTime)) {
             game.spriteBatch.begin();
-            player.impactCurrentFrame = (TextureRegion) player.impactAnimation.getKeyFrame(player.impactElapsedTime, false);
+            player.impactCurrentFrame = (TextureRegion) player.impactAnimation.getKeyFrame(player.impactElapsedTime, false);;
             game.spriteBatch.draw(player.impactCurrentFrame, player.impactPosition.x, player.impactPosition.y,
                     player.impactCurrentFrame.getRegionWidth() / 2,
                     player.impactCurrentFrame.getRegionHeight() / 2,
@@ -178,16 +187,45 @@ public class PlayScreen implements Screen {
             player.impactElapsedTime = 0;
         }
 
-        game.spriteBatch.begin();
-        player.trailCurrentFrame = (TextureRegion) player.trailAnimation.getKeyFrame(player.elapsedTime, true);
-        game.spriteBatch.draw(player.trailCurrentFrame, player.trailPosition.x, player.trailPosition.y,
-                player.trailCurrentFrame.getRegionWidth() / 2,
-                player.trailCurrentFrame.getRegionHeight() / 2,
-                player.trailCurrentFrame.getRegionWidth(),
-                player.trailCurrentFrame.getRegionHeight(), 1, 1,
-                (float) (player.trailRadians + 3 *Math.PI / 2) * MathUtils.radiansToDegrees);
-        game.spriteBatch.end();
-        player.elapsedTime += delta;
+        if (player.playerState == Player.PlayerState.DESTROYED && !player.explosionAnimation.isAnimationFinished(player.explosionElapsedTime)) {
+            game.spriteBatch.begin();
+            player.explosionCurrentFrame = (TextureRegion) player.explosionAnimation.getKeyFrame(player.explosionElapsedTime, false);
+            player.playerSprite.setRegion(player.explosionCurrentFrame);
+            game.spriteBatch.draw(player.explosionCurrentFrame, player.position.x - player.explosionCurrentFrame.getRegionWidth() / 2 +
+                    player.playerSprite.getWidth() / 2,
+                    player.position.y - player.explosionCurrentFrame.getRegionHeight() / 2 +
+                    player.playerSprite.getHeight() / 2,
+                    player.explosionCurrentFrame.getRegionWidth() / 2,
+                    player.explosionCurrentFrame.getRegionHeight() / 2,
+                    player.explosionCurrentFrame.getRegionWidth(),
+                    player.explosionCurrentFrame.getRegionHeight(), 1, 1,
+                    (float) (player.explosionRadians + Math.PI / 2) * MathUtils.radiansToDegrees);
+            game.spriteBatch.end();
+            player.explosionElapsedTime += delta;
+            if (player.explosionAnimation.isAnimationFinished(player.explosionElapsedTime)) {
+                reloadStage();
+                if (gameHud.ships > 0) {
+                    gameHud.removeShip();
+                } else {
+                    Gdx.app.exit();
+                }
+            }
+        } else {
+            player.explosionElapsedTime = 0;
+        }
+
+        if (player.playerState == Player.PlayerState.NORMAL) {
+            game.spriteBatch.begin();
+            player.trailCurrentFrame = (TextureRegion) player.trailAnimation.getKeyFrame(player.elapsedTime, true);
+            game.spriteBatch.draw(player.trailCurrentFrame, player.trailPosition.x, player.trailPosition.y,
+                    player.trailCurrentFrame.getRegionWidth() / 2,
+                    player.trailCurrentFrame.getRegionHeight() / 2,
+                    player.trailCurrentFrame.getRegionWidth(),
+                    player.trailCurrentFrame.getRegionHeight(), 1, 1,
+                    (float) (player.trailRadians + 3 * Math.PI / 2) * MathUtils.radiansToDegrees);
+            game.spriteBatch.end();
+            player.elapsedTime += delta;
+        }
 
         // set camera to draw what the HUD camera can see
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);

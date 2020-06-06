@@ -23,6 +23,9 @@ import sun.rmi.runtime.Log;
 public class Effects {
     Logger log = new Logger("current deltaTime");
 
+    public static final int EXPLOSION_TEXTURE_REGION_WIDTH = 64;
+    public static final int EXPLOSION_TEXTURE_REGION_HEIGHT = 64;
+
     public static final int MAX_EFFECTS = 100;
     public static final float GREEN_FIRE_LIFETIME = 1f/30f;
     public static final float ORANGE_FIRE_LIFETIME = 0.1f;

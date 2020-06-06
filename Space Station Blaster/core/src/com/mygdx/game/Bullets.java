@@ -235,6 +235,8 @@ public class Bullets {
             checkWallCollision(index);
             checkUFOCollision(index);
             checkAsteroidsCollision(index);
+            checkPlayerCollision(index);
+
         }
     }
 
@@ -280,14 +282,10 @@ public class Bullets {
             Enemies enemies = playScreen.getEnemies();
 
             if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
-                //TODO delet this, implement HP
+                //TODO implement HP, delete when finished
 
                 switch(bulletType[index]) {
                     case GREEN: {
-                        //playScreen.getPlayer().bulletHit = true;
-                        //playScreen.getPlayer().currentBulletIndex = index;
-                        //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
-
                         // update the score for destroying Red and Green UFOs
                         if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
                             playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
@@ -296,6 +294,7 @@ public class Bullets {
                         }
 
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
+                        enemies.circleColliders[enemyIndex].setPosition(0, 0);
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
 
                         bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
@@ -316,6 +315,35 @@ public class Bullets {
                         animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_IMPACT);
                         break;
                     }
+                }
+            }
+        }
+    }
+
+    public void checkPlayerCollision(int index) {
+        Player player = playScreen.getPlayer();
+        if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
+            switch(bulletType[index]) {
+                case ORANGE: {
+                    player.playerState = Player.PlayerState.DESTROYED;
+
+                    bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
+                    break;
+                }
+                case PURPLE: {
+                    player.playerState = Player.PlayerState.DESTROYED;
+
+                    bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
+                    break;
+                }
+                case BLUE: {
+                    player.playerState = Player.PlayerState.DESTROYED;
+
+                    bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_FIRE);
+                    break;
                 }
             }
         }
