@@ -73,11 +73,11 @@ public class Asteroids {
 
     //Polygon
     public Polygon LargeBrownAstCollider;
-    private Polygon LargeGreyAstCollider;
-    private Polygon MediumBrownAstCollider;
-    private Polygon MediumGreyAstCollider;
-    private Polygon SmallBrownAstCollider;
-    private Polygon SmallGreyAstCollider;
+    public Polygon LargeGreyAstCollider;
+    public Polygon MediumBrownAstCollider;
+    public Polygon MediumGreyAstCollider;
+    public Polygon SmallBrownAstCollider;
+    public Polygon SmallGreyAstCollider;
     public Polygon[] Astcollider;
 
 
@@ -175,7 +175,7 @@ public class Asteroids {
             animationElapsedTime[i] = 0f;
             currentFrame[i] = new TextureRegion();
             radians[i] = 0f;
-            Astcollider[i] = new Polygon();
+            Astcollider[i]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             animationPosition[i] = new Vector2(0f,0f);
         }
     }
@@ -189,7 +189,7 @@ public class Asteroids {
         for (int i = 0; i < Asteroids_Max; i++) {
             if (type[i] == TYPE.NONE) {
                 index = i;
-                //break;
+                break;
             }
         }
 
@@ -203,9 +203,9 @@ public class Asteroids {
         switch (t){
             case GREY_LARGE:
                 asteroidSprite[index] = new Sprite(LargeGreyAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
 
                 speed[index] = 32f;
                 health[index] = 3f;
@@ -217,16 +217,15 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Big1_TEXTURE_WIDTH/2, MeteorGrey_Big1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
             case BROWN_LARGE:
                 asteroidSprite[index] = new Sprite(LargeBrownAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
                 speed[index] = 32f;
                 health[index] = 3f;
                 rollSpeed[index] = MathUtils.random(-2f,2f);
@@ -235,16 +234,17 @@ public class Asteroids {
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Big1_TEXTURE_WIDTH/2, MeteorBrown_Big1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                position[index] = SpawnPosition();
+
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
             case GREY_MEDIUM:
                 asteroidSprite[index] = new Sprite(MediumGreyAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
                 speed[index] = 64f;
                 health[index] = 1.5f;
                 rollSpeed[index] = MathUtils.random(-3f,3f);
@@ -255,16 +255,15 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Med1_TEXTURE_WIDTH/2, MeteorGrey_Med1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
             case BROWN_MEDIUM:
                 asteroidSprite[index] = new Sprite(MediumBrownAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
                 speed[index] = 64f;
                 health[index] = 1.5f;
                 rollSpeed[index] = MathUtils.random(-3f,3f);
@@ -275,16 +274,15 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Med1_TEXTURE_WIDTH/2, MeteorBrown_Med1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
             case BROWN_SMALL:
                 asteroidSprite[index] = new Sprite(SmallBrownAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
                 speed[index] = 96f;
                 health[index] = 0.75f;
                 rollSpeed[index] = MathUtils.random(-4f,4f);
@@ -295,16 +293,15 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Small1_TEXTURE_WIDTH/2, MeteorBrown_Small1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
             case GREY_SMALL:
                 asteroidSprite[index] = new Sprite(SmallGreyAstTexture);
-                if (t == TYPE.NONE) {
-                    return -1;
-                }
+//                if (t == TYPE.NONE) {
+//                    return -1;
+//                }
                 speed[index] = 96f;
                 health[index] = 0f;
                 rollSpeed[index] = MathUtils.random(-4f,4f);
@@ -315,8 +312,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Small1_TEXTURE_WIDTH/2, MeteorGrey_Small1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
                 break;
 
             case NONE:
@@ -333,13 +329,14 @@ public class Asteroids {
 
         //all asteroids movement
         for (int index = 0; index < Asteroids_Max; index ++) {
+
             if (type[index] != TYPE.NONE) {
 
-                position[index].x = direction[index].x *dt;
-                position[index].y = direction[index].y *dt;
+                position[index].x += direction[index].x *dt;
+                position[index].y += direction[index].y *dt;
                 radians[index] += rollSpeed[index] * dt;
-                asteroidSprite[index].translate(position[index].x, position[index].y);
-                asteroidSprite[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
+                //asteroidSprite[index].translate(position[index].x, position[index].y);
+
 
                 switch (type[index]){
                     case BROWN_LARGE:
@@ -372,10 +369,14 @@ public class Asteroids {
                         height = MeteorGrey_Small1_TEXTURE_HEIGHT;
                         Astcollider[index] = SmallGreyAstCollider;
                         break;
+                    case NONE:
+                        Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
+                        break;
                 }
 
+
                 Astcollider[index].setOrigin(width / 2, height / 2);
-                Astcollider[index].setPosition(asteroidSprite[index].getX(), asteroidSprite[index].getY());
+                Astcollider[index].setPosition(position[index].x, position[index].y);
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
 
                 //Check collider with wall
@@ -404,9 +405,8 @@ public class Asteroids {
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
 
-                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
                     player.playerState = Player.PlayerState.DESTROYED;
-                    split(index);
+
                 }
 
                 //Collision with UFO
@@ -458,6 +458,7 @@ public class Asteroids {
             asteroidSprite[i].setPosition(asteroidSprite[index].getX(),asteroidSprite[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey large will split into 2 grey mediums
@@ -470,6 +471,7 @@ public class Asteroids {
             asteroidSprite[i].setPosition(asteroidSprite[index].getX(),asteroidSprite[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //brown medium will split into 2 brown smallers
@@ -482,6 +484,7 @@ public class Asteroids {
             asteroidSprite[i].setPosition(asteroidSprite[index].getX(),asteroidSprite[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey medium will split into 2 grey smallers
@@ -494,27 +497,36 @@ public class Asteroids {
             asteroidSprite[i].setPosition(asteroidSprite[index].getX(),asteroidSprite[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
+            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
+            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
 
     }
 
+
     public void render(SpriteBatch batch, float dt) {
         for (int i=0; i<Asteroids_Max; i++) {
             if (type[i] != TYPE.NONE) {
 
+                asteroidSprite[i].setOrigin(asteroidSprite[i].getWidth() / 2, asteroidSprite[i].getHeight() / 2);
+                asteroidSprite[i].setPosition(position[i].x, position[i].y);
+                asteroidSprite[i].setRotation( radians[i] * MathUtils.radiansToDegrees);
                 asteroidSprite[i].draw(batch);
             }
 

@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
@@ -79,6 +80,7 @@ public class PlayScreen implements Screen {
     }
 
     public void reloadStage() {
+        bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
@@ -188,6 +190,9 @@ public class PlayScreen implements Screen {
         }
 
         if (player.playerState == Player.PlayerState.DESTROYED && !player.explosionAnimation.isAnimationFinished(player.explosionElapsedTime)) {
+            if (player.explosionElapsedTime == 0) {
+                player.playerBounds.setPosition(0, 0);
+            }
             game.spriteBatch.begin();
             player.explosionCurrentFrame = (TextureRegion) player.explosionAnimation.getKeyFrame(player.explosionElapsedTime, false);
             player.playerSprite.setRegion(player.explosionCurrentFrame);
@@ -268,18 +273,17 @@ public class PlayScreen implements Screen {
         }
 
         //testing the Asteroids bounds
-//        for (int i=0; i < asteroids.Asteroids_Max; i++){
-//            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
-//
-//                shapeRenderer.setProjectionMatrix(gameCamera.combined);
-//                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//                shapeRenderer.setColor(Color.YELLOW);
-//                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
-//                //Gdx.app.log("draw", Integer.toString(i));
-//                shapeRenderer.end();
-//            }
-//
-//        }
+        for (int i=0; i < Asteroids.Asteroids_Max; i++){
+            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
+
+                shapeRenderer.setProjectionMatrix(gameCamera.combined);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.YELLOW);
+                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
+                shapeRenderer.end();
+            }
+
+        }
     }
 
     @Override
