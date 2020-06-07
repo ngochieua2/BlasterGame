@@ -80,8 +80,8 @@ public class PlayScreen implements Screen {
     }
 
     public void reloadStage() {
-        player = new Player(this);
         bullets = new Bullets(this);
+        player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
         gameHud.clearStageNumberDisplay();
@@ -273,17 +273,17 @@ public class PlayScreen implements Screen {
         }
 
         //testing the Asteroids bounds
-//        for (int i=0; i < Asteroids.Asteroids_Max; i++){
-//            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
-//
-//                shapeRenderer.setProjectionMatrix(gameCamera.combined);
-//                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//                shapeRenderer.setColor(Color.YELLOW);
-//                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
-//                shapeRenderer.end();
-//            }
-//
-//        }
+        for (int i=0; i < Asteroids.Asteroids_Max; i++){
+            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
+
+                shapeRenderer.setProjectionMatrix(gameCamera.combined);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.YELLOW);
+                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
+                shapeRenderer.end();
+            }
+
+        }
     }
 
     @Override

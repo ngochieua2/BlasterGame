@@ -189,7 +189,7 @@ public class Asteroids {
         for (int i = 0; i < Asteroids_Max; i++) {
             if (type[i] == TYPE.NONE) {
                 index = i;
-                //break;
+                break;
             }
         }
 
@@ -217,8 +217,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Big1_TEXTURE_WIDTH/2, MeteorGrey_Big1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
@@ -235,8 +234,9 @@ public class Asteroids {
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Big1_TEXTURE_WIDTH/2, MeteorBrown_Big1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(SpawnPosition().x, SpawnPosition().y);
+                position[index] = SpawnPosition();
+
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
@@ -255,8 +255,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Med1_TEXTURE_WIDTH/2, MeteorGrey_Med1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
@@ -275,8 +274,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Med1_TEXTURE_WIDTH/2, MeteorBrown_Med1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
@@ -295,8 +293,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorBrown_Small1_TEXTURE_WIDTH/2, MeteorBrown_Small1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
 
                 break;
 
@@ -315,8 +312,7 @@ public class Asteroids {
 
                 position[index] = SpawnPosition();
 
-                //asteroidSprite[index].setOrigin(MeteorGrey_Small1_TEXTURE_WIDTH/2, MeteorGrey_Small1_TEXTURE_HEIGHT/2);
-                asteroidSprite[index].setCenter(position[index].x, position[index].y);
+                //asteroidSprite[index].setPosition(position[index].x, position[index].y);
                 break;
 
             case NONE:
@@ -333,13 +329,14 @@ public class Asteroids {
 
         //all asteroids movement
         for (int index = 0; index < Asteroids_Max; index ++) {
+
             if (type[index] != TYPE.NONE) {
 
-                position[index].x = direction[index].x *dt;
-                position[index].y = direction[index].y *dt;
+                position[index].x += direction[index].x *dt;
+                position[index].y += direction[index].y *dt;
                 radians[index] += rollSpeed[index] * dt;
-                asteroidSprite[index].translate(position[index].x, position[index].y);
-                asteroidSprite[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
+                //asteroidSprite[index].translate(position[index].x, position[index].y);
+
 
                 switch (type[index]){
                     case BROWN_LARGE:
@@ -377,8 +374,9 @@ public class Asteroids {
                         break;
                 }
 
+
                 Astcollider[index].setOrigin(width / 2, height / 2);
-                Astcollider[index].setPosition(asteroidSprite[index].getX(), asteroidSprite[index].getY());
+                Astcollider[index].setPosition(position[index].x, position[index].y);
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
 
                 //Check collider with wall
@@ -406,10 +404,9 @@ public class Asteroids {
                 //Collision with player
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
-                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
+
                     player.playerState = Player.PlayerState.DESTROYED;
 
-                    split(index);
                 }
 
                 //Collision with UFO
@@ -505,6 +502,7 @@ public class Asteroids {
         }
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
+            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
             Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
@@ -512,6 +510,7 @@ public class Asteroids {
         }
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
+            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
             Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
@@ -525,6 +524,9 @@ public class Asteroids {
         for (int i=0; i<Asteroids_Max; i++) {
             if (type[i] != TYPE.NONE) {
 
+                asteroidSprite[i].setOrigin(asteroidSprite[i].getWidth() / 2, asteroidSprite[i].getHeight() / 2);
+                asteroidSprite[i].setPosition(position[i].x, position[i].y);
+                asteroidSprite[i].setRotation( radians[i] * MathUtils.radiansToDegrees);
                 asteroidSprite[i].draw(batch);
             }
 

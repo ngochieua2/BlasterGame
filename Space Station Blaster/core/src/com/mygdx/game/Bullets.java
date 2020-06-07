@@ -234,9 +234,9 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
-            checkPlayerCollision(index);
+            //checkPlayerCollision(index);
 
-            //checkAsteroidsCollision(index);
+            checkAsteroidsCollision(index);
 
 
         }
@@ -355,13 +355,31 @@ public class Bullets {
     private void checkAsteroidsCollision(int index) {
         Asteroids asteroids = playScreen.getAsteroids();
 
-        for (int asteroidIndex = 0; asteroidIndex < asteroids.Astcollider.length; asteroidIndex++) {
+        for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
                 if (Intersector.overlapConvexPolygons(refCollider, asteroids.Astcollider[asteroidIndex])) {
                     switch (bulletType[index]) {
                         case GREEN:
-                            asteroids.split(asteroidIndex);
+                            if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_LARGE ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_LARGE){
+                                playScreen.getGameHud().updateScore(Player.LARGE_ASTEROID_POINTS);
+                            }
+                            else if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_MEDIUM ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_MEDIUM){
+                                playScreen.getGameHud().updateScore(Player.MEDIUM_ASTEROID_POINTS);
+                            }
+                            else if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_SMALL ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_SMALL){
+                                playScreen.getGameHud().updateScore(Player.SMALL_ASTEROID_POINTS);
+                            }
+
                             bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+
+                            if(asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_SMALL || asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_SMALL){
+                                asteroids.type[asteroidIndex] = Asteroids.TYPE.NONE;
+                                asteroids.animations[asteroidIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
+
+                            }
+                            else {
+                                asteroids.split(asteroidIndex);
+                            }
 
                             break;
                         case ORANGE:
@@ -371,10 +389,8 @@ public class Bullets {
                         case BLUE:
                             break;
                     }
-
-            }
+                }
         }
-
 
     }
 
