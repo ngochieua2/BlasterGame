@@ -511,7 +511,6 @@ public class Asteroids {
 
     }
 
-
     public void render(SpriteBatch batch, float dt) {
         for (int i=0; i<Asteroids_Max; i++) {
             if (type[i] != TYPE.NONE) {
