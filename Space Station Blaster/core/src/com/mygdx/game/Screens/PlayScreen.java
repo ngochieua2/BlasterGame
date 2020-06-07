@@ -80,8 +80,8 @@ public class PlayScreen implements Screen {
     }
 
     public void reloadStage() {
-        player = new Player(this);
         bullets = new Bullets(this);
+        player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
         gameHud.clearStageNumberDisplay();
