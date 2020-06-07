@@ -234,8 +234,10 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
-            //checkAsteroidsCollision(index);
             checkPlayerCollision(index);
+
+            //checkAsteroidsCollision(index);
+
 
         }
     }
@@ -350,31 +352,31 @@ public class Bullets {
     }
 
 
-//    private void checkAsteroidsCollision(int index) {
-//        for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
-//            Asteroids asteroids = playScreen.getAsteroids();
-//            if (asteroids.type[asteroidIndex] != Asteroids.TYPE.NONE){
-//                if (Intersector.overlapConvexPolygons( refCollider, asteroids.Astcollider[asteroidIndex])) {
-//
-//                    switch (bulletType[index]) {
-//                        case GREEN:
-//                            //asteroids.split(asteroidIndex);
-//                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
-//                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
-//
-//                            break;
-//                        case ORANGE:
-//                            break;
-//                        case PURPLE:
-//                            break;
-//                        case BLUE:
-//                            break;
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
+    private void checkAsteroidsCollision(int index) {
+        Asteroids asteroids = playScreen.getAsteroids();
+
+        for (int asteroidIndex = 0; asteroidIndex < asteroids.Astcollider.length; asteroidIndex++) {
+                if (Intersector.overlapConvexPolygons(refCollider, asteroids.Astcollider[asteroidIndex])) {
+                    switch (bulletType[index]) {
+                        case GREEN:
+                            asteroids.split(asteroidIndex);
+                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+
+                            break;
+                        case ORANGE:
+                            break;
+                        case PURPLE:
+                            break;
+                        case BLUE:
+                            break;
+                    }
+
+            }
+        }
+
+
+    }
 
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {

@@ -268,14 +268,13 @@ public class PlayScreen implements Screen {
         }
 
         //testing the Asteroids bounds
-//        for (int i=0; i < asteroids.Asteroids_Max; i++){
+//        for (int i=0; i < Asteroids.Asteroids_Max; i++){
 //            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
 //
 //                shapeRenderer.setProjectionMatrix(gameCamera.combined);
 //                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 //                shapeRenderer.setColor(Color.YELLOW);
 //                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
-//                //Gdx.app.log("draw", Integer.toString(i));
 //                shapeRenderer.end();
 //            }
 //
