@@ -234,8 +234,7 @@ public class Bullets {
 
             checkWallCollision(index);
             checkUFOCollision(index);
-            //checkPlayerCollision(index);
-
+            checkPlayerCollision(index);
             checkAsteroidsCollision(index);
 
 
@@ -354,7 +353,6 @@ public class Bullets {
 
     private void checkAsteroidsCollision(int index) {
         Asteroids asteroids = playScreen.getAsteroids();
-
         for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
                 if (Intersector.overlapConvexPolygons(refCollider, asteroids.Astcollider[asteroidIndex])) {
                     switch (bulletType[index]) {
@@ -372,21 +370,23 @@ public class Bullets {
                             bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
 
-                            if(asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_SMALL || asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_SMALL){
-                                asteroids.type[asteroidIndex] = Asteroids.TYPE.NONE;
-                                asteroids.animations[asteroidIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-
-                            }
-                            else {
-                                asteroids.split(asteroidIndex);
-                            }
+                            asteroids.split(asteroidIndex);
 
                             break;
                         case ORANGE:
+                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
+                            asteroids.split(asteroidIndex);
                             break;
                         case PURPLE:
+                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
+                            asteroids.split(asteroidIndex);
                             break;
                         case BLUE:
+                            bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                            animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_FIRE);
+                            asteroids.split(asteroidIndex);
                             break;
                     }
                 }
