@@ -347,7 +347,6 @@ public class Asteroids {
                         Astcollider[index] = SmallGreyAstCollider[index];
                         break;
                     case NONE:
-                        Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
                         break;
                 }
 
@@ -434,7 +433,6 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey large will split into 2 grey mediums
@@ -446,7 +444,6 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //brown medium will split into 2 brown smallers
@@ -458,7 +455,6 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey medium will split into 2 grey smallers
@@ -470,23 +466,20 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-            animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
+            animationPosition[index].set(Astcollider[index].getX() + MeteorBrown_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorBrown_Small1_TEXTURE_HEIGHT/2);
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-            animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
+            animationPosition[index].set(Astcollider[index].getX() + MeteorBrown_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorBrown_Small1_TEXTURE_HEIGHT/2);
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
 
