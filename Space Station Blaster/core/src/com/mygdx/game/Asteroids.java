@@ -61,7 +61,7 @@ public class Asteroids {
     private static final float MeteorGrey_Small1_SPEED = 96;
 
 
-    public static final int Asteroids_Max = 100;
+    public static final int Asteroids_Max = 80;
 
     //TextureRegion of all asteroids
     private TextureRegion LargeBrownAstTexture;
