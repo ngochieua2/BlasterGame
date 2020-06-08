@@ -41,7 +41,7 @@ public class Bullets {
     private static final String PURPLE_BULLET_TEXTURE_ATLAS_REGION = "shot6_asset";
     private static final int PURPLE_BULLET_TEXTURE_WIDTH = 128;
     private static final int PURPLE_BULLET_TEXTURE_HEIGHT = 128;
-    private static final float PURPLE_BULLET_SPEED = 300;
+    private static final float PURPLE_BULLET_SPEED = 250;
     private static final int PURPLE_BULLET_COLLIDER_WIDTH = 16;
     private static final int PURPLE_BULLET_COLLIDER_HEIGHT = 16;
 
