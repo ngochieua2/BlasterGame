@@ -29,8 +29,8 @@ public class Enemies {
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 5f;
-    private static final float ENEMY_SHOOT_INTERVAL = 0.8f;
-    private static final float ROTATION_SPEED = 3;
+    private static final float ENEMY_SHOOT_INTERVAL = 1f;
+    private static final float ROTATION_SPEED = 3.5f;
 
     private PlayScreen playScreen;
     private Effects effects;
