@@ -346,12 +346,17 @@ public class Asteroids {
                         height = MeteorGrey_Small1_TEXTURE_HEIGHT;
                         Astcollider[index] = SmallGreyAstCollider[index];
                         break;
+                    case NONE:
+                        Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
+                        break;
                 }
 
 
                 Astcollider[index].setOrigin(width / 2, height / 2);
                 Astcollider[index].setPosition(position[index].x, position[index].y);
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
+
+
 
                 //Check collider with wall
                 Walls walls = playScreen.getWalls();
@@ -376,6 +381,7 @@ public class Asteroids {
                 //Collision with player
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
+
                     player.playerState = Player.PlayerState.DESTROYED;
 
                 }
@@ -428,6 +434,7 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey large will split into 2 grey mediums
@@ -439,6 +446,7 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //brown medium will split into 2 brown smallers
@@ -450,6 +458,7 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         //grey medium will split into 2 grey smallers
@@ -461,6 +470,7 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // brown small will disappear
@@ -468,6 +478,7 @@ public class Asteroids {
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // grey small will disappear
@@ -475,6 +486,7 @@ public class Asteroids {
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
             type[index] = TYPE.NONE;
+            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
 

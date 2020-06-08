@@ -26,24 +26,32 @@ public class Bullets {
     public static final int GREEN_BULLET_TEXTURE_WIDTH = 32;
     public static final int GREEN_BULLET_TEXTURE_HEIGHT = 32;
     private static final float GREEN_BULLET_SPEED = 500;
+    private static final int GREEN_BULLET_COLLIDER_WIDTH = 16;
+    private static final int GREEN_BULLET_COLLIDER_HEIGHT = 16;
 
     // constants for orange bullet
     private static final String ORANGE_BULLET_TEXTURE_ATLAS_REGION = "shot4_asset";
     public static final int ORANGE_BULLET_TEXTURE_WIDTH = 64;
     public static final int ORANGE_BULLET_TEXTURE_HEIGHT = 64;
     private static final float ORANGE_BULLET_SPEED = 300;
+    private static final int ORANGE_BULLET_COLLIDER_WIDTH = 16;
+    private static final int ORANGE_BULLET_COLLIDER_HEIGHT = 16;
 
     // constants for purple bullet
     private static final String PURPLE_BULLET_TEXTURE_ATLAS_REGION = "shot6_asset";
     private static final int PURPLE_BULLET_TEXTURE_WIDTH = 128;
     private static final int PURPLE_BULLET_TEXTURE_HEIGHT = 128;
     private static final float PURPLE_BULLET_SPEED = 300;
+    private static final int PURPLE_BULLET_COLLIDER_WIDTH = 16;
+    private static final int PURPLE_BULLET_COLLIDER_HEIGHT = 16;
 
     // constants for blue bullet
     private static final String BLUE_BULLET_TEXTURE_ATLAS_REGION = "shot2_asset";
     private static final int BLUE_BULLET_TEXTURE_WIDTH = 64;
     private static final int BLUE_BULLET_TEXTURE_HEIGHT = 64;
     private static final float BLUE_BULLET_SPEED = 300;
+    private static final int BLUE_BULLET_COLLIDER_WIDTH = 16;
+    private static final int BLUE_BULLET_COLLIDER_HEIGHT = 16;
 
     public static final int MAX_BULLETS = 120;
 
@@ -90,30 +98,30 @@ public class Bullets {
         // get bullet texture region
         greenBulletTextureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
 
-        greenBulletCollider = new Polygon(new float[]{0, 0, GREEN_BULLET_TEXTURE_WIDTH, 0,
-                GREEN_BULLET_TEXTURE_WIDTH, GREEN_BULLET_TEXTURE_HEIGHT, 0,
-                GREEN_BULLET_TEXTURE_HEIGHT});
+        greenBulletCollider = new Polygon(new float[]{0, 0, GREEN_BULLET_COLLIDER_WIDTH, 0,
+                GREEN_BULLET_COLLIDER_WIDTH, GREEN_BULLET_COLLIDER_HEIGHT, 0,
+                GREEN_BULLET_COLLIDER_HEIGHT});
 
         // get orange bullet texture region
         orangeBulletTextureRegion = textureAtlas.findRegion(ORANGE_BULLET_TEXTURE_ATLAS_REGION);
 
-        orangeBulletCollider = new Polygon(new float[]{0, 0, ORANGE_BULLET_TEXTURE_WIDTH, 0,
-                ORANGE_BULLET_TEXTURE_WIDTH, ORANGE_BULLET_TEXTURE_HEIGHT, 0,
-                ORANGE_BULLET_TEXTURE_HEIGHT});
+        orangeBulletCollider = new Polygon(new float[]{0, 0, ORANGE_BULLET_COLLIDER_WIDTH, 0,
+                ORANGE_BULLET_COLLIDER_WIDTH, ORANGE_BULLET_COLLIDER_HEIGHT, 0,
+                ORANGE_BULLET_COLLIDER_HEIGHT});
 
         // get purple bullet texture region
         purpleBulletTextureRegion = textureAtlas.findRegion(PURPLE_BULLET_TEXTURE_ATLAS_REGION);
 
-        purpleBulletCollider = new Polygon(new float[]{0, 0, PURPLE_BULLET_TEXTURE_WIDTH, 0,
-                PURPLE_BULLET_TEXTURE_WIDTH, PURPLE_BULLET_TEXTURE_HEIGHT, 0,
-                PURPLE_BULLET_TEXTURE_HEIGHT});
+        purpleBulletCollider = new Polygon(new float[]{0, 0, PURPLE_BULLET_COLLIDER_WIDTH, 0,
+                PURPLE_BULLET_COLLIDER_WIDTH, PURPLE_BULLET_COLLIDER_HEIGHT, 0,
+                PURPLE_BULLET_COLLIDER_HEIGHT});
 
         // get blue bullet texture region
         blueBulletTextureRegion = textureAtlas.findRegion(BLUE_BULLET_TEXTURE_ATLAS_REGION);
 
-        blueBulletCollider = new Polygon(new float[]{0, 0, BLUE_BULLET_TEXTURE_WIDTH, 0,
-                BLUE_BULLET_TEXTURE_WIDTH, BLUE_BULLET_TEXTURE_HEIGHT, 0,
-                BLUE_BULLET_TEXTURE_HEIGHT});
+        blueBulletCollider = new Polygon(new float[]{0, 0, BLUE_BULLET_COLLIDER_WIDTH, 0,
+                BLUE_BULLET_COLLIDER_WIDTH, BLUE_BULLET_COLLIDER_HEIGHT, 0,
+                BLUE_BULLET_COLLIDER_HEIGHT});
     }
 
     private void instantiateEntities(int maxSize) {
@@ -199,37 +207,50 @@ public class Bullets {
             position[index].x += direction[index].x * deltaTime;
             position[index].y += direction[index].y * deltaTime;
 
-            int width = 0;
-            int height = 0;
+            int colliderWidth = 0;
+            int colliderHeight = 0;
+            int textureWidth = 0;
+            int textureHeight = 0;
 
             switch(bulletType[index]) {
                 case GREEN: {
-                    width = GREEN_BULLET_TEXTURE_WIDTH;
-                    height = GREEN_BULLET_TEXTURE_HEIGHT;
+                    colliderWidth = GREEN_BULLET_COLLIDER_WIDTH;
+                    colliderHeight = GREEN_BULLET_COLLIDER_HEIGHT;
+                    textureWidth = GREEN_BULLET_TEXTURE_WIDTH;
+                    textureHeight = GREEN_BULLET_TEXTURE_HEIGHT;
                     refCollider = greenBulletCollider;
                     break;
                 }
                 case ORANGE: {
-                    width = ORANGE_BULLET_TEXTURE_WIDTH;
-                    height = ORANGE_BULLET_TEXTURE_HEIGHT;
+                    colliderWidth = ORANGE_BULLET_COLLIDER_WIDTH;
+                    colliderHeight = ORANGE_BULLET_COLLIDER_HEIGHT;
+                    textureWidth = ORANGE_BULLET_TEXTURE_WIDTH;
+                    textureHeight = ORANGE_BULLET_TEXTURE_HEIGHT;
                     refCollider = orangeBulletCollider;
                     break;
                 }
                 case PURPLE: {
-                    width = PURPLE_BULLET_TEXTURE_WIDTH;
-                    height = PURPLE_BULLET_TEXTURE_HEIGHT;
+                    colliderWidth = PURPLE_BULLET_COLLIDER_WIDTH;
+                    colliderHeight = PURPLE_BULLET_COLLIDER_HEIGHT;
+                    textureWidth = PURPLE_BULLET_TEXTURE_WIDTH;
+                    textureHeight = PURPLE_BULLET_TEXTURE_HEIGHT;
                     refCollider = purpleBulletCollider;
                     break;
                 }
                 case BLUE: {
-                    width = BLUE_BULLET_TEXTURE_HEIGHT;
-                    height = BLUE_BULLET_TEXTURE_HEIGHT;
+                    colliderWidth = BLUE_BULLET_COLLIDER_HEIGHT;
+                    colliderHeight = BLUE_BULLET_COLLIDER_HEIGHT;
+                    textureWidth = BLUE_BULLET_TEXTURE_WIDTH;
+                    textureHeight = BLUE_BULLET_TEXTURE_HEIGHT;
                     refCollider = blueBulletCollider;
                     break;
                 }
             }
-            refCollider.setOrigin(width / 2, height / 2);
-            refCollider.setPosition(position[index].x, position[index].y);
+            refCollider.setOrigin(colliderWidth / 2, colliderHeight / 2);
+            refCollider.setPosition(position[index].x + textureWidth / 2 -
+                            colliderWidth / 2,
+                    position[index].y + textureHeight / 2 -
+                            colliderHeight / 2);
             refCollider.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
             checkWallCollision(index);
@@ -353,6 +374,7 @@ public class Bullets {
 
     private void checkAsteroidsCollision(int index) {
         Asteroids asteroids = playScreen.getAsteroids();
+
         for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
                 if (Intersector.overlapConvexPolygons(refCollider, asteroids.Astcollider[asteroidIndex])) {
                     switch (bulletType[index]) {
@@ -394,6 +416,7 @@ public class Bullets {
 
     }
 
+
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
             switch(bulletType[index]) {
@@ -418,7 +441,8 @@ public class Bullets {
                 }
             }
             bulletSprite.setOrigin(bulletSprite.getWidth() / 2, bulletSprite.getHeight() / 2);
-            bulletSprite.setPosition(position[index].x, position[index].y);
+            bulletSprite.setPosition(position[index].x , position[index].y);
+
             bulletSprite.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
             bulletSprite.draw(spriteBatch);
