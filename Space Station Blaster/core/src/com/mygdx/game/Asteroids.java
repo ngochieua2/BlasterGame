@@ -355,8 +355,7 @@ public class Asteroids {
                 Astcollider[index].setOrigin(width / 2, height / 2);
                 Astcollider[index].setPosition(position[index].x, position[index].y);
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
-
-
+                
 
                 //Check collider with wall
                 Walls walls = playScreen.getWalls();
