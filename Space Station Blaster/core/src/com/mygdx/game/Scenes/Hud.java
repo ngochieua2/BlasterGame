@@ -3,6 +3,8 @@ package com.mygdx.game.Scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,12 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.Player;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
@@ -61,9 +66,18 @@ public class Hud implements Disposable {
     private BitmapFont bitmapFontStage;
     private Label.LabelStyle labelStyleStage;
 
+    // variables for the player shield
+    private Pixmap pixmap;
+    private TextureRegionDrawable drawable;
+    private ProgressBar shieldProgressBar;
+    private ProgressBar.ProgressBarStyle shieldProgressBaRStyle;
+
     private Table table;
 
+    private PlayScreen playScreen;
+
     public Hud(SpriteBatch spriteBatch, PlayScreen playScreen) {
+        this.playScreen = playScreen;
         this.textureAtlas = playScreen.getTextureAtlas();
         this.uiTextureAtlas = playScreen.getUITextureAtlas();
 
@@ -106,16 +120,45 @@ public class Hud implements Disposable {
         labelStyleStage = new Label.LabelStyle();
         labelStyleStage.font = bitmapFontStage;
 
+        // draw the pixmap for our shield progress bar
+        pixmap = new Pixmap(100, 20, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        pixmap.dispose();
+
+        // create our progress bar
+        shieldProgressBaRStyle = new ProgressBar.ProgressBarStyle();
+        shieldProgressBaRStyle.background = drawable;
+
+        // draw the pixmap knob for our shield progress bar
+        pixmap = new Pixmap(0, 20, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.CYAN);
+        pixmap.fill();
+        drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        pixmap.dispose();
+
+        shieldProgressBaRStyle.knob = drawable;
+
+        // draw the pixmap knobBefore for our shield progress bar
+        Pixmap pixmap = new Pixmap(100, 20, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.CYAN);
+        pixmap.fill();
+        drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        pixmap.dispose();
+
+        shieldProgressBaRStyle.knobBefore = drawable;
+
+        shieldProgressBar = new ProgressBar(0f, 1f, 0.2f, false,
+                shieldProgressBaRStyle);
+
+        shieldProgressBar.setValue(shield * 0.2f);
+        shieldProgressBar.setAnimateDuration(1f/60f);
+        shieldProgressBar.setBounds(10, 10, 100, 20);
+
         numeralXImage = new Image(textureAtlas.findRegion("numeralX"));
 
         shieldImages = new Image[MAX_SHIELD];
-        for (int index = 0; index < shieldImages.length; index++) {
-            if (index < shield) {
-                shieldImages[index] = new Image(uiTextureAtlas.findRegion("squareBlue"));
-            } else {
-                shieldImages[index] = new Image(uiTextureAtlas.findRegion("squareWhite"));
-            }
-        }
 
         // set the label text
         currentScoreLabel = new Label(String.format("SCORE: %06d", score), labelStyle);
@@ -131,9 +174,7 @@ public class Hud implements Disposable {
         table.setBackground(new NinePatchDrawable(getNinePatch()));
 
         table.add(shieldLevelLabel).left().padLeft(10);
-        for (int index = 0; index < MAX_SHIELD; index++) {
-            table.add(shieldImages[index]).width(20).left();
-        }
+        table.add(shieldProgressBar).width(100).left();
 
         table.add(currentScoreLabel).expandX();
         table.add(shipsCountLabel).width(100).right().padRight(20);
@@ -148,6 +189,7 @@ public class Hud implements Disposable {
 
         stage.addActor(table);
         stage.addActor(stageNumberLabel);
+
     }
 
     public void updateScore(int scoreIncrease) {
@@ -158,6 +200,24 @@ public class Hud implements Disposable {
     public void setStageNumber(int stageNumber) {
         this.stageNumber = stageNumber;
         stageNumberLabel.setText(String.format("STAGE: %d", stageNumber));
+    }
+
+    public void increaseShield() {
+        if (shield < MAX_SHIELD) {
+            shield++;
+            shieldProgressBar.setValue(shield * 0.2f);
+        }
+    }
+
+    public void decreaseShield() {
+        if (shield > 0) {
+            shield--;
+            shieldProgressBar.setValue(shield * 0.2f);
+            // check if player has no shield
+            if (shield == 0) {
+                playScreen.getPlayer().playerState = Player.PlayerState.DESTROYED;
+            }
+        }
     }
 
     public void removeShip() {
