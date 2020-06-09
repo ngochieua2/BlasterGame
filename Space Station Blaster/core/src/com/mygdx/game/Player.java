@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
@@ -178,21 +179,24 @@ public class Player {
     private void handleInput(float deltaTime) {
 
         // player turning right or left
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && playerState == PlayerState.NORMAL) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || playScreen.controller.isRightPressed()
+                && playerState == PlayerState.NORMAL) {
             radians -= ROTATION_SPEED * deltaTime;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && playerState == PlayerState.NORMAL) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || playScreen.controller.isLeftPressed()
+                && playerState == PlayerState.NORMAL) {
             radians += ROTATION_SPEED * deltaTime;
         }
 
         // player accelerating
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && playerState == PlayerState.NORMAL) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || playScreen.controller.isUpPressed()
+                && playerState == PlayerState.NORMAL) {
             direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
             direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
         }
 
         // player shooting
         if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
-                && playerState == PlayerState.NORMAL) {
+                || playScreen.controller.isShootPressed() && playerState == PlayerState.NORMAL) {
             bulletFired = true;
 
         // spawn the bullet when animation is finished
