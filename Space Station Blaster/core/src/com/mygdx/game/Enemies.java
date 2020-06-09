@@ -58,7 +58,9 @@ public class Enemies {
     private float[] radians;
     public Circle[] circleColliders;
     public Rectangle[] spaceStationColliders;
+    public Polygon[] spaceStationPolygons;
     private int[] health;
+    private int spaceStationHealth;
     private float[] shootInterval;
 
     public Enemies(PlayScreen playScreen) {
@@ -84,6 +86,7 @@ public class Enemies {
         radians = new float[MAX_ENEMIES];
         circleColliders = new Circle[MAX_ENEMIES];
         spaceStationColliders = new Rectangle[2];
+        spaceStationPolygons = new Polygon[2];
         health = new int[MAX_ENEMIES];
         shootInterval = new float[MAX_ENEMIES];
         init();
@@ -104,6 +107,7 @@ public class Enemies {
             circleColliders[i].setRadius(greenUFOTexture.getRegionWidth() / 2);
             spaceStationColliders[0] = new Rectangle();
             spaceStationColliders[1] = new Rectangle();
+            spaceStationHealth = SPACE_STATION_HEALTH;
         }
     }
 
@@ -241,6 +245,14 @@ public class Enemies {
                 break;
             default: break;
         }
+
+        spaceStationPolygons[0] = new Polygon(new float[] { 0, 0, spaceStationColliders[0].width, 0, spaceStationColliders[0].width,
+                spaceStationColliders[0].height, 0, spaceStationColliders[0].height });
+        spaceStationPolygons[0].setPosition(spaceStationColliders[0].x, spaceStationColliders[0].y);
+
+        spaceStationPolygons[1] = new Polygon(new float[] { 0, 0, spaceStationColliders[1].width, 0, spaceStationColliders[1].width,
+                spaceStationColliders[1].height, 0, spaceStationColliders[1].height });
+        spaceStationPolygons[1].setPosition(spaceStationColliders[1].x, spaceStationColliders[1].y);
     }
 
 
@@ -406,5 +418,9 @@ public class Enemies {
                 sprite[typeIndex].setRotation(radians[typeIndex] * MathUtils.radiansToDegrees);
                 break;
         }
+    }
+
+    public void damageSpaceStation() {
+        spaceStationHealth -= 1;
     }
 }
