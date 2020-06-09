@@ -244,8 +244,18 @@ public class PlayScreen implements Screen {
         shapeRenderer.polygon(player.playerBounds.getTransformedVertices());
         shapeRenderer.end();
 
+        // testing the space station bounds
+
+        shapeRenderer.setProjectionMatrix(gameCamera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.BLUE);
+        shapeRenderer.rect(enemies.spaceStationColliders[0].x, enemies.spaceStationColliders[0].y, enemies.spaceStationColliders[0].width, enemies.spaceStationColliders[0].height);
+        shapeRenderer.rect(enemies.spaceStationColliders[1].x, enemies.spaceStationColliders[1].y, enemies.spaceStationColliders[1].width, enemies.spaceStationColliders[1].height);
+        shapeRenderer.end();
+
+
         //testing enemy bounds
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<Enemies.MAX_ENEMIES; i++) {
             shapeRenderer.setProjectionMatrix(gameCamera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);

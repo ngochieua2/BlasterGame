@@ -26,6 +26,7 @@ public class Enemies {
     public static final int MAX_ENEMIES = 10;
     private static final int GREEN_UFO_HEALTH = 3;
     private static final int RED_UFO_HEALTH = 3;
+    private static final int SPACE_STATION_HEALTH = 20;
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 5f;
@@ -38,20 +39,17 @@ public class Enemies {
     private OrthographicCamera camera;
     private float timeInterval;
 
-    public enum Type {
-        NONE,
-        GREEN_UFO,
-        RED_UFO;
-        public static Type getRandomType() {
-            Random random = new Random();
-            return values()[random.nextInt(values().length-1) + 1];
-        }
-    }
+    public enum Type {NONE, GREEN_UFO, RED_UFO, SPACE_STATION}
+
     private TextureRegion greenUFOTexture;
     private TextureRegion redUFOTexture;
+    private TextureRegion spaceStationTexture1;
+    private TextureRegion spaceStationTexture2;
+    private TextureRegion spaceStationTexture3;
 
     public Type[] type;
     private Sprite[] sprite;
+    private Sprite spaceStationSprite;
     public Animation[] animations;
     private TextureRegion[] currentFrame;
     private float[] animationElapsedTime;
@@ -59,7 +57,7 @@ public class Enemies {
     private Vector2[] velocity;
     private float[] radians;
     public Circle[] circleColliders;
-    private Rectangle[] rectangleColliders;
+    public Rectangle[] spaceStationColliders;
     private int[] health;
     private float[] shootInterval;
 
@@ -70,6 +68,9 @@ public class Enemies {
         timeInterval = 0f;
         greenUFOTexture = playScreen.getTextureAtlas().findRegion("ufoGreen");
         redUFOTexture = playScreen.getTextureAtlas().findRegion("ufoRed");
+        spaceStationTexture1 = playScreen.getTextureAtlas().findRegion("spaceStation", 20);
+        spaceStationTexture2 = playScreen.getTextureAtlas().findRegion("spaceStation", 21);
+        spaceStationTexture3 = playScreen.getTextureAtlas().findRegion("spaceStation", 24);
 
         bullets = playScreen.getBullets();
 
@@ -82,23 +83,27 @@ public class Enemies {
         velocity = new Vector2[MAX_ENEMIES];
         radians = new float[MAX_ENEMIES];
         circleColliders = new Circle[MAX_ENEMIES];
-        rectangleColliders = new Rectangle[MAX_ENEMIES];
+        spaceStationColliders = new Rectangle[2];
         health = new int[MAX_ENEMIES];
         shootInterval = new float[MAX_ENEMIES];
         init();
+
+        //TODO spawn space station test
+        spawnSpaceStation();
     }
 
     public void init() {
         for (int i=0; i<MAX_ENEMIES; i++) {
             type[i] = Type.NONE;
-            position[i] = new Vector2();
-            velocity[i] = new Vector2();
+            position[i] = new Vector2(0, 0);
+            velocity[i] = new Vector2(0, 0);
             currentFrame[i] = new TextureRegion();
             animationElapsedTime[i] = 0f;
             radians[i] = 0f;
             circleColliders[i] = new Circle();
             circleColliders[i].setRadius(greenUFOTexture.getRegionWidth() / 2);
-            rectangleColliders[i] = new Rectangle();
+            spaceStationColliders[0] = new Rectangle();
+            spaceStationColliders[1] = new Rectangle();
         }
     }
 
@@ -165,6 +170,79 @@ public class Enemies {
         return freeIndex;
     }
 
+    private void spawnSpaceStation() {
+        //int spaceStationType = MathUtils.random(1, 3);
+        int spaceStationType = 3;
+
+        Vector2 spawnPoint;
+        float width;
+        float height;
+        switch (spaceStationType) {
+            case 1:
+                spaceStationSprite = new Sprite(spaceStationTexture1);
+                width = spaceStationTexture1.getRegionWidth();
+                height = spaceStationTexture1.getRegionHeight();
+
+                spawnPoint = generateSpaceStationSpawnPoint(1);
+                /*
+                while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
+                    spawnPoint = generateSpaceStationSpawnPoint(1);
+                }*/
+                spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
+
+                spaceStationColliders[0].setPosition(spawnPoint.x + (width - width/4)/2, spawnPoint.y);
+                spaceStationColliders[0].setWidth(width/4);
+                spaceStationColliders[0].setHeight(3*height /4);
+
+                spaceStationColliders[1].setPosition(spawnPoint.x, spawnPoint.y + 3*height/4);
+                spaceStationColliders[1].setWidth(width);
+                spaceStationColliders[1].setHeight(height / 4);
+                break;
+            case 2:
+                spaceStationSprite = new Sprite(spaceStationTexture2);
+                width = spaceStationTexture2.getRegionWidth();
+                height = spaceStationTexture2.getRegionHeight();
+
+                spawnPoint = generateSpaceStationSpawnPoint(2);
+                /*
+                while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
+                    spawnPoint = generateSpaceStationSpawnPoint(2);
+                }*/
+                spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
+
+                spaceStationColliders[0].setPosition(spawnPoint.x + width/3, spawnPoint.y);
+                spaceStationColliders[0].setWidth(width/3);
+                spaceStationColliders[0].setHeight(height);
+
+                spaceStationColliders[1].setPosition(spawnPoint.x, spawnPoint.y + height/2);
+                spaceStationColliders[1].setWidth(width);
+                spaceStationColliders[1].setHeight(height / 5);
+                break;
+            case 3:
+                spaceStationSprite = new Sprite(spaceStationTexture3);
+                width = spaceStationTexture3.getRegionWidth();
+                height = spaceStationTexture3.getRegionHeight();
+
+                spawnPoint = generateSpaceStationSpawnPoint(3);
+                /*
+                while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
+                    spawnPoint = generateSpaceStationSpawnPoint(3);
+                }
+                 */
+                spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
+
+                spaceStationColliders[0].setPosition(spawnPoint.x + 2*width/5 + 4, spawnPoint.y);
+                spaceStationColliders[0].setWidth(width/5);
+                spaceStationColliders[0].setHeight(height);
+
+                spaceStationColliders[1].setPosition(spawnPoint.x, spawnPoint.y + 5*height/8 + width/12 + 2);
+                spaceStationColliders[1].setWidth(width);
+                spaceStationColliders[1].setHeight(width/6);
+                break;
+            default: break;
+        }
+    }
+
 
     public void update(float deltaTime) {
         timeInterval += deltaTime;
@@ -172,12 +250,18 @@ public class Enemies {
 
         //Spawns enemies after waiting a specified amount of time
         if (timeInterval >= ENEMY_SPAWN_INTERVAL) {
-            spawn(Type.getRandomType());
+            boolean greenUFO = MathUtils.randomBoolean();
+            if (greenUFO) {
+                spawn(Type.GREEN_UFO);
+            }
+            else {
+                spawn(Type.RED_UFO);
+            }
             timeInterval = 0f;
         }
 
         for (int i=0; i<MAX_ENEMIES; i++) {
-            if (type[i] != Type.NONE) {
+            if (type[i] != Type.NONE && type[i] != Type.SPACE_STATION) {
                 rotate(i, deltaTime);
 
                 shootInterval[i] += deltaTime;
@@ -209,14 +293,11 @@ public class Enemies {
                 }
                 sprite[i].translate(velocity[i].x * deltaTime, velocity[i].y * deltaTime);
                 circleColliders[i].setPosition(sprite[i].getX() + greenUFOTexture.getRegionWidth()/2, sprite[i].getY() + greenUFOTexture.getRegionWidth() /2);
+
                 //record the position of the sprite's centre fo the purpose of animation
                 position[i].set(circleColliders[i].x, circleColliders[i].y);
 
-                //Collision with player
-//                if (overlaps(playScreen.getPlayer().playerBounds, circleColliders[i])) {
-//                    type[i] = Type.NONE;
-//                    circleColliders[i].setPosition(0, 0);
-//                }
+
                 //Collision with boundary
                 Walls walls = playScreen.getWalls();
                 int wallIndex = -1;
@@ -232,17 +313,17 @@ public class Enemies {
                         }
                     }
                 }
+            }
+            else if (type[i] == Type.SPACE_STATION) {
 
-                if (circleColliders[i].x < 0 || circleColliders[i].x > SpaceStationBlaster.MAP_WIDTH
-                        || circleColliders[i].y < 0 || circleColliders[i].y > SpaceStationBlaster.MAP_HEIGHT) {
-                    type[i] = Type.NONE;
-                    spawn(Type.getRandomType());
-                }
             }
         }
     }
 
     public void render(SpriteBatch batch, float deltaTime) {
+        if (spaceStationSprite != null) {
+            spaceStationSprite.draw(batch);
+        }
         for (int i=0; i<MAX_ENEMIES; i++) {
             if (type[i] != Type.NONE) {
                 sprite[i].draw(batch);
@@ -291,6 +372,30 @@ public class Enemies {
         float spawnX = MathUtils.random(0 + greenUFOTexture.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - greenUFOTexture.getRegionWidth());
         float spawnY = MathUtils.random(0 + greenUFOTexture.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - greenUFOTexture.getRegionHeight());
 
+        return new Vector2(spawnX, spawnY);
+    }
+
+    private Vector2 generateSpaceStationSpawnPoint(int spaceStationType) {
+        float spawnX;
+        float spawnY;
+        switch (spaceStationType) {
+            case 1:
+                spawnX = MathUtils.random(0 + spaceStationTexture1.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture1.getRegionWidth());
+                spawnY = MathUtils.random(0 + spaceStationTexture1.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture1.getRegionHeight());
+                break;
+            case 2:
+                spawnX = MathUtils.random(0 + spaceStationTexture2.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture2.getRegionWidth());
+                spawnY = MathUtils.random(0 + spaceStationTexture2.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture2.getRegionHeight());
+                break;
+            case 3:
+                spawnX = MathUtils.random(0 + spaceStationTexture3.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture3.getRegionWidth());
+                spawnY = MathUtils.random(0 + spaceStationTexture3.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture3.getRegionHeight());
+                break;
+            default:
+                spawnX = 0;
+                spawnY = 0;
+                break;
+        }
         return new Vector2(spawnX, spawnY);
     }
 
