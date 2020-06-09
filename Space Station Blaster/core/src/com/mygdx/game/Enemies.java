@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
 import com.mygdx.game.Effects;
@@ -26,7 +27,7 @@ public class Enemies {
     public static final int MAX_ENEMIES = 10;
     private static final int GREEN_UFO_HEALTH = 3;
     private static final int RED_UFO_HEALTH = 3;
-    private static final int SPACE_STATION_HEALTH = 20;
+    private static final int SPACE_STATION_HEALTH = 2;
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 5f;
@@ -51,7 +52,11 @@ public class Enemies {
     private Sprite[] sprite;
     private Sprite spaceStationSprite;
     public Animation[] animations;
+    public Animation[] spaceStationAnimations;
+    public Vector2[] spaceStationAnimationPositions;
+    private TextureRegion[] spaceStationCurrentFrame;
     private TextureRegion[] currentFrame;
+    private float[] spaceStationAnimationElapsedTime;
     private float[] animationElapsedTime;
     private Vector2[] position;
     private Vector2[] velocity;
@@ -79,6 +84,10 @@ public class Enemies {
         type = new Type[MAX_ENEMIES];
         sprite = new Sprite[MAX_ENEMIES];
         animations = new Animation[MAX_ENEMIES];
+        spaceStationAnimations = new Animation[4];
+        spaceStationAnimationPositions = new Vector2[4];
+        spaceStationAnimationElapsedTime = new float[4];
+        spaceStationCurrentFrame = new TextureRegion[4];
         currentFrame = new TextureRegion[MAX_ENEMIES];
         animationElapsedTime = new float[MAX_ENEMIES];
         position = new Vector2[MAX_ENEMIES];
@@ -96,6 +105,14 @@ public class Enemies {
     }
 
     public void init() {
+        spaceStationColliders[0] = new Rectangle();
+        spaceStationColliders[1] = new Rectangle();
+        spaceStationHealth = SPACE_STATION_HEALTH;
+        for (int i=0; i<4; i++) {
+            spaceStationAnimationPositions[i] = new Vector2(0, 0);
+            spaceStationAnimationElapsedTime[i] = 0f;
+            spaceStationCurrentFrame[i] = new TextureRegion();
+        }
         for (int i=0; i<MAX_ENEMIES; i++) {
             type[i] = Type.NONE;
             position[i] = new Vector2(0, 0);
@@ -105,9 +122,6 @@ public class Enemies {
             radians[i] = 0f;
             circleColliders[i] = new Circle();
             circleColliders[i].setRadius(greenUFOTexture.getRegionWidth() / 2);
-            spaceStationColliders[0] = new Rectangle();
-            spaceStationColliders[1] = new Rectangle();
-            spaceStationHealth = SPACE_STATION_HEALTH;
         }
     }
 
@@ -174,13 +188,12 @@ public class Enemies {
         return freeIndex;
     }
 
-    private void spawnSpaceStation() {
-        //int spaceStationType = MathUtils.random(1, 3);
-        int spaceStationType = 3;
+    public void spawnSpaceStation() {
+        int spaceStationType = MathUtils.random(1, 3);
 
         Vector2 spawnPoint;
-        float width;
-        float height;
+        float width = 0;
+        float height = 0;
         switch (spaceStationType) {
             case 1:
                 spaceStationSprite = new Sprite(spaceStationTexture1);
@@ -245,7 +258,7 @@ public class Enemies {
                 break;
             default: break;
         }
-
+        //convert hitboxes to polygons for overlaps() methods
         spaceStationPolygons[0] = new Polygon(new float[] { 0, 0, spaceStationColliders[0].width, 0, spaceStationColliders[0].width,
                 spaceStationColliders[0].height, 0, spaceStationColliders[0].height });
         spaceStationPolygons[0].setPosition(spaceStationColliders[0].x, spaceStationColliders[0].y);
@@ -253,6 +266,15 @@ public class Enemies {
         spaceStationPolygons[1] = new Polygon(new float[] { 0, 0, spaceStationColliders[1].width, 0, spaceStationColliders[1].width,
                 spaceStationColliders[1].height, 0, spaceStationColliders[1].height });
         spaceStationPolygons[1].setPosition(spaceStationColliders[1].x, spaceStationColliders[1].y);
+
+        //set the explosion animations to the centre of the space station
+        float animationPositionX = spaceStationSprite.getX() + width/2;
+        float animationPositionY = spaceStationSprite.getY() + height/8;
+        //iterate position height so each explosion is equidistant
+        for (int i=0; i<4; i++) {
+            spaceStationAnimationPositions[i].set(animationPositionX, animationPositionY);
+            animationPositionY += height/4;
+        }
     }
 
 
@@ -359,6 +381,27 @@ public class Enemies {
                 }
             }
         }
+        for (int i=0; i<4; i++) {
+            if (spaceStationAnimations[i] != null) {
+                if (!spaceStationAnimations[i].isAnimationFinished(spaceStationAnimationElapsedTime[i])) {
+                    spaceStationCurrentFrame[i] = (TextureRegion) spaceStationAnimations[i].getKeyFrame(spaceStationAnimationElapsedTime[i], false);
+                    batch.draw(spaceStationCurrentFrame[i],
+                            spaceStationAnimationPositions[i].x - spaceStationCurrentFrame[i].getRegionWidth() / 2,
+                            spaceStationAnimationPositions[i].y - spaceStationCurrentFrame[i].getRegionHeight() / 2,
+                            spaceStationCurrentFrame[i].getRegionWidth() / 2,
+                            spaceStationCurrentFrame[i].getRegionHeight() / 2,
+                            spaceStationCurrentFrame[i].getRegionWidth(),
+                            spaceStationCurrentFrame[i].getRegionHeight(), 1, 1,
+                            0);
+                    spaceStationAnimationElapsedTime[i] += deltaTime;
+
+                } else {
+                    spaceStationAnimationElapsedTime[i] = 0f;
+                    spaceStationCurrentFrame[i] = null;
+                    spaceStationAnimations[i] = null;
+                }
+            }
+        }
     }
 
     //Collision detection between Circle and Polygon
@@ -422,5 +465,38 @@ public class Enemies {
 
     public void damageSpaceStation() {
         spaceStationHealth -= 1;
+        if (spaceStationHealth < 0) {
+            spaceStationHealth = SPACE_STATION_HEALTH;
+
+            spaceStationAnimations[0] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    spaceStationAnimations[1] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+                }
+            }, 0.5f);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    spaceStationAnimations[2] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+                }
+            }, 1f);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    spaceStationAnimations[3] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
+                }
+            }, 1.5f);
+
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    //delete sprite and revome hitboxes after destruction.
+                    spaceStationSprite = null;
+                    spaceStationPolygons[0].setPosition(-100, -100);
+                    spaceStationPolygons[1].setPosition(-100, -100);
+                }
+            }, 2.5f);
+        }
     }
 }
