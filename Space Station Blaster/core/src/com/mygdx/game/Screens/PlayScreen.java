@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
 import com.mygdx.game.Effects;
 import com.mygdx.game.Player;
+import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
 import com.mygdx.game.Asteroids;
@@ -42,6 +44,7 @@ public class PlayScreen implements Screen {
     private Bullets bullets;
     private Enemies enemies;
     private Asteroids asteroids;
+    public Controller controller;
 
     private Effects effects;
 
@@ -70,12 +73,16 @@ public class PlayScreen implements Screen {
         // create HUD for score, number of ships and shield level
         gameHud = new Hud(game.spriteBatch, this);
 
+        // create the onscreen Controller for mobile input
+        controller = new Controller( game.spriteBatch);
+
         walls = new Walls(this);
         effects = new Effects(this);
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
+
         gameHud.clearStageNumberDisplay(); // clear the stage number after 4 seconds;
     }
 
@@ -235,6 +242,13 @@ public class PlayScreen implements Screen {
         // set camera to draw what the HUD camera can see
         game.spriteBatch.setProjectionMatrix(gameHud.stage.getCamera().combined);
         gameHud.stage.draw();
+
+        // set camera to draw what the Controller camera can see
+        //if (Gdx.app.getType() == Application.ApplicationType.Android) {
+
+            game.spriteBatch.setProjectionMatrix((controller.stage.getCamera().combined));
+            controller.stage.draw();
+        //}
 
 
         // testing the player bounds
