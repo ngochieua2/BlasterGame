@@ -27,7 +27,7 @@ public class Enemies {
     public static final int MAX_ENEMIES = 10;
     private static final int GREEN_UFO_HEALTH = 3;
     private static final int RED_UFO_HEALTH = 3;
-    private static final int SPACE_STATION_HEALTH = 2;
+    private static final int SPACE_STATION_HEALTH = 10;
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
     private static final float ENEMY_SPAWN_INTERVAL = 5f;
@@ -40,7 +40,7 @@ public class Enemies {
     private OrthographicCamera camera;
     private float timeInterval;
 
-    public enum Type {NONE, GREEN_UFO, RED_UFO, SPACE_STATION}
+    public enum Type {NONE, GREEN_UFO, RED_UFO}
 
     private TextureRegion greenUFOTexture;
     private TextureRegion redUFOTexture;
@@ -50,6 +50,7 @@ public class Enemies {
 
     public Type[] type;
     private Sprite[] sprite;
+    private boolean spaceStationSpawned;
     private Sprite spaceStationSprite;
     public Animation[] animations;
     public Animation[] spaceStationAnimations;
@@ -78,6 +79,7 @@ public class Enemies {
         spaceStationTexture1 = playScreen.getTextureAtlas().findRegion("spaceStation", 20);
         spaceStationTexture2 = playScreen.getTextureAtlas().findRegion("spaceStation", 21);
         spaceStationTexture3 = playScreen.getTextureAtlas().findRegion("spaceStation", 24);
+        spaceStationSpawned = false;
 
         bullets = playScreen.getBullets();
 
@@ -99,9 +101,6 @@ public class Enemies {
         health = new int[MAX_ENEMIES];
         shootInterval = new float[MAX_ENEMIES];
         init();
-
-        //TODO spawn space station test
-        spawnSpaceStation();
     }
 
     public void init() {
@@ -189,6 +188,7 @@ public class Enemies {
     }
 
     public void spawnSpaceStation() {
+        spaceStationSpawned = true;
         int spaceStationType = MathUtils.random(1, 3);
 
         Vector2 spawnPoint;
@@ -201,10 +201,10 @@ public class Enemies {
                 height = spaceStationTexture1.getRegionHeight();
 
                 spawnPoint = generateSpaceStationSpawnPoint(1);
-                /*
+
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpaceStationSpawnPoint(1);
-                }*/
+                }
                 spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
 
                 spaceStationColliders[0].setPosition(spawnPoint.x + (width - width/4)/2, spawnPoint.y);
@@ -221,10 +221,10 @@ public class Enemies {
                 height = spaceStationTexture2.getRegionHeight();
 
                 spawnPoint = generateSpaceStationSpawnPoint(2);
-                /*
+
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpaceStationSpawnPoint(2);
-                }*/
+                }
                 spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
 
                 spaceStationColliders[0].setPosition(spawnPoint.x + width/3, spawnPoint.y);
@@ -241,11 +241,11 @@ public class Enemies {
                 height = spaceStationTexture3.getRegionHeight();
 
                 spawnPoint = generateSpaceStationSpawnPoint(3);
-                /*
+
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpaceStationSpawnPoint(3);
                 }
-                 */
+
                 spaceStationSprite.setPosition(spawnPoint.x, spawnPoint.y);
 
                 spaceStationColliders[0].setPosition(spawnPoint.x + 2*width/5 + 4, spawnPoint.y);
@@ -295,7 +295,7 @@ public class Enemies {
         }
 
         for (int i=0; i<MAX_ENEMIES; i++) {
-            if (type[i] != Type.NONE && type[i] != Type.SPACE_STATION) {
+            if (type[i] != Type.NONE) {
                 rotate(i, deltaTime);
 
                 shootInterval[i] += deltaTime;
@@ -347,9 +347,6 @@ public class Enemies {
                         }
                     }
                 }
-            }
-            else if (type[i] == Type.SPACE_STATION) {
-
             }
         }
     }
@@ -435,16 +432,16 @@ public class Enemies {
         float spawnY;
         switch (spaceStationType) {
             case 1:
-                spawnX = MathUtils.random(0 + spaceStationTexture1.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture1.getRegionWidth());
-                spawnY = MathUtils.random(0 + spaceStationTexture1.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture1.getRegionHeight());
+                spawnX = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH - spaceStationTexture1.getRegionWidth());
+                spawnY = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture1.getRegionHeight());
                 break;
             case 2:
-                spawnX = MathUtils.random(0 + spaceStationTexture2.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture2.getRegionWidth());
-                spawnY = MathUtils.random(0 + spaceStationTexture2.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture2.getRegionHeight());
+                spawnX = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH - spaceStationTexture2.getRegionWidth());
+                spawnY = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture2.getRegionHeight());
                 break;
             case 3:
-                spawnX = MathUtils.random(0 + spaceStationTexture3.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - spaceStationTexture3.getRegionWidth());
-                spawnY = MathUtils.random(0 + spaceStationTexture3.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture3.getRegionHeight());
+                spawnX = MathUtils.random(0, SpaceStationBlaster.MAP_WIDTH - spaceStationTexture3.getRegionWidth());
+                spawnY = MathUtils.random(0, SpaceStationBlaster.MAP_HEIGHT - spaceStationTexture3.getRegionHeight());
                 break;
             default:
                 spawnX = 0;
@@ -498,5 +495,9 @@ public class Enemies {
                 }
             }, 2.5f);
         }
+    }
+
+    public boolean spaceStationSpawned() {
+        return spaceStationSpawned;
     }
 }

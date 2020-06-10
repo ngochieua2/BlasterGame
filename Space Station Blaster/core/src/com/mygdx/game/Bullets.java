@@ -302,12 +302,14 @@ public class Bullets {
     private void checkUFOCollision(int index) {
         Enemies enemies = playScreen.getEnemies();
 
-        if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], refCollider) ||
-                Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], refCollider)) {
-            if (bulletType[index] == SpaceStationBlaster.BulletType.GREEN) {
-                bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
-                animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
-                enemies.damageSpaceStation();
+        if (enemies.spaceStationSpawned()) {
+            if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], refCollider) ||
+                    Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], refCollider)) {
+                if (bulletType[index] == SpaceStationBlaster.BulletType.GREEN) {
+                    bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
+                    animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
+                    enemies.damageSpaceStation();
+                }
             }
         }
 

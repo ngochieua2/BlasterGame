@@ -280,11 +280,13 @@ public class Player {
                 playerState = PlayerState.DESTROYED;
             }
         }
-        if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], playerBounds)) {
-            playerState = Player.PlayerState.DESTROYED;
-        }
-        if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], playerBounds)) {
-            playerState = Player.PlayerState.DESTROYED;
+        if (enemies.spaceStationSpawned()) {
+            if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], playerBounds)) {
+                playerState = Player.PlayerState.DESTROYED;
+            }
+            if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], playerBounds)) {
+                playerState = Player.PlayerState.DESTROYED;
+            }
         }
 
         // collision with walls
