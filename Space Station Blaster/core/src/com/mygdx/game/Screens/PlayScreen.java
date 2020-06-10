@@ -212,8 +212,7 @@ public class PlayScreen implements Screen {
                 if (gameHud.ships > 0) {
                     gameHud.removeShip();
                 } else {
-                    game.setScreen(new GameOverScreen(game));
-                    //Gdx.app.exit();
+                    game.setScreen(new GameOverScreen(game, gameHud.score));
                 }
             }
         } else {
