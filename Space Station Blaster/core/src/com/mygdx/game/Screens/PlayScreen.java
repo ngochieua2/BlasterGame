@@ -252,6 +252,7 @@ public class PlayScreen implements Screen {
 
 
         // testing the player bounds
+        /*
         shapeRenderer.setProjectionMatrix(gameCamera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -298,6 +299,7 @@ public class PlayScreen implements Screen {
             }
 
         }
+         */
     }
 
     @Override

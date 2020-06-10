@@ -475,7 +475,7 @@ public class Asteroids {
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-            animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
+            animationPosition[index].set(Astcollider[index].getX() + MeteorBrown_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorBrown_Small1_TEXTURE_HEIGHT/2);
             type[index] = TYPE.NONE;
             Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
@@ -483,7 +483,7 @@ public class Asteroids {
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
-            animationPosition[index].set(Astcollider[index].getX(), Astcollider[index].getY());
+            animationPosition[index].set(Astcollider[index].getX() + MeteorGrey_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorGrey_Small1_TEXTURE_WIDTH/2);
             type[index] = TYPE.NONE;
             Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
