@@ -91,6 +91,7 @@ public class PlayScreen implements Screen {
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
+        gameHud.resetShield();
         gameHud.clearStageNumberDisplay();
     }
 

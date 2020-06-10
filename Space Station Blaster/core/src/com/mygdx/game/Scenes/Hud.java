@@ -153,7 +153,6 @@ public class Hud implements Disposable {
                 shieldProgressBaRStyle);
 
         shieldProgressBar.setValue(shield * 0.2f);
-        shieldProgressBar.setAnimateDuration(1f/60f);
         shieldProgressBar.setBounds(10, 10, 100, 20);
 
         numeralXImage = new Image(textureAtlas.findRegion("numeralX"));
@@ -218,6 +217,11 @@ public class Hud implements Disposable {
                 playScreen.getPlayer().playerState = Player.PlayerState.DESTROYED;
             }
         }
+    }
+
+    public void resetShield() {
+        shield = DEF_SHIELD;
+        shieldProgressBar.setValue(shield * 0.2f);
     }
 
     public void removeShip() {

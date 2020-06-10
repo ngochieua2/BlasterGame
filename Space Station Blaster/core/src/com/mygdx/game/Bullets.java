@@ -347,21 +347,21 @@ public class Bullets {
         if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
             switch(bulletType[index]) {
                 case ORANGE: {
-                    player.playerState = Player.PlayerState.DESTROYED;
+                    playScreen.getGameHud().decreaseShield();
 
                     bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                     animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.ORANGE_IMPACT);
                     break;
                 }
                 case PURPLE: {
-                    player.playerState = Player.PlayerState.DESTROYED;
+                    playScreen.getGameHud().decreaseShield();
 
                     bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                     animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.PURPLE_IMPACT);
                     break;
                 }
                 case BLUE: {
-                    player.playerState = Player.PlayerState.DESTROYED;
+                    playScreen.getGameHud().decreaseShield();
 
                     bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                     animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.BLUE_FIRE);
