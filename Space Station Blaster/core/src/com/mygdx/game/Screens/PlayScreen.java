@@ -30,6 +30,7 @@ import com.mygdx.game.Enemies;
 import com.mygdx.game.Walls;
 
 public class PlayScreen implements Screen {
+    private final static int SCORE_REQUIRED_TO_SPAWN_SPACE_STATION = 10000;
     private TextureAtlas textureAtlas;
     private TextureAtlas uiTextureAtlas;
     private TiledMap tiledMap;
@@ -126,6 +127,9 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float deltaTime) {
+        if (gameHud.score >= SCORE_REQUIRED_TO_SPAWN_SPACE_STATION && !enemies.spaceStationSpawned()) {
+            enemies.spawnSpaceStation();
+        }
         handleInput(deltaTime);
         player.update(deltaTime);
         bullets.update(deltaTime);
@@ -259,8 +263,18 @@ public class PlayScreen implements Screen {
         shapeRenderer.polygon(player.playerBounds.getTransformedVertices());
         shapeRenderer.end();
 
+        // testing the space station bounds
+
+        shapeRenderer.setProjectionMatrix(gameCamera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.BLUE);
+        shapeRenderer.rect(enemies.spaceStationColliders[0].x, enemies.spaceStationColliders[0].y, enemies.spaceStationColliders[0].width, enemies.spaceStationColliders[0].height);
+        shapeRenderer.rect(enemies.spaceStationColliders[1].x, enemies.spaceStationColliders[1].y, enemies.spaceStationColliders[1].width, enemies.spaceStationColliders[1].height);
+        shapeRenderer.end();
+
+
         //testing enemy bounds
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<Enemies.MAX_ENEMIES; i++) {
             shapeRenderer.setProjectionMatrix(gameCamera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);
