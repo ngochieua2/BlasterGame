@@ -19,8 +19,6 @@ import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
     public enum PlayerState { NORMAL, DESTROYED, }
-    public boolean bulletFired;
-    public boolean bulletHit;
 
     public static final int GREEN_UFO_POINTS = 700;
     public static final int RED_UFO_POINTS = 1000;
@@ -41,6 +39,11 @@ public class Player {
 
     public static final String PLAYER_TEXTURE_ATLAS_REGION = "playerShip1_blue";
     public static final String TILED_MAP_PLAYER = "PlayerShip";
+
+    public boolean bulletFired;
+    public boolean bulletHit;
+    public boolean spawningBulletPowerup;
+    public boolean spawningShieldPowerup;
 
     public PlayerState playerState;
 
@@ -85,6 +88,16 @@ public class Player {
     public float trailRadians;
     public TextureRegion trailCurrentFrame;
 
+    public Vector2 bulletPowerupPosition;
+    public Vector2 bulletPowerupDirection;
+    public float bulletPowerupRadians;
+    public float bulletPowerupRotationSpeed;
+
+    public Vector2 shieldPowerupPosition;
+    public Vector2 shieldPowerupDirection;
+    public float shieldPowerupRadians;
+    public float shieldPowerupRotationSpeed;
+
     public Animation explosionAnimation;
     public Vector2 explosionPosition;
     public Vector2 explosionDirection;
@@ -95,6 +108,7 @@ public class Player {
     public float elapsedTime;
 
     public int currentBulletIndex;
+    public int currentUFOIndex;
 
     float shootingCooldown = 0f;
     float shootingCooldownSpeed = 0.5f;
@@ -115,6 +129,8 @@ public class Player {
         playerState = PlayerState.NORMAL;
         bulletFired = false;
         bulletHit = false;
+        spawningBulletPowerup = false;
+        spawningShieldPowerup = false;
         position = new Vector2();
         direction = new Vector2();
         radians = 0;
@@ -130,6 +146,16 @@ public class Player {
         explosionPosition = new Vector2();
         explosionDirection = new Vector2();
         explosionRadians = 0;
+
+        bulletPowerupPosition = new Vector2();
+        bulletPowerupDirection = new Vector2();
+        bulletPowerupRadians = 0;
+        bulletPowerupRotationSpeed = 0;
+
+        shieldPowerupPosition = new Vector2();
+        shieldPowerupDirection = new Vector2();
+        shieldPowerupRadians = 0;
+        shieldPowerupRotationSpeed = 0;
 
         fireElapsedTime = 0;
         impactElapsedTime = 0;
@@ -282,6 +308,17 @@ public class Player {
                             2, firePosition);
         }
 
+        if (spawningBulletPowerup) {
+
+        }
+
+
+        if (spawningShieldPowerup) {
+
+        }
+
+
+
         // collision with enemy
         enemies = playScreen.getEnemies();
         for (int index = 0; index < enemies.circleColliders.length; index++) {
@@ -343,6 +380,30 @@ public class Player {
 
     public Sprite getSprite() {
         return playerSprite;
+    }
+
+    public void spawnBulletPowerup() {
+        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.BULLET, radians);
+        // set the bulletPowerupDirection
+        playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
+                Powerups.BULLET_POWERUP_TEXTURE_WIDTH / 2 +
+                playScreen.getEnemies().sprite[currentUFOIndex].getWidth() / 2;
+        playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -
+                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2 +
+                playScreen.getEnemies().sprite[currentUFOIndex].getHeight() / 2;
+        spawningBulletPowerup = false;
+    }
+
+    public void spawnShieldPowerup() {
+        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.SHIELD, radians);
+        // set the bulletPowerupDirection
+        playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
+                Powerups.SHIELD_POWERUP_TEXTURE_WIDTH / 2 +
+                playScreen.getEnemies().sprite[currentUFOIndex].getWidth() / 2;
+        playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -
+                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2 +
+                playScreen.getEnemies().sprite[currentUFOIndex].getHeight() / 2;
+        spawningShieldPowerup = false;
     }
 
 }

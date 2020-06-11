@@ -14,15 +14,15 @@ public class Powerups {
 
     // constants for the bullet powerup
     private static final String BULLET_POWERUP_ATLAS_REGION = "bolt_bronze";
-    private static final int BULLET_POWERUP_TEXTURE_WIDTH = 19;
-    private static final int BULLET_POWERUP_TEXTURE_HEIGHT = 30;
-    private static final int BULLET_POWERUP_SPEED = 150;
+    public static final int BULLET_POWERUP_TEXTURE_WIDTH = 19;
+    public static final int BULLET_POWERUP_TEXTURE_HEIGHT = 30;
+    private static final int BULLET_POWERUP_SPEED = 100;
 
     // constants for the shield powerup
     private static final String SHIELD_POWERUP_ATLAS_REGION = "shield_bronze";
-    private static final int SHIELD_POWERUP_TEXTURE_WIDTH = 19;
-    private static final int SHIELD_POWERUP_TEXTURE_HEIGHT = 30;
-    private static final int SHIELD_POWERUP_SPEED = 150;
+    public static final int SHIELD_POWERUP_TEXTURE_WIDTH = 19;
+    public static final int SHIELD_POWERUP_TEXTURE_HEIGHT = 30;
+    private static final int SHIELD_POWERUP_SPEED = 100;
 
     // the will never be this many powerups. just in case
     private static final int MAX_POWERUPS = 20;
@@ -39,7 +39,7 @@ public class Powerups {
     public Sprite powerupSprite;
 
     public SpaceStationBlaster.PowerupType[] powerupType;
-    public Vector2[] position; // powerus current position
+    public Vector2[] position; // powerup current position
     public Vector2[] direction; // direction the powerup is travelling
     float[] radians; // the angle in radians the powerup is
     private float[] lifeTime; // the time the bullet is alive
@@ -115,8 +115,8 @@ public class Powerups {
                 break;
             }
             case SHIELD: {
-                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * BULLET_POWERUP_SPEED;
-                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * BULLET_POWERUP_SPEED;
+                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * SHIELD_POWERUP_SPEED;
+                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * SHIELD_POWERUP_SPEED;
                 lifeTime[index] = 10f;
                 break;
             }
@@ -166,6 +166,7 @@ public class Powerups {
             refCollider.setRotation((float) (radians[index] + Math.PI / 2) * MathUtils.radiansToDegrees);
 
             checkWallCollision(index);
+            checkPlayerCollision(index);
         }
     }
 

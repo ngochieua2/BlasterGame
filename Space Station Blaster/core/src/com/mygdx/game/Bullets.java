@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Screens.PlayScreen;
 
+import java.util.Random;
+
 import javax.xml.soap.Text;
 
 public class Bullets {
@@ -317,14 +319,27 @@ public class Bullets {
 
             if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
                 //TODO implement HP, delete when finished
-
+                Random random = new Random();
+                int randomValue;
                 switch(bulletType[index]) {
                     case GREEN: {
                         // update the score for destroying Red and Green UFOs
                         if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
                             playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
+                            randomValue = random.nextInt(5) + 1;
+                            //if (randomValue == 1) {
+                                playScreen.getPlayer().currentUFOIndex = enemyIndex;
+                                playScreen.getPlayer().spawnBulletPowerup();
+                            //}
+
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
                             playScreen.getGameHud().updateScore(Player.GREEN_UFO_POINTS);
+                            randomValue = random.nextInt(5) + 1;
+                            //if (randomValue == 2) {
+                                playScreen.getPlayer().currentUFOIndex = enemyIndex;
+                                playScreen.getPlayer().spawnShieldPowerup();
+                            //}
+
                         }
 
                         enemies.type[enemyIndex] = Enemies.Type.NONE;

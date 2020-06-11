@@ -121,6 +121,10 @@ public class PlayScreen implements Screen {
         return effects;
     }
 
+    public Powerups getPowerups() {
+        return powerups;
+    }
+
     @Override
     public void show() {
 
@@ -137,6 +141,7 @@ public class PlayScreen implements Screen {
             enemies.spawnSpaceStation();
         }
         handleInput(deltaTime);
+        powerups.update(deltaTime);
         player.update(deltaTime);
         bullets.update(deltaTime);
         enemies.update(deltaTime);
@@ -169,6 +174,7 @@ public class PlayScreen implements Screen {
         game.spriteBatch.begin();
 
         player.render(game.spriteBatch);
+        powerups.render(game.spriteBatch, delta);
         bullets.render(game.spriteBatch, delta);
         enemies.render(game.spriteBatch, delta);
         asteroids.render(game.spriteBatch, delta);
