@@ -36,6 +36,9 @@ public class Player {
     private static final float DECELERATION = 10; // how fast the player can decelerate
     private static final float ROTATION_SPEED = 3; // speed the player can rotate
 
+    // cooldown decrease when player gets bullet powerup
+    private static final float COOLDOWN_DECREASE = 0.8f;
+
     public static final String PLAYER_TEXTURE_ATLAS_REGION = "playerShip1_blue";
     public static final String TILED_MAP_PLAYER = "PlayerShip";
 
@@ -176,6 +179,10 @@ public class Player {
         return new Vector2(x, y);
     }
 
+    public void decreaseBulletCooldown() {
+        shootingCooldownSpeed *= 0.8f;
+    }
+
     private void handleInput(float deltaTime) {
 
         // player turning right or left
@@ -253,7 +260,7 @@ public class Player {
             impactRadians = bullets.radians[currentBulletIndex];
             impactDirection.x = bullets.direction[currentBulletIndex].x;
             impactDirection.y = bullets.direction[currentBulletIndex].y;
-            // set trailPosition to center of playerSprite
+            // set impactPosition to center of playerSprite
             impactPosition.x = bullets.position[currentBulletIndex].x;
             impactPosition.y = bullets.position[currentBulletIndex].y;
         }
@@ -284,6 +291,8 @@ public class Player {
                 playerState = PlayerState.DESTROYED;
             }
         }
+
+        // collision with space station
         if (enemies.spaceStationSpawned()) {
             if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], playerBounds)) {
                 playerState = Player.PlayerState.DESTROYED;

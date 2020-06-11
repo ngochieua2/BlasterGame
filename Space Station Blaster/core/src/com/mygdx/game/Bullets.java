@@ -88,14 +88,14 @@ public class Bullets {
         effects = playScreen.getEffects();
         textureAtlas = playScreen.getTextureAtlas();
         instantiateEntities(MAX_BULLETS);
-        // clear our entities by setting by setting all shipTypes to NONE.
+        // clear our entities by setting by setting all bulletTypes to NONE.
         for (int index = 0; index < MAX_BULLETS; index++) {
             this.bulletType[index] = SpaceStationBlaster.BulletType.NONE;
             currentFrame[index] = new TextureRegion();
             animationElapsedTime[index] = 0f;
         }
 
-        // get bullet texture region
+        // get green bullet texture region
         greenBulletTextureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
 
         greenBulletCollider = new Polygon(new float[]{0, 0, GREEN_BULLET_COLLIDER_WIDTH, 0,
