@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Screens.PlayScreen;
 
+import java.util.Random;
+
 import javax.xml.soap.Text;
 
 public class Bullets {
@@ -88,14 +90,14 @@ public class Bullets {
         effects = playScreen.getEffects();
         textureAtlas = playScreen.getTextureAtlas();
         instantiateEntities(MAX_BULLETS);
-        // clear our entities by setting by setting all shipTypes to NONE.
+        // clear our entities by setting by setting all bulletTypes to NONE.
         for (int index = 0; index < MAX_BULLETS; index++) {
             this.bulletType[index] = SpaceStationBlaster.BulletType.NONE;
             currentFrame[index] = new TextureRegion();
             animationElapsedTime[index] = 0f;
         }
 
-        // get bullet texture region
+        // get green bullet texture region
         greenBulletTextureRegion = textureAtlas.findRegion(GREEN_BULLET_TEXTURE_ATLAS_REGION);
 
         greenBulletCollider = new Polygon(new float[]{0, 0, GREEN_BULLET_COLLIDER_WIDTH, 0,
@@ -317,14 +319,27 @@ public class Bullets {
 
             if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
                 //TODO implement HP, delete when finished
-
+                Random random = new Random();
+                int randomValue;
                 switch(bulletType[index]) {
                     case GREEN: {
                         // update the score for destroying Red and Green UFOs
                         if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
                             playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
+                            randomValue = random.nextInt(5) + 1;
+                            if (randomValue == 1) {
+                                playScreen.getPlayer().currentUFOIndex = enemyIndex;
+                                playScreen.getPlayer().spawnBulletPowerup();
+                            }
+
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
                             playScreen.getGameHud().updateScore(Player.GREEN_UFO_POINTS);
+                            randomValue = random.nextInt(3) + 1;
+                            if (randomValue == 1) {
+                                playScreen.getPlayer().currentUFOIndex = enemyIndex;
+                                playScreen.getPlayer().spawnShieldPowerup();
+                            }
+
                         }
 
                         enemies.type[enemyIndex] = Enemies.Type.NONE;

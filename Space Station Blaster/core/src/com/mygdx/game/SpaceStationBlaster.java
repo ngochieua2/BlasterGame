@@ -9,10 +9,10 @@ public class SpaceStationBlaster extends Game {
 	public enum EffectType { NONE, GREEN_FIRE, ORANGE_FIRE, PURPLE_FIRE, BLUE_FIRE, GREEN_IMPACT,
 		ORANGE_IMPACT, PURPLE_IMPACT, BLUE_IMPACT, GREEN_TRAIL, ORANGE_TRAIL, PURPLE_TRAIL,
 		BLUE_TRAIL, PLAYER_EXPLOSION, SMALL_ASTEROID_EXPLOSION, ENEMY_EXPLOSION };
+	public enum PowerupType { NONE, BULLET, SHIELD }
 
 	public static final int V_WIDTH = 1280; // virtual height of screen;
 	public static final int V_HEIGHT = 800; // virtual width of screen;
-	public static final float PPM = 100f; // number of pixels per meter
 
 	public static final String TEXTURE_ATLAS_PATH = "sprite-sheet.atlas";
 	public static final String UI_TEXTURE_ATLAS_PATH = "ui-space-expansion-sprite-sheet.atlas";

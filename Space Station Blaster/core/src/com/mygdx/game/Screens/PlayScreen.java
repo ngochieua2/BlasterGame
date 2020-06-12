@@ -16,12 +16,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
 import com.mygdx.game.Effects;
 import com.mygdx.game.Player;
+import com.mygdx.game.Powerups;
 import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SpaceStationBlaster;
@@ -42,6 +44,7 @@ public class PlayScreen implements Screen {
     private Walls walls;
     // game sprites
     private Player player;
+    private Powerups powerups;
     private Bullets bullets;
     private Enemies enemies;
     private Asteroids asteroids;
@@ -79,6 +82,7 @@ public class PlayScreen implements Screen {
 
         walls = new Walls(this);
         effects = new Effects(this);
+        powerups = new Powerups(this);
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
@@ -88,6 +92,7 @@ public class PlayScreen implements Screen {
     }
 
     public void reloadStage() {
+        powerups = new Powerups(this);
         bullets = new Bullets(this);
         player = new Player(this);
         enemies = new Enemies(this);
@@ -116,6 +121,10 @@ public class PlayScreen implements Screen {
         return effects;
     }
 
+    public Powerups getPowerups() {
+        return powerups;
+    }
+
     @Override
     public void show() {
 
@@ -132,6 +141,7 @@ public class PlayScreen implements Screen {
             enemies.spawnSpaceStation();
         }
         handleInput(deltaTime);
+        powerups.update(deltaTime);
         player.update(deltaTime);
         bullets.update(deltaTime);
         enemies.update(deltaTime);
@@ -164,6 +174,7 @@ public class PlayScreen implements Screen {
         game.spriteBatch.begin();
 
         player.render(game.spriteBatch);
+        powerups.render(game.spriteBatch, delta);
         bullets.render(game.spriteBatch, delta);
         enemies.render(game.spriteBatch, delta);
         asteroids.render(game.spriteBatch, delta);

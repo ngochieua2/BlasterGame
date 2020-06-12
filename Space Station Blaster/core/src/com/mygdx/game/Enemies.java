@@ -49,7 +49,7 @@ public class Enemies {
     private TextureRegion spaceStationTexture3;
 
     public Type[] type;
-    private Sprite[] sprite;
+    public Sprite[] sprite;
     private boolean spaceStationSpawned;
     private Sprite spaceStationSprite;
     public Animation[] animations;
@@ -59,7 +59,7 @@ public class Enemies {
     private TextureRegion[] currentFrame;
     private float[] spaceStationAnimationElapsedTime;
     private float[] animationElapsedTime;
-    private Vector2[] position;
+    public Vector2[] position;
     private Vector2[] velocity;
     private float[] radians;
     public Circle[] circleColliders;
