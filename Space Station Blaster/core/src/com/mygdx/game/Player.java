@@ -206,7 +206,7 @@ public class Player {
     }
 
     public void decreaseBulletCooldown() {
-        shootingCooldownSpeed *= 0.8f;
+        shootingCooldownSpeed *= 0.5f;
     }
 
     private void handleInput(float deltaTime) {
@@ -308,17 +308,6 @@ public class Player {
                             2, firePosition);
         }
 
-        if (spawningBulletPowerup) {
-
-        }
-
-
-        if (spawningShieldPowerup) {
-
-        }
-
-
-
         // collision with enemy
         enemies = playScreen.getEnemies();
         for (int index = 0; index < enemies.circleColliders.length; index++) {
@@ -386,11 +375,9 @@ public class Player {
         int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.BULLET, radians);
         // set the bulletPowerupDirection
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
-                Powerups.BULLET_POWERUP_TEXTURE_WIDTH / 2 +
-                playScreen.getEnemies().sprite[currentUFOIndex].getWidth() / 2;
+                Powerups.BULLET_POWERUP_TEXTURE_WIDTH / 2;
         playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -
-                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2 +
-                playScreen.getEnemies().sprite[currentUFOIndex].getHeight() / 2;
+                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2;
         spawningBulletPowerup = false;
     }
 
@@ -398,11 +385,9 @@ public class Player {
         int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.SHIELD, radians);
         // set the bulletPowerupDirection
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
-                Powerups.SHIELD_POWERUP_TEXTURE_WIDTH / 2 +
-                playScreen.getEnemies().sprite[currentUFOIndex].getWidth() / 2;
+                Powerups.SHIELD_POWERUP_TEXTURE_WIDTH / 2;
         playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -
-                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2 +
-                playScreen.getEnemies().sprite[currentUFOIndex].getHeight() / 2;
+                Powerups.SHIELD_POWERUP_TEXTURE_HEIGHT / 2;
         spawningShieldPowerup = false;
     }
 
