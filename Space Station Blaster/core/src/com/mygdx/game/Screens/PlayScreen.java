@@ -32,7 +32,7 @@ import com.mygdx.game.Enemies;
 import com.mygdx.game.Walls;
 
 public class PlayScreen implements Screen {
-    private final static int SCORE_REQUIRED_TO_SPAWN_SPACE_STATION = 10000;
+
     private TextureAtlas textureAtlas;
     private TextureAtlas uiTextureAtlas;
     private TiledMap tiledMap;
@@ -137,7 +137,7 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float deltaTime) {
-        if (gameHud.score >= SCORE_REQUIRED_TO_SPAWN_SPACE_STATION && !enemies.spaceStationSpawned()) {
+        if (gameHud.score >= Hud.SCORE_REQUIRED_TO_SPAWN_SPACE_STATION && !enemies.spaceStationSpawned()) {
             enemies.spawnSpaceStation();
         }
         handleInput(deltaTime);

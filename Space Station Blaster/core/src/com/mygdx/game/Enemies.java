@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Bullets;
 import com.mygdx.game.Effects;
+import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
@@ -30,9 +31,12 @@ public class Enemies {
     private static final int SPACE_STATION_HEALTH = 10;
     private static final float GREEN_UFO_SPEED = 100f;
     private static final float RED_UFO_SPEED = 100f;
-    private static final float ENEMY_SPAWN_INTERVAL = 5f;
+    private static final float ENEMY_SPAWN_INTERVAL = 20f;
+    private static final float MIN_ENEMY_SPAWN_INTERVAL = 2f;
     private static final float ENEMY_SHOOT_INTERVAL = 1f;
     private static final float ROTATION_SPEED = 3.5f;
+
+    public float enemySpawnInterval;
 
     private PlayScreen playScreen;
     private Effects effects;
@@ -73,6 +77,11 @@ public class Enemies {
         this.playScreen = playScreen;
         effects = playScreen.getEffects();
         camera = playScreen.getCamera();
+        if (playScreen.getGameHud().stageNumber >= 6) {
+            enemySpawnInterval = MIN_ENEMY_SPAWN_INTERVAL;
+        } else {
+            enemySpawnInterval = ENEMY_SPAWN_INTERVAL - playScreen.getGameHud().stageNumber * 3f;
+        }
         timeInterval = 0f;
         greenUFOTexture = playScreen.getTextureAtlas().findRegion("ufoGreen");
         redUFOTexture = playScreen.getTextureAtlas().findRegion("ufoRed");
@@ -283,7 +292,7 @@ public class Enemies {
         int currentBulletIndex;
 
         //Spawns enemies after waiting a specified amount of time
-        if (timeInterval >= ENEMY_SPAWN_INTERVAL) {
+        if (timeInterval >= enemySpawnInterval) {
             boolean greenUFO = MathUtils.randomBoolean();
             if (greenUFO) {
                 spawn(Type.GREEN_UFO);
@@ -462,9 +471,13 @@ public class Enemies {
 
     public void damageSpaceStation() {
         spaceStationHealth -= 1;
-        if (spaceStationHealth < 0) {
+        if (spaceStationHealth <= 0) {
+            playScreen.getGameHud().updateScore(Hud.SPACE_STATION_POINTS);
+            if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                    playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                playScreen.getGameHud().addShip();
+            }
             spaceStationHealth = SPACE_STATION_HEALTH;
-
             spaceStationAnimations[0] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
             Timer.schedule(new Timer.Task() {
                 @Override

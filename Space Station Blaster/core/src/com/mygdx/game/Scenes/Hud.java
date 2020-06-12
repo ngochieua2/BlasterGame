@@ -29,6 +29,16 @@ import com.mygdx.game.SpaceStationBlaster;
 
 public class Hud implements Disposable {
 
+    public static final int GREEN_UFO_POINTS = 700;
+    public static final int RED_UFO_POINTS = 1000;
+    public static final int SPACE_STATION_POINTS = 2500;
+    public static final int LARGE_ASTEROID_POINTS = 100;
+    public static final int MEDIUM_ASTEROID_POINTS = 200;
+    public static final int SMALL_ASTEROID_POINTS = 300;
+    public static final int FIRST_EXTRA_LIFE = 20000;
+    public static final int SECOND_EXTRA_LIFE = 50000;
+    public static final int SCORE_REQUIRED_TO_SPAWN_SPACE_STATION = 10000;
+
     private static final int FONT_SIZE = 24;
     private static final int FONT_SIZE_STAGE = 48;
     private static final int DEF_SCORE = 0;
@@ -199,6 +209,13 @@ public class Hud implements Disposable {
     public void setStageNumber(int stageNumber) {
         this.stageNumber = stageNumber;
         stageNumberLabel.setText(String.format("STAGE: %d", stageNumber));
+    }
+
+    public void addShip() {
+        if (ships < MAX_SHIPS) {
+            ships++;
+            shipsCountLabel.setText(String.format("SHIPS: %d", ships));
+        }
     }
 
     public void increaseShield() {

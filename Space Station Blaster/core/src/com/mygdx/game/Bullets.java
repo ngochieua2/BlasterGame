@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 
 import java.util.Random;
@@ -325,7 +326,12 @@ public class Bullets {
                     case GREEN: {
                         // update the score for destroying Red and Green UFOs
                         if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
-                            playScreen.getGameHud().updateScore(Player.RED_UFO_POINTS);
+                            playScreen.getGameHud().updateScore(Hud.RED_UFO_POINTS);
+                            if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                                    playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                                playScreen.getGameHud().addShip();
+                            }
+
                             randomValue = random.nextInt(5) + 1;
                             if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
@@ -333,7 +339,11 @@ public class Bullets {
                             }
 
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
-                            playScreen.getGameHud().updateScore(Player.GREEN_UFO_POINTS);
+                            playScreen.getGameHud().updateScore(Hud.GREEN_UFO_POINTS);
+                            if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                                    playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                                playScreen.getGameHud().addShip();
+                            }
                             randomValue = random.nextInt(3) + 1;
                             if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
@@ -407,13 +417,25 @@ public class Bullets {
                     switch (bulletType[index]) {
                         case GREEN:
                             if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_LARGE ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_LARGE){
-                                playScreen.getGameHud().updateScore(Player.LARGE_ASTEROID_POINTS);
+                                playScreen.getGameHud().updateScore(Hud.LARGE_ASTEROID_POINTS);
+                                if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                                        playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                                    playScreen.getGameHud().addShip();
+                                }
                             }
                             else if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_MEDIUM ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_MEDIUM){
-                                playScreen.getGameHud().updateScore(Player.MEDIUM_ASTEROID_POINTS);
+                                playScreen.getGameHud().updateScore(Hud.MEDIUM_ASTEROID_POINTS);
+                                if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                                        playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                                    playScreen.getGameHud().addShip();
+                                }
                             }
                             else if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_SMALL ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_SMALL){
-                                playScreen.getGameHud().updateScore(Player.SMALL_ASTEROID_POINTS);
+                                playScreen.getGameHud().updateScore(Hud.SMALL_ASTEROID_POINTS);
+                                if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
+                                        playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+                                    playScreen.getGameHud().addShip();
+                                }
                             }
 
                             bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;

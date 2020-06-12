@@ -18,16 +18,7 @@ import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
-    public enum PlayerState { NORMAL, DESTROYED, }
-
-    public static final int GREEN_UFO_POINTS = 700;
-    public static final int RED_UFO_POINTS = 1000;
-    public static final int BATTLE_CRUISER = 500;
-    public static final int LARGE_ASTEROID_POINTS = 100;
-    public static final int MEDIUM_ASTEROID_POINTS = 200;
-    public static final int SMALL_ASTEROID_POINTS = 300;
-    public static final int EXTRA_LIFE_FIRST = 5000;
-    public static final int EXTRA_LIFE_SECOND = 50000;
+    public enum PlayerState { NORMAL, DESTROYED, STAGE_COMPLETE}
 
     private static final float MAX_SPEED = 300; // the maximum speed the player can travel
     private static final float ACCELERATION = 200; // how fast the player can accelerate
