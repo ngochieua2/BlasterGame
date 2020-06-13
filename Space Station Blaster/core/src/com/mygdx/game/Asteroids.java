@@ -61,7 +61,8 @@ public class Asteroids {
     private static final float MeteorGrey_Small1_SPEED = 96;
 
 
-    public static final int Asteroids_Max = 80;
+    public static final int Asteroids_Max = 480;
+    private static final int DEF_NUMBER_OF_ASTEROIDS = 20; // default number of asteroids for stage 1
 
     //TextureRegion of all asteroids
     private TextureRegion LargeBrownAstTexture;
@@ -94,6 +95,7 @@ public class Asteroids {
     public Animation[] animations;
     public Effects effects;
     private Vector2[] animationPosition;
+    private int numberOfAsteroids;
 
     public enum  TYPE {
         BROWN_LARGE, GREY_LARGE, BROWN_MEDIUM, GREY_MEDIUM, BROWN_SMALL, GREY_SMALL, NONE;
@@ -124,8 +126,14 @@ public class Asteroids {
 
         init(Asteroids_Max);
 
-        //Spawns 20 asteroids when start
-        for (int i = 0; i < 20; i++){
+        // set number of asteroids based on the current stage number
+        if (playScreen.getGameHud().stageNumber > 6) {
+            numberOfAsteroids = DEF_NUMBER_OF_ASTEROIDS * 6;
+        } else {
+            numberOfAsteroids = DEF_NUMBER_OF_ASTEROIDS * playScreen.getGameHud().stageNumber;
+        }
+        //Spawns number of asteroids when starting
+        for (int i = 0; i < numberOfAsteroids; i++){
             spawn(TYPE.getRandomType());
         }
 
