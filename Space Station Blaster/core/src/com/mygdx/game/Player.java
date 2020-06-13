@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Screens.PlayScreen;
 
@@ -97,6 +98,7 @@ public class Player {
     public TextureRegion explosionCurrentFrame;
 
     public float elapsedTime;
+    public float stageCompleteElapsedTime;
 
     public int currentBulletIndex;
     public int currentUFOIndex;
@@ -147,6 +149,8 @@ public class Player {
         shieldPowerupDirection = new Vector2();
         shieldPowerupRadians = 0;
         shieldPowerupRotationSpeed = 0;
+
+        stageCompleteElapsedTime = 0;
 
         fireElapsedTime = 0;
         impactElapsedTime = 0;
@@ -266,9 +270,20 @@ public class Player {
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
         if (playerState == PlayerState.NORMAL) {
             playerBounds.setPosition(position.x, position.y);
-        } else { // PlayerState.DESTROYED
+        } else if (playerState == PlayerState.DESTROYED) {
             playerBounds.setPosition(-50, -50);
+        } else if (playerState == PlayerState.STAGE_COMPLETE) {
+            playerBounds.setPosition(-500, -500);
+            playScreen.getGameHud().displayStageComplete();
+            playScreen.getGameHud().clearStageCompleteDisplay();
+            stageCompleteElapsedTime += deltaTime;
+            if (stageCompleteElapsedTime > 3) {
+                playScreen.getGameHud().nextStage();
+                playScreen.reloadStage();
+                playScreen.getGameHud().clearStageNumberDisplay();
+            }
         }
+
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
 
         elapsedTime += deltaTime;

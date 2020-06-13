@@ -87,7 +87,7 @@ public class PlayScreen implements Screen {
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
-
+        gameHud.setScoreRequiredToSpawnSpaceStation();
         gameHud.clearStageNumberDisplay(); // clear the stage number after 4 seconds;
     }
 
@@ -98,6 +98,7 @@ public class PlayScreen implements Screen {
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
         gameHud.resetShield();
+        gameHud.setScoreRequiredToSpawnSpaceStation();
         gameHud.clearStageNumberDisplay();
     }
 
@@ -137,7 +138,7 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float deltaTime) {
-        if (gameHud.score >= Hud.SCORE_REQUIRED_TO_SPAWN_SPACE_STATION && !enemies.spaceStationSpawned()) {
+        if (gameHud.currentStageScore >= getGameHud().scoreRequiredToSpawnSpaceStation && !enemies.spaceStationSpawned()) {
             enemies.spawnSpaceStation();
         }
         handleInput(deltaTime);

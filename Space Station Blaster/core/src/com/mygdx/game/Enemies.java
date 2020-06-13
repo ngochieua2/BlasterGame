@@ -115,7 +115,7 @@ public class Enemies {
     public void init() {
         spaceStationColliders[0] = new Rectangle();
         spaceStationColliders[1] = new Rectangle();
-        spaceStationHealth = SPACE_STATION_HEALTH;
+        spaceStationHealth = SPACE_STATION_HEALTH * playScreen.getGameHud().stageNumber;
         for (int i=0; i<4; i++) {
             spaceStationAnimationPositions[i] = new Vector2(0, 0);
             spaceStationAnimationElapsedTime[i] = 0f;
@@ -473,11 +473,10 @@ public class Enemies {
         spaceStationHealth -= 1;
         if (spaceStationHealth <= 0) {
             playScreen.getGameHud().updateScore(Hud.SPACE_STATION_POINTS);
-            if (playScreen.getGameHud().score >= Hud.FIRST_EXTRA_LIFE ||
-                    playScreen.getGameHud().score >= Hud.SECOND_EXTRA_LIFE) {
+            if (playScreen.getGameHud().extraShipAwarded()) {
                 playScreen.getGameHud().addShip();
             }
-            spaceStationHealth = SPACE_STATION_HEALTH;
+            spaceStationHealth = SPACE_STATION_HEALTH * playScreen.getGameHud().stageNumber;
             spaceStationAnimations[0] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -507,6 +506,7 @@ public class Enemies {
                     spaceStationPolygons[1].setPosition(-100, -100);
                 }
             }, 2.5f);
+            playScreen.getPlayer().playerState = Player.PlayerState.STAGE_COMPLETE;
         }
     }
 

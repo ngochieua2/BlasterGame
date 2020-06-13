@@ -35,18 +35,19 @@ public class Hud implements Disposable {
     public static final int LARGE_ASTEROID_POINTS = 100;
     public static final int MEDIUM_ASTEROID_POINTS = 200;
     public static final int SMALL_ASTEROID_POINTS = 300;
-    public static final int FIRST_EXTRA_LIFE = 20000;
-    public static final int SECOND_EXTRA_LIFE = 50000;
+    public static final int FIRST_EXTRA_SHIP = 20000;
+    public static final int SECOND_EXTRA_SHIP = 50000;
     public static final int SCORE_REQUIRED_TO_SPAWN_SPACE_STATION = 10000;
-
     private static final int FONT_SIZE = 24;
     private static final int FONT_SIZE_STAGE = 48;
     private static final int DEF_SCORE = 0;
     private static final int DEF_SHIELD = 3;
     private static final int DEF_SHIPS = 2;
     private static final int MAX_SHIELD = 5;
-    private static final int MAX_SHIPS = 4;
     private static final int DEF_STAGE_NUMBER = 1;
+
+    boolean first_extra_ship_awarded;
+    boolean second_extra_ship_awarded;
 
     public Stage stage;
     private Viewport viewport;
@@ -54,19 +55,18 @@ public class Hud implements Disposable {
     private TextureAtlas textureAtlas;
     private TextureAtlas uiTextureAtlas;
 
-    private Image numeralXImage;
-    private Image[] playerLifeImages;
-    private Image[] shieldImages;
-
     public int score; // players current score
+    public int currentStageScore; // players current stage score, used to spawn space station.
     public int shield; // players number of hit points left
     public int ships; // players number of lives left
     public int stageNumber; // current state number
+    public int scoreRequiredToSpawnSpaceStation; // score required to spawn space station of the current stage
 
     private Label currentScoreLabel;
     private Label shieldLevelLabel;
     private Label shipsCountLabel;
     private Label stageNumberLabel;
+    private Label stageCompleteLabel;
 
     private FreeTypeFontGenerator fontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
@@ -95,6 +95,8 @@ public class Hud implements Disposable {
         shield = DEF_SHIELD;
         ships = DEF_SHIPS;
         stageNumber = DEF_STAGE_NUMBER;
+        first_extra_ship_awarded = false;
+        second_extra_ship_awarded = false;
 
         viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT,
                 new OrthographicCamera());
@@ -165,10 +167,6 @@ public class Hud implements Disposable {
         shieldProgressBar.setValue(shield * 0.2f);
         shieldProgressBar.setBounds(10, 10, 100, 20);
 
-        numeralXImage = new Image(textureAtlas.findRegion("numeralX"));
-
-        shieldImages = new Image[MAX_SHIELD];
-
         // set the label text
         currentScoreLabel = new Label(String.format("SCORE: %06d", score), labelStyle);
         shieldLevelLabel = new Label(String.format("SHIELD: "), labelStyle);
@@ -194,28 +192,41 @@ public class Hud implements Disposable {
         table.setX(0);
         table.setY(SpaceStationBlaster.V_HEIGHT - 60);
 
-        stageNumberLabel.setPosition(560,300f);
+        stageNumberLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() + 80) / 2,
+                (SpaceStationBlaster.V_HEIGHT - stageNumberLabel.getHeight() - 60) / 2);
 
         stage.addActor(table);
         stage.addActor(stageNumberLabel);
+
 
     }
 
     public void updateScore(int scoreIncrease) {
         score += scoreIncrease;
+        currentStageScore += scoreIncrease;
         currentScoreLabel.setText(String.format("SCORE: %06d", score));
     }
 
-    public void setStageNumber(int stageNumber) {
-        this.stageNumber = stageNumber;
+    public void nextStage() {
+        this.stageNumber++;
         stageNumberLabel.setText(String.format("STAGE: %d", stageNumber));
     }
 
     public void addShip() {
-        if (ships < MAX_SHIPS) {
-            ships++;
-            shipsCountLabel.setText(String.format("SHIPS: %d", ships));
+        ships++;
+        shipsCountLabel.setText(String.format("SHIPS: %d", ships));
+    }
+
+    public boolean extraShipAwarded() {
+        boolean shipAwarded = false;
+        if (score >= FIRST_EXTRA_SHIP && !first_extra_ship_awarded) {
+            first_extra_ship_awarded = true;
+            shipAwarded = true;
+        } else if (score >= SECOND_EXTRA_SHIP && !second_extra_ship_awarded) {
+            second_extra_ship_awarded = true;
+            shipAwarded = true;
         }
+        return shipAwarded;
     }
 
     public void increaseShield() {
@@ -246,6 +257,11 @@ public class Hud implements Disposable {
         shipsCountLabel.setText(String.format("SHIPS: %d", ships));
     }
 
+    public void setScoreRequiredToSpawnSpaceStation() {
+        currentStageScore = 0;
+        scoreRequiredToSpawnSpaceStation = SCORE_REQUIRED_TO_SPAWN_SPACE_STATION * stageNumber;
+    }
+
     public void clearStageNumberDisplay() {
         Timer.schedule(new Timer.Task() {
 
@@ -254,6 +270,26 @@ public class Hud implements Disposable {
                 stageNumberLabel.setText("");
             }
         }, 4);
+    }
+
+    public void clearStageCompleteDisplay() {
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                stageCompleteLabel.setText("");
+            }
+        }, 3);
+    }
+
+    public void displayStageComplete() {
+        if (stageCompleteLabel == null) {
+            stageCompleteLabel = new Label("STAGE COMPLETE", labelStyleStage);
+            stageCompleteLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() + 80) / 2,
+                    (SpaceStationBlaster.V_HEIGHT - stageNumberLabel.getHeight() - 60) / 2);
+            stage.addActor(stageCompleteLabel);
+        } else {
+            stageCompleteLabel.setText("STAGE COMPLETE");
+        }
     }
 
     private NinePatch getNinePatch() {
