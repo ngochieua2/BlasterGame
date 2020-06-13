@@ -3,11 +3,14 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -15,18 +18,25 @@ import com.mygdx.game.SpaceStationBlaster;
 
 public class GameOverScreen implements Screen {
 
+    private static final int BANNER_WIDTH = 400;
+    private static final int BANNER_HEIGHT = 300;
+
+
     private SpaceStationBlaster game;
     private SpriteBatch batch;
     private Skin skin;
     private Stage stage;
 
-    private Label gameoverTitle;
+    private Texture gameoverBanner;
+    private Image image;
     private Label scoreLabel;
 
     private TextButton tryAgain;
     private TextButton exit;
 
     private int score;
+
+    private Table table;
 
 
     public GameOverScreen (final SpaceStationBlaster game, int score){
@@ -36,10 +46,9 @@ public class GameOverScreen implements Screen {
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
 
-        // game over label
-        gameoverTitle = new Label("GAME OVER", skin, "title");
-        gameoverTitle.setPosition(Gdx.graphics.getWidth() /2 - gameoverTitle.getWidth()/2, Gdx.graphics.getHeight() * 2/3);
-        gameoverTitle.setAlignment(Align.center);
+        // gameover banner
+        gameoverBanner = new Texture("screen/gameover.png");
+        image = new Image(gameoverBanner);
 
         // score label
         scoreLabel = new Label(String.format("SCORE: %d", score), skin ,"default");
@@ -70,9 +79,17 @@ public class GameOverScreen implements Screen {
             }
         } );
 
+        // set up table for gameover banner
+        table = new Table();
+        table.setHeight(BANNER_HEIGHT);
+        table.setWidth(BANNER_WIDTH);
+        table.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() * 2/3 - BANNER_HEIGHT/2);
+        table.add(image);
+
+
         // set stage and add actor
         stage = new Stage();
-        stage.addActor(gameoverTitle);
+        stage.addActor(table);
         stage.addActor(scoreLabel);
         stage.addActor(tryAgain);
         stage.addActor(exit);
