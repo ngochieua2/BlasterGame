@@ -1,6 +1,7 @@
 package com.mygdx.game.Scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -242,6 +243,7 @@ public class Hud implements Disposable {
             shieldProgressBar.setValue(shield * 0.2f);
             // check if player has no shield
             if (shield == 0) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                 playScreen.getPlayer().playerState = Player.PlayerState.DESTROYED;
             }
         }

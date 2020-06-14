@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -232,6 +233,7 @@ public class Player {
         // player shooting
         if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
                 || playScreen.controller.isShootPressed() && playerState == PlayerState.NORMAL) {
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
             bulletFired = true;
 
         // spawn the bullet when animation is finished

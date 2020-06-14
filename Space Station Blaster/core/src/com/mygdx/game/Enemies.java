@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -148,6 +149,7 @@ public class Enemies {
             return -1;
         }
 
+        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.UFO_SPAWN_SOUND, Sound.class).play();
         float xVelocity;
         float yVelocity;
         Vector2 spawnPoint;
@@ -198,6 +200,7 @@ public class Enemies {
 
     public void spawnSpaceStation() {
         spaceStationSpawned = true;
+        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.SPACE_STATION_SPAWN_SOUND, Sound.class).play();
         int spaceStationType = MathUtils.random(1, 3);
 
         Vector2 spawnPoint;
@@ -473,6 +476,7 @@ public class Enemies {
         spaceStationHealth -= 1;
         if (spaceStationHealth <= 0) {
             playScreen.getGameHud().updateScore(Hud.SPACE_STATION_POINTS);
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
             if (playScreen.getGameHud().extraShipAwarded()) {
                 playScreen.getGameHud().addShip();
             }
@@ -481,18 +485,21 @@ public class Enemies {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                     spaceStationAnimations[1] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
                 }
             }, 0.5f);
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                     spaceStationAnimations[2] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
                 }
             }, 1f);
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                     spaceStationAnimations[3] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
                 }
             }, 1.5f);
