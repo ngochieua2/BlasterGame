@@ -16,13 +16,13 @@ public class Powerups {
     private static final String BULLET_POWERUP_ATLAS_REGION = "bolt_bronze";
     public static final int BULLET_POWERUP_TEXTURE_WIDTH = 19;
     public static final int BULLET_POWERUP_TEXTURE_HEIGHT = 30;
-    private static final int BULLET_POWERUP_SPEED = 100;
 
     // constants for the shield powerup
     private static final String SHIELD_POWERUP_ATLAS_REGION = "shield_bronze";
     public static final int SHIELD_POWERUP_TEXTURE_WIDTH = 19;
     public static final int SHIELD_POWERUP_TEXTURE_HEIGHT = 30;
-    private static final int SHIELD_POWERUP_SPEED = 100;
+
+    private static final int SPEED = 100;
 
     // the will never be this many powerups. just in case
     private static final int MAX_POWERUPS = 20;
@@ -81,7 +81,7 @@ public class Powerups {
         lifeTime = new float[maxSize];
     }
 
-    public int spawn(SpaceStationBlaster.PowerupType powerupType, float radians) {
+    public int spawn(SpaceStationBlaster.PowerupType powerupType) {
         // bulletType should not be null
         if (powerupType == null) return -1;
         // find a free index by looping through from the beginning
@@ -101,26 +101,15 @@ public class Powerups {
 
         position[index] = new Vector2(0f, 0f);
         direction[index] = new Vector2(0f, 0f);
-        this.radians[index] = radians;
+        this.radians[index] = MathUtils.random((float) (2 * Math.PI));
 
         // initialise for different types of powerups
-        switch(powerupType) {
-            case NONE: {
-                break;
-            }
-            case BULLET: {
-                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * BULLET_POWERUP_SPEED;
-                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * BULLET_POWERUP_SPEED;
-                lifeTime[index] = 10f;
-                break;
-            }
-            case SHIELD: {
-                direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * SHIELD_POWERUP_SPEED;
-                direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * SHIELD_POWERUP_SPEED;
-                lifeTime[index] = 10f;
-                break;
-            }
+        if (powerupType != SpaceStationBlaster.PowerupType.NONE) {
+            direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * SPEED;
+            direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * SPEED;
+            lifeTime[index] = 10f;
         }
+
         return index;
     }
 

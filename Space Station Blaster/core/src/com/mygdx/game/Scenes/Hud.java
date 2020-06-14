@@ -58,6 +58,7 @@ public class Hud implements Disposable {
     public int score; // players current score
     public int currentStageScore; // players current stage score, used to spawn space station.
     public int shield; // players number of hit points left
+    public float shootingCooldown; // this is the players current cooldown. Rate of fire.
     public int ships; // players number of lives left
     public int stageNumber; // current state number
     public int scoreRequiredToSpawnSpaceStation; // score required to spawn space station of the current stage
@@ -90,6 +91,7 @@ public class Hud implements Disposable {
         this.playScreen = playScreen;
         this.textureAtlas = playScreen.getTextureAtlas();
         this.uiTextureAtlas = playScreen.getUITextureAtlas();
+        shootingCooldown = playScreen.getPlayer().DEF_SHOOTING_COOLDOWN;
 
         score = DEF_SCORE;
         shield = DEF_SHIELD;
@@ -197,8 +199,6 @@ public class Hud implements Disposable {
 
         stage.addActor(table);
         stage.addActor(stageNumberLabel);
-
-
     }
 
     public void updateScore(int scoreIncrease) {

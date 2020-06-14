@@ -217,7 +217,7 @@ public class Asteroids {
 
                 speed[index] = 32f;
                 health[index] = 3f;
-                rollSpeed[index] = MathUtils.random(-2f,2f);;
+                rollSpeed[index] = MathUtils.random(-2f,2f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
 
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];

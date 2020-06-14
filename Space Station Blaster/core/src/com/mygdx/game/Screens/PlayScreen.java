@@ -53,6 +53,7 @@ public class PlayScreen implements Screen {
     private Effects effects;
 
     private float elapsedTime;
+    public float stageCompleteElapsedTime;
 
     private ShapeRenderer shapeRenderer;
 
@@ -89,6 +90,8 @@ public class PlayScreen implements Screen {
         asteroids = new Asteroids(this);
         gameHud.setScoreRequiredToSpawnSpaceStation();
         gameHud.clearStageNumberDisplay(); // clear the stage number after 4 seconds;
+
+        stageCompleteElapsedTime = 0;
     }
 
     public void reloadStage() {
@@ -97,7 +100,6 @@ public class PlayScreen implements Screen {
         player = new Player(this);
         enemies = new Enemies(this);
         asteroids = new Asteroids(this);
-        gameHud.resetShield();
         gameHud.setScoreRequiredToSpawnSpaceStation();
         gameHud.clearStageNumberDisplay();
     }
@@ -235,6 +237,8 @@ public class PlayScreen implements Screen {
                 reloadStage();
                 if (gameHud.ships > 0) {
                     gameHud.removeShip();
+                    gameHud.resetShield();
+                    gameHud.shootingCooldown = player.shootingCooldownSpeed;
                 } else {
                     Gdx.app.exit();
                 }
@@ -254,6 +258,19 @@ public class PlayScreen implements Screen {
                     (float) (player.trailRadians + 3 * Math.PI / 2) * MathUtils.radiansToDegrees);
             game.spriteBatch.end();
             player.elapsedTime += delta;
+        }
+
+        if (player.playerState == Player.PlayerState.STAGE_COMPLETE) {
+            getGameHud().displayStageComplete();
+            getGameHud().clearStageCompleteDisplay();
+            stageCompleteElapsedTime += delta;
+            if (stageCompleteElapsedTime > 3) {
+                getGameHud().nextStage();
+                reloadStage();
+                player.shootingCooldownSpeed = getGameHud().shootingCooldown;
+                getGameHud().clearStageNumberDisplay();
+                stageCompleteElapsedTime = 0;
+            }
         }
 
         // set camera to draw what the HUD camera can see

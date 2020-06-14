@@ -331,10 +331,10 @@ public class Bullets {
                                 playScreen.getGameHud().addShip();
                             }
                             randomValue = random.nextInt(3) + 1;
-                            if (randomValue == 1) {
+                            //if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
                                 playScreen.getPlayer().spawnBulletPowerup();
-                            }
+                            //}
 
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
                             playScreen.getGameHud().updateScore(Hud.GREEN_UFO_POINTS);
@@ -342,10 +342,10 @@ public class Bullets {
                                 playScreen.getGameHud().addShip();
                             }
                             randomValue = random.nextInt(3) + 1;
-                            if (randomValue == 1) {
+                            //if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
                                 playScreen.getPlayer().spawnShieldPowerup();
-                            }
+                            //}
 
                         }
 
