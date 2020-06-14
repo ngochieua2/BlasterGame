@@ -14,28 +14,23 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Scenes.Controller;
+import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 
 public class Player {
-    public enum PlayerState { NORMAL, DESTROYED, }
-
-    public static final int GREEN_UFO_POINTS = 700;
-    public static final int RED_UFO_POINTS = 1000;
-    public static final int BATTLE_CRUISER = 500;
-    public static final int LARGE_ASTEROID_POINTS = 100;
-    public static final int MEDIUM_ASTEROID_POINTS = 200;
-    public static final int SMALL_ASTEROID_POINTS = 300;
-    public static final int EXTRA_LIFE_FIRST = 5000;
-    public static final int EXTRA_LIFE_SECOND = 50000;
+    public enum PlayerState { NORMAL, DESTROYED, STAGE_COMPLETE}
 
     private static final float MAX_SPEED = 300; // the maximum speed the player can travel
     private static final float ACCELERATION = 200; // how fast the player can accelerate
     private static final float DECELERATION = 10; // how fast the player can decelerate
     private static final float ROTATION_SPEED = 3; // speed the player can rotate
 
+    public static final float DEF_SHOOTING_COOLDOWN = 0.5f;
+    private static final float MIN_SHOOTING_COOLDOWN = 0.125f;
     // cooldown decrease when player gets bullet powerup
-    private static final float COOLDOWN_DECREASE = 0.8f;
+    private static final float SHOOTING_COOLDOWN_DECREASE = 0.5f;
 
     public static final String PLAYER_TEXTURE_ATLAS_REGION = "playerShip1_blue";
     public static final String TILED_MAP_PLAYER = "PlayerShip";
@@ -110,8 +105,8 @@ public class Player {
     public int currentBulletIndex;
     public int currentUFOIndex;
 
-    float shootingCooldown = 0f;
-    float shootingCooldownSpeed = 0.5f;
+    private float shootingCooldown = 0f;
+    public float shootingCooldownSpeed = DEF_SHOOTING_COOLDOWN;
 
     private Walls walls;
     private Enemies enemies;
@@ -126,6 +121,7 @@ public class Player {
         this.bullets = playScreen.getBullets();
         this.effects = playScreen.getEffects();
         this.walls = playScreen.getWalls();
+
         playerState = PlayerState.NORMAL;
         bulletFired = false;
         bulletHit = false;
@@ -206,7 +202,13 @@ public class Player {
     }
 
     public void decreaseBulletCooldown() {
-        shootingCooldownSpeed *= 0.5f;
+        // allow only 4 levels of cooldown (0.5, 0.25, 0.125, 0.0625)
+        if (shootingCooldownSpeed >= MIN_SHOOTING_COOLDOWN) {
+            shootingCooldownSpeed *= SHOOTING_COOLDOWN_DECREASE;
+            playScreen.getGameHud().shootingCooldown = shootingCooldownSpeed;
+            Gdx.app.log("Powerups.shootingCooldownSpeed", String.format("%f", shootingCooldownSpeed));
+            Gdx.app.log("Hud.shootingCooldown", String.format("%f", playScreen.getGameHud().shootingCooldown));
+        }
     }
 
     private void handleInput(float deltaTime) {
@@ -275,9 +277,12 @@ public class Player {
         playerSprite.setRotation(radians * MathUtils.radiansToDegrees);
         if (playerState == PlayerState.NORMAL) {
             playerBounds.setPosition(position.x, position.y);
-        } else { // PlayerState.DESTROYED
+        } else if (playerState == PlayerState.DESTROYED) {
             playerBounds.setPosition(-50, -50);
+        } else if (playerState == PlayerState.STAGE_COMPLETE) {
+            playerBounds.setPosition(-500, -500);
         }
+
         playerBounds.setRotation(radians * MathUtils.radiansToDegrees);
 
         elapsedTime += deltaTime;
@@ -372,7 +377,7 @@ public class Player {
     }
 
     public void spawnBulletPowerup() {
-        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.BULLET, radians);
+        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.BULLET);
         // set the bulletPowerupDirection
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
                 Powerups.BULLET_POWERUP_TEXTURE_WIDTH / 2;
@@ -382,7 +387,7 @@ public class Player {
     }
 
     public void spawnShieldPowerup() {
-        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.SHIELD, radians);
+        int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.SHIELD);
         // set the bulletPowerupDirection
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
                 Powerups.SHIELD_POWERUP_TEXTURE_WIDTH / 2;
