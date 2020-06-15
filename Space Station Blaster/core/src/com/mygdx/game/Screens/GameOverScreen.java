@@ -19,14 +19,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
 
+/**
+ * GameOverScreen: is the screen when player lose the game
+ */
+
 public class GameOverScreen implements Screen {
 
+    // constants for game over banner and button
     private static final int BANNER_WIDTH = 400;
     private static final int BANNER_HEIGHT = 300;
     private static final int BUTTON_WIDTH = 220;
     private static final int BUTTON_HEIGHT = 80;
 
-
+    // declare all game over screen entities
     private SpaceStationBlaster game;
     private SpriteBatch batch;
     private Skin skin;
@@ -48,14 +53,18 @@ public class GameOverScreen implements Screen {
     private Viewport viewport;
     private OrthographicCamera camera;
 
-
+    /**
+     * GameOverScreen constructor: set up all entities will appear on this screen including banner,
+     * labels, buttons, stage.
+     * @param game is the game in generally
+     * @param score is current score before player lose. It is got from PlayScreen
+     */
     public GameOverScreen (final SpaceStationBlaster game, int score){
         this.game = game;
         this.score = score;
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-
         batch = new SpriteBatch();
         stage = new Stage(viewport, batch);
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
@@ -130,6 +139,10 @@ public class GameOverScreen implements Screen {
 
     }
 
+    /**
+     * render: render current stage with all actors in it.
+     * @param delta is the time passed since the last frame
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

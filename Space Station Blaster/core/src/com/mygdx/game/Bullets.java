@@ -409,7 +409,11 @@ public class Bullets {
         }
     }
 
-
+    /**
+     * checkAsteroidsCollision: use to check collision between all asteroids in game world
+     * and current bullets, and events if it occurs.
+     * @param index is index of bullet to check collision
+     */
     private void checkAsteroidsCollision(int index) {
         Asteroids asteroids = playScreen.getAsteroids();
 

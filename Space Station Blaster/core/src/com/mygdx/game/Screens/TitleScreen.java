@@ -17,13 +17,20 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
 
+/**
+ * TitleScreen: is the first screen appearing when player turn on the game.
+ * That will help player play game, read instruction or extra information or exit.
+ */
+
 public class TitleScreen implements Screen {
 
+    // constants for title screen banner, button
     private static final int BANNER_WIDTH = 660;
     private static final int BANNER_HEIGHT = 400;
     private static final int BUTTON_WIDTH = 250;
     private static final int BUTTON_HEIGHT = 80;
 
+    // declare all title screen entities
     private SpaceStationBlaster game;
     private SpriteBatch batch;
     private Skin skin;
@@ -42,6 +49,11 @@ public class TitleScreen implements Screen {
     private Viewport viewport;
     private OrthographicCamera camera;
 
+    /**
+     * TitleScreen constructor: set up all entities will appear on this screen including banner,
+     * labels, buttons, images, stage.
+     * @param game is the game in generally
+     */
     public TitleScreen(final SpaceStationBlaster game){
         this.game = game;
 
@@ -130,6 +142,10 @@ public class TitleScreen implements Screen {
 
     }
 
+    /**
+     * render: render current stage with all actors in it.
+     * @param delta is the time passed since the last frame
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

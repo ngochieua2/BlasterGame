@@ -22,14 +22,21 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
 
+/**
+ * InstructionScreen: is the screen to explain how to play this game
+ * including mission, win condition, how to control player ship, get score
+ * and use supported items. It can be access from TitleScreen.
+ */
 public class InstructionScreen implements Screen {
 
+    // constants for instruction banner, button and entities images
     private static final int BANNER_WIDTH = 180;
     private static final int BANNER_HEIGHT = 100;
     private static final int BUTTON_SIZE = 30;
     private static final int SCORE_SIZE = 40;
     private static final int POWERUP_SIZE = 10;
 
+    // declare all instruction screen entities
     private SpaceStationBlaster game;
     private SpriteBatch batch;
     private Skin skin;
@@ -41,7 +48,7 @@ public class InstructionScreen implements Screen {
     private Texture backgroundTexture;
     private Image background;
 
-    // buttom
+    // button
     private TextButton Back;
 
     // label
@@ -129,6 +136,11 @@ public class InstructionScreen implements Screen {
     private Viewport viewport;
     private OrthographicCamera camera;
 
+    /**
+     * InstructionScreen constructor: set up all entities will appear on this screen including banner,
+     * labels, buttons, images, stage.
+     * @param game is the game in generally
+     */
     public InstructionScreen(final SpaceStationBlaster game) {
         this.game = game;
 
@@ -427,6 +439,10 @@ public class InstructionScreen implements Screen {
         
     }
 
+    /**
+     * render: render current stage with all actors in it.
+     * @param delta is the time passed since the last frame
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
