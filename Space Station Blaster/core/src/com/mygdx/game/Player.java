@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -231,19 +232,37 @@ public class Player {
         }
 
         // player shooting
-        if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
-                || playScreen.controller.isShootPressed() && playerState == PlayerState.NORMAL) {
-            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
-            bulletFired = true;
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (shootingCooldown <= 0f && !bulletFired && playScreen.controller.isShootPressed()
+                    && playerState == PlayerState.NORMAL) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
+                bulletFired = true;
 
-        // spawn the bullet when animation is finished
-        } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
-            currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
-            bullets.position[currentBulletIndex].set(firePosition);
+                // spawn the bullet when animation is finished
+            } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
+                currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+                bullets.position[currentBulletIndex].set(firePosition);
 
-            shootingCooldown = shootingCooldownSpeed;
-        } else {
-            shootingCooldown -= deltaTime;
+                shootingCooldown = shootingCooldownSpeed;
+            } else {
+                shootingCooldown -= deltaTime;
+            }
+
+        }
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE) && playerState == PlayerState.NORMAL) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
+                bulletFired = true;
+
+                // spawn the bullet when animation is finished
+            } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
+                currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+                bullets.position[currentBulletIndex].set(firePosition);
+
+                shootingCooldown = shootingCooldownSpeed;
+            } else {
+                shootingCooldown -= deltaTime;
+            }
         }
 
         // player deceleration

@@ -280,11 +280,10 @@ public class PlayScreen implements Screen {
         gameHud.stage.draw();
 
         // set camera to draw what the Controller camera can see
-        //if (Gdx.app.getType() == Application.ApplicationType.Android) {
-
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
             game.spriteBatch.setProjectionMatrix((controller.stage.getCamera().combined));
             controller.stage.draw();
-        //}
+        }
 
 
         // testing the player bounds
