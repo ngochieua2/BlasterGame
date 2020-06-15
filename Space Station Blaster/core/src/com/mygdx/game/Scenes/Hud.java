@@ -286,7 +286,7 @@ public class Hud implements Disposable {
     public void displayStageComplete() {
         if (stageCompleteLabel == null) {
             stageCompleteLabel = new Label("STAGE COMPLETE", labelStyleStage);
-            stageCompleteLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() + 80) / 2,
+            stageCompleteLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() - 100) / 2,
                     (SpaceStationBlaster.V_HEIGHT - stageNumberLabel.getHeight() - 60) / 2);
             stage.addActor(stageCompleteLabel);
         } else {
