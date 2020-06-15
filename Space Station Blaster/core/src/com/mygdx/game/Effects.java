@@ -17,16 +17,9 @@ import com.mygdx.game.Screens.PlayScreen;
 import sun.rmi.runtime.Log;
 
 /**
- * Effects:
- * TODO Still barebone. Needs allot more work.
+ * Effects: used to create animationn effects such as explosions, Bullet firing and Bullet impact
  */
 public class Effects {
-    Logger log = new Logger("current deltaTime");
-
-    public static final int EXPLOSION_TEXTURE_REGION_WIDTH = 64;
-    public static final int EXPLOSION_TEXTURE_REGION_HEIGHT = 64;
-
-    public static final int MAX_EFFECTS = 100;
     public static final float GREEN_FIRE_LIFETIME = 1f/30f;
     public static final float ORANGE_FIRE_LIFETIME = 0.1f;
     public static final float PURPLE_FIRE_LIFETIME = 0.1f;
@@ -101,6 +94,11 @@ public class Effects {
 
     private TextureAtlas textureAtlas;
 
+    /**
+     * Effects constructor: creates all the animations for our game world
+     * @param playScreen is the screen that the player spaceship lives in as well as asteroids,
+     *                   enemies and the walls
+     */
     public Effects(PlayScreen playScreen) {
         textureAtlas = playScreen.getTextureAtlas();
         greenFireBulletAnimation = createAnimation(textureAtlas, GREEN_FIRE_TEXTURE_ATLAS, GREEN_FIRE_LIFETIME);
@@ -128,6 +126,11 @@ public class Effects {
                 ENEMY_EXPLOSION_ROW_FRAMES, EXPLOSION_LIFETIME);
     }
 
+    /**
+     * getAnimation: gets an animation based on the SpaceStationBlaster.EffectType
+     * @param effectType is the type of Animation effect to be returned
+     * @return Animation
+     */
     public Animation getAnimation(SpaceStationBlaster.EffectType effectType) {
         switch (effectType) {
             case GREEN_FIRE: {
@@ -194,6 +197,13 @@ public class Effects {
         return refAnimation;
     }
 
+    /**
+     * createAnimation: creates animation for a TextureAtlas
+     * @param textureAtlas is the textures atlas file
+     * @param regionName the name of the region in the textureAtlas
+     * @param frameDuration the time frames per second for each frame of animation
+     * @return Animation
+     */
     private Animation createAnimation(TextureAtlas textureAtlas, String regionName,
                                       float frameDuration) {
 
@@ -201,6 +211,14 @@ public class Effects {
         return new Animation<TextureRegion>(frameDuration, atlasRegions);
     }
 
+    /**
+     * createAnimation: creates animation from a single sprite sheet Texture
+     * @param spriteSheetTexture is the Texture containing the sprite sheet animation frames
+     * @param cols is the number of colums of texture frames represented in the spriteSheetTexture
+     * @param rows in the number of rows of texture frames represented in the spriteSheetTexture
+     * @param frameDuration the time frames per second for each frame of animation
+     * @return Animation
+     */
     private Animation createAnimation(Texture spriteSheetTexture, int cols,
                                       int rows, float frameDuration) {
 
@@ -220,7 +238,10 @@ public class Effects {
 
     }
 
-    private void dispose() {
+    /**
+     * dispose: disposes of assets to prevent memory leaks
+     */
+    public void dispose() {
         textureAtlas.dispose();
         playerExplosionTexture.dispose();
         smallAsteroidExplosionTexture.dispose();

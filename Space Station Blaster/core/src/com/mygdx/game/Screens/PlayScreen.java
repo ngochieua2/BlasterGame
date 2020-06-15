@@ -370,6 +370,7 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         gameHud.dispose();
+        effects.dispose();
     }
 
     public Player getPlayer() {
