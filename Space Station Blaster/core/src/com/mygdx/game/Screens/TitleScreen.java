@@ -3,6 +3,7 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,12 +13,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
 
 public class TitleScreen implements Screen {
 
-    private static final int BANNER_WIDTH = 600;
+    private static final int BANNER_WIDTH = 660;
     private static final int BANNER_HEIGHT = 400;
+    private static final int BUTTON_WIDTH = 250;
+    private static final int BUTTON_HEIGHT = 80;
 
     private SpaceStationBlaster game;
     private SpriteBatch batch;
@@ -25,29 +30,46 @@ public class TitleScreen implements Screen {
     private Stage stage;
 
     private Texture gameBanner;
-    private Image image;
+    private Image bannerImage;
+    private Texture backgroundTexture;
+    private Image background;
 
     private TextButton Play;
     private TextButton Instruction;
+    private TextButton Credits;
     private TextButton Exit;
 
-    private Table table;
+    private Viewport viewport;
+    private OrthographicCamera camera;
 
     public TitleScreen(final SpaceStationBlaster game){
         this.game = game;
 
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+
         batch = new SpriteBatch();
+        stage = new Stage(viewport, batch);
+
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
+
+        // background
+        backgroundTexture = new Texture("screen/star_background.png");
+        background = new Image(backgroundTexture);
+        background.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        background.setPosition(0,0);
 
         // game banner
         gameBanner = new Texture("screen/gameTitle.png");
-        image = new Image(gameBanner);
+        bannerImage = new Image(gameBanner);
+        bannerImage.setSize(BANNER_WIDTH,BANNER_HEIGHT);
+        bannerImage.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() - 310);
 
         // play button
         Play = new TextButton("PLAY GAME", skin, "default");
-        Play.setWidth(250f);
-        Play.setHeight(80f);
-        Play.setPosition(Gdx.graphics.getWidth() /2 - Play.getWidth()/2, Gdx.graphics.getHeight()/3 + 50 );
+        Play.setWidth(BUTTON_WIDTH);
+        Play.setHeight(BUTTON_HEIGHT);
+        Play.setPosition(Gdx.graphics.getWidth() /2 - Play.getWidth()/2, Gdx.graphics.getHeight()/2  );
         Play.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -57,22 +79,33 @@ public class TitleScreen implements Screen {
 
         // instruction button
         Instruction = new TextButton("INSTRUCTION", skin, "default");
-        Instruction.setWidth(250f);
-        Instruction.setHeight(80f);
-        Instruction.setPosition(Gdx.graphics.getWidth() /2 - Instruction.getWidth()/2, Gdx.graphics.getHeight()/3 );
+        Instruction.setWidth(BUTTON_WIDTH);
+        Instruction.setHeight(BUTTON_HEIGHT);
+        Instruction.setPosition(Gdx.graphics.getWidth() /2 - Instruction.getWidth()/2, Gdx.graphics.getHeight()/2 - 80 );
         Instruction.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new InstructionScreen(game));
             }
         } );
 
+        // instruction button
+        Credits = new TextButton("CREDITS", skin, "default");
+        Credits.setWidth(BUTTON_WIDTH);
+        Credits.setHeight(BUTTON_HEIGHT);
+        Credits.setPosition(Gdx.graphics.getWidth() /2 - Credits.getWidth()/2, Gdx.graphics.getHeight()/2 - 160 );
+        Credits.addListener( new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //game.setScreen(new ......);
+            }
+        } );
 
         // exit button
         Exit = new TextButton("EXIT GAME", skin, "default");
-        Exit.setWidth(250f);
-        Exit.setHeight(80f);
-        Exit.setPosition(Gdx.graphics.getWidth() /2 - Exit.getWidth()/2, Gdx.graphics.getHeight()/3 - 150);
+        Exit.setWidth(BUTTON_WIDTH);
+        Exit.setHeight(BUTTON_HEIGHT);
+        Exit.setPosition(Gdx.graphics.getWidth() /2 - Exit.getWidth()/2, Gdx.graphics.getHeight()/2 - 240);
         Exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,20 +113,13 @@ public class TitleScreen implements Screen {
             }
         } );
 
-
-        // set up table for game banner
-        table = new Table();
-        table.setHeight(BANNER_HEIGHT);
-        table.setWidth(BANNER_WIDTH);
-        table.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() * 3/4 - BANNER_HEIGHT/2);
-        table.add(image);
-
-
         // set stage and add actor
         stage = new Stage();
-        stage.addActor(table);
+        stage.addActor(background);
+        stage.addActor(bannerImage);
         stage.addActor(Play);
         stage.addActor(Instruction);
+        stage.addActor(Credits);
         stage.addActor(Exit);
         Gdx.input.setInputProcessor(stage);
     }
@@ -108,9 +134,9 @@ public class TitleScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
+
         stage.draw();
-        batch.end();
+
     }
 
     @Override
