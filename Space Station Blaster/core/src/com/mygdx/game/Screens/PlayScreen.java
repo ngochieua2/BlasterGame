@@ -4,6 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -278,11 +280,10 @@ public class PlayScreen implements Screen {
         gameHud.stage.draw();
 
         // set camera to draw what the Controller camera can see
-        //if (Gdx.app.getType() == Application.ApplicationType.Android) {
-
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
             game.spriteBatch.setProjectionMatrix((controller.stage.getCamera().combined));
             controller.stage.draw();
-        //}
+        }
 
 
         // testing the player bounds

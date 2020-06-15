@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -270,8 +271,8 @@ public class Bullets {
             Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
                     wall.getWidth(), wall.getHeight(), 0, wall.getHeight() });
             polygonWall.setPosition(wall.x, wall.y);
-            if (Intersector.overlapConvexPolygons(polygonWall, refCollider))
-            {
+            if (Intersector.overlapConvexPolygons(polygonWall, refCollider)) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.IMPACT_SOUND, Sound.class).play();
                 switch(bulletType[index]) {
                     case GREEN: {
                         //playScreen.getPlayer().bulletHit = true;
@@ -309,6 +310,7 @@ public class Bullets {
             if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], refCollider) ||
                     Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], refCollider)) {
                 if (bulletType[index] == SpaceStationBlaster.BulletType.GREEN) {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.IMPACT_SOUND, Sound.class).play();
                     bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                     animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
                     enemies.damageSpaceStation();
@@ -319,7 +321,6 @@ public class Bullets {
         for (int enemyIndex = 0; enemyIndex < Enemies.MAX_ENEMIES; enemyIndex++) {
 
             if (enemies.overlaps(refCollider, enemies.circleColliders[enemyIndex])) {
-                //TODO implement HP, delete when finished
                 Random random = new Random();
                 int randomValue;
                 switch(bulletType[index]) {
@@ -327,6 +328,7 @@ public class Bullets {
                         // update the score for destroying Red and Green UFOs
                         if (enemies.type[enemyIndex] == Enemies.Type.RED_UFO) {
                             playScreen.getGameHud().updateScore(Hud.RED_UFO_POINTS);
+                            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                             if (playScreen.getGameHud().extraShipAwarded()) {
                                 playScreen.getGameHud().addShip();
                             }
@@ -338,6 +340,7 @@ public class Bullets {
 
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
                             playScreen.getGameHud().updateScore(Hud.GREEN_UFO_POINTS);
+                            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                             if (playScreen.getGameHud().extraShipAwarded()) {
                                 playScreen.getGameHud().addShip();
                             }
@@ -379,6 +382,7 @@ public class Bullets {
     public void checkPlayerCollision(int index) {
         Player player = playScreen.getPlayer();
         if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.IMPACT_SOUND, Sound.class).play();
             switch(bulletType[index]) {
                 case ORANGE: {
                     playScreen.getGameHud().decreaseShield();
@@ -411,6 +415,7 @@ public class Bullets {
 
         for (int asteroidIndex = 0; asteroidIndex < Asteroids.Asteroids_Max; asteroidIndex++) {
                 if (Intersector.overlapConvexPolygons(refCollider, asteroids.Astcollider[asteroidIndex])) {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.ASTEROID_EXPLOSION_SOUND, Sound.class).play();
                     switch (bulletType[index]) {
                         case GREEN:
                             if (asteroids.type[asteroidIndex] == Asteroids.TYPE.GREY_LARGE ||asteroids.type[asteroidIndex] == Asteroids.TYPE.BROWN_LARGE){
