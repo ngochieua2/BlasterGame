@@ -24,8 +24,11 @@ import com.mygdx.game.SpaceStationBlaster;
 
 import java.util.Random;
 
+/**
+ * A singleton, data-oriented class that contains information for all of the enemies.
+ */
 public class Enemies {
-    public static final int MAX_ENEMIES = 10;
+    static final int MAX_ENEMIES = 10;
     private static final int GREEN_UFO_HEALTH = 3;
     private static final int RED_UFO_HEALTH = 3;
     private static final int SPACE_STATION_HEALTH = 10;
@@ -36,7 +39,7 @@ public class Enemies {
     private static final float ENEMY_SHOOT_INTERVAL = 1f;
     private static final float ROTATION_SPEED = 3.5f;
 
-    public float enemySpawnInterval;
+    private float enemySpawnInterval;
 
     private PlayScreen playScreen;
     private Effects effects;
@@ -52,27 +55,31 @@ public class Enemies {
     private TextureRegion spaceStationTexture2;
     private TextureRegion spaceStationTexture3;
 
-    public Type[] type;
+    Type[] type;
     public Sprite[] sprite;
     private boolean spaceStationSpawned;
     private Sprite spaceStationSprite;
-    public Animation[] animations;
-    public Animation[] spaceStationAnimations;
-    public Vector2[] spaceStationAnimationPositions;
+    Animation[] animations;
+    private Animation[] spaceStationAnimations;
+    private Vector2[] spaceStationAnimationPositions;
     private TextureRegion[] spaceStationCurrentFrame;
     private TextureRegion[] currentFrame;
     private float[] spaceStationAnimationElapsedTime;
     private float[] animationElapsedTime;
-    public Vector2[] position;
+    Vector2[] position;
     private Vector2[] velocity;
     private float[] radians;
-    public Circle[] circleColliders;
-    public Rectangle[] spaceStationColliders;
-    public Polygon[] spaceStationPolygons;
-    private int[] health;
+    Circle[] circleColliders;
+    private Rectangle[] spaceStationColliders;
+    Polygon[] spaceStationPolygons;
+    private int[] health;   //Enemy health increases for stage progression. Not implemented for stage one, since Enemies die in 1 hit
     private int spaceStationHealth;
     private float[] shootInterval;
 
+    /**
+     * Constructor for the Enemies class
+     * @param playScreen acts as the core controller for the game
+     */
     public Enemies(PlayScreen playScreen) {
         this.playScreen = playScreen;
         effects = playScreen.getEffects();
@@ -95,7 +102,7 @@ public class Enemies {
         type = new Type[MAX_ENEMIES];
         sprite = new Sprite[MAX_ENEMIES];
         animations = new Animation[MAX_ENEMIES];
-        spaceStationAnimations = new Animation[4];
+        spaceStationAnimations = new Animation[4];  //Space station explode in 4 places, so it needs 4 animations
         spaceStationAnimationPositions = new Vector2[4];
         spaceStationAnimationElapsedTime = new float[4];
         spaceStationCurrentFrame = new TextureRegion[4];
@@ -105,14 +112,17 @@ public class Enemies {
         velocity = new Vector2[MAX_ENEMIES];
         radians = new float[MAX_ENEMIES];
         circleColliders = new Circle[MAX_ENEMIES];
-        spaceStationColliders = new Rectangle[2];
-        spaceStationPolygons = new Polygon[2];
+        spaceStationColliders = new Rectangle[2];   //Space stations each have 2 Rectangular hitboxes
+        spaceStationPolygons = new Polygon[2];  //Rectangle hitboxes need to be converted to Polygons for collision checking
         health = new int[MAX_ENEMIES];
         shootInterval = new float[MAX_ENEMIES];
         init();
     }
 
-    public void init() {
+    /**
+     * Initialises Enemy class variables; called during construction
+     */
+    private void init() {
         spaceStationColliders[0] = new Rectangle();
         spaceStationColliders[1] = new Rectangle();
         spaceStationHealth = SPACE_STATION_HEALTH * playScreen.getGameHud().stageNumber;
@@ -133,7 +143,12 @@ public class Enemies {
         }
     }
 
-    public int spawn(Type t) {
+    /**
+     * Spawns an enemy at a free index position
+     * @param t The Type of enemy being spawed.
+     * @return The index of the enemy being spawned.
+     */
+    private int spawn(Type t) {
         if (t == Type.NONE) {
             return -1;
         }
@@ -155,9 +170,7 @@ public class Enemies {
         switch (t) {
             case GREEN_UFO:
                 sprite[freeIndex] = new Sprite(greenUFOTexture);
-                if (t == Type.NONE) {
-                    return -1;
-                }
+
                 //Randomly generate velocity vector so the ships direction is random
                 xVelocity = MathUtils.random(-GREEN_UFO_SPEED, GREEN_UFO_SPEED);
                 //Use pythagoras to produce a yVelocity so that the speed of the ship is always constant
@@ -168,7 +181,7 @@ public class Enemies {
                 health[freeIndex] = GREEN_UFO_HEALTH;
 
                 spawnPoint = generateSpawnPoint();
-
+                //Search for an off-screen spawn point
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpawnPoint();
                 }
@@ -177,14 +190,11 @@ public class Enemies {
                 break;
             case RED_UFO:
                 sprite[freeIndex] = new Sprite(redUFOTexture);
-                if (t == Type.NONE) {
-                    return -1;
-                }
 
                 health[freeIndex] = RED_UFO_HEALTH;
 
                 spawnPoint = generateSpawnPoint();
-
+                //Search for an off-screen spawn point
                 while (camera.frustum.pointInFrustum(spawnPoint.x, spawnPoint.y, 0)) {
                     spawnPoint = generateSpawnPoint();
                 }
@@ -196,6 +206,9 @@ public class Enemies {
         return freeIndex;
     }
 
+    /**
+     * Spawns a space station enemy once the player has accumulated a designated number of points.
+     */
     public void spawnSpaceStation() {
         spaceStationSpawned = true;
         int spaceStationType = MathUtils.random(1, 3);
@@ -286,7 +299,10 @@ public class Enemies {
         }
     }
 
-
+    /**
+     * Update Enemy method
+     * @param deltaTime The time passed since the last frame
+     */
     public void update(float deltaTime) {
         timeInterval += deltaTime;
         int currentBulletIndex;
@@ -360,6 +376,11 @@ public class Enemies {
         }
     }
 
+    /**
+     * Render Enemy method
+     * @param batch The game's SpriteBatch
+     * @param deltaTime The time passed since the last frame
+     */
     public void render(SpriteBatch batch, float deltaTime) {
         if (spaceStationSprite != null) {
             spaceStationSprite.draw(batch);
@@ -412,7 +433,14 @@ public class Enemies {
 
     //Collision detection between Circle and Polygon
     //https://stackoverflow.com/questions/15323719/circle-and-polygon-collision-with-libgdx
-    public static boolean overlaps(Polygon polygon, Circle circle) {
+
+    /**
+     * Check collision between an UFO and any Polygon hitbox
+     * @param polygon
+     * @param circle
+     * @return
+     */
+    static boolean overlaps(Polygon polygon, Circle circle) {
         float []vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(circle.x, circle.y);
         float squareRadius = circle.radius * circle.radius;
@@ -429,6 +457,10 @@ public class Enemies {
         return polygon.contains(circle.x, circle.y);
     }
 
+    /**
+     * Generate a random spawn point for a UFO somewhere within the bounds of the game world
+     * @return Vector2, the spawn position
+     */
     private Vector2 generateSpawnPoint() {
         float spawnX = MathUtils.random(0 + greenUFOTexture.getRegionWidth(), SpaceStationBlaster.MAP_WIDTH - greenUFOTexture.getRegionWidth());
         float spawnY = MathUtils.random(0 + greenUFOTexture.getRegionHeight(), SpaceStationBlaster.MAP_HEIGHT - greenUFOTexture.getRegionHeight());
@@ -436,6 +468,11 @@ public class Enemies {
         return new Vector2(spawnX, spawnY);
     }
 
+    /**
+     * Generate a random spawn point for a Space Station
+     * @param spaceStationType the Type of Space Station that got spawned
+     * @return VEctor2, the spawn position
+     */
     private Vector2 generateSpaceStationSpawnPoint(int spaceStationType) {
         float spawnX;
         float spawnY;
@@ -460,6 +497,11 @@ public class Enemies {
         return new Vector2(spawnX, spawnY);
     }
 
+    /**
+     * Rotates Enemies that need non-specific rotation behaviour (Red UFO's rotate to follow the player)
+     * @param typeIndex the Index position of the enemy being rotated
+     * @param deltaTime The time passed since the last frame
+     */
     private void rotate(int typeIndex, float deltaTime) {
         switch(type[typeIndex]) {
             case GREEN_UFO:
@@ -469,7 +511,10 @@ public class Enemies {
         }
     }
 
-    public void damageSpaceStation() {
+    /**
+     * Reduce the Space Station's health when the player shoots it
+     */
+    void damageSpaceStation() {
         spaceStationHealth -= 1;
         if (spaceStationHealth <= 0) {
             playScreen.getGameHud().updateScore(Hud.SPACE_STATION_POINTS);
@@ -510,6 +555,10 @@ public class Enemies {
         }
     }
 
+    /**
+     * Check if teh space station has been spawned yet
+     * @return True if the space station has been spawned, false if not
+     */
     public boolean spaceStationSpawned() {
         return spaceStationSpawned;
     }
