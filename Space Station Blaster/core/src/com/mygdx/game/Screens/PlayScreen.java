@@ -240,7 +240,7 @@ public class PlayScreen implements Screen {
                     gameHud.resetShield();
                     gameHud.shootingCooldown = player.shootingCooldownSpeed;
                 } else {
-                    Gdx.app.exit();
+                    game.setScreen(new GameOverScreen(game, gameHud.score));
                 }
             }
         } else {
