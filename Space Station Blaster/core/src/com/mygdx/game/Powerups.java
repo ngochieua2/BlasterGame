@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -180,10 +181,12 @@ public class Powerups {
         if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
             switch (powerupType[index]) {
                 case BULLET: {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.POWERUP_SHOOTING_SOUND, Sound.class).play();
                     powerupType[index] = SpaceStationBlaster.PowerupType.NONE;
                     playScreen.getPlayer().decreaseBulletCooldown();
                 }
                 case SHIELD: {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.POWERUP_SHIELD_SOUND, Sound.class).play();
                     powerupType[index] = SpaceStationBlaster.PowerupType.NONE;
                     playScreen.getGameHud().increaseShield();
                 }

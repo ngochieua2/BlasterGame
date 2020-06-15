@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -387,7 +388,7 @@ public class Asteroids {
                 //Collision with player
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
-
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                     player.playerState = Player.PlayerState.DESTROYED;
 
                 }
@@ -396,6 +397,7 @@ public class Asteroids {
                 Enemies enemies = playScreen.getEnemies();
                 for (int enemyIndex = 0; enemyIndex < Enemies.MAX_ENEMIES; enemyIndex++) {
                     if (enemies.overlaps(Astcollider[index], enemies.circleColliders[enemyIndex])) {
+                        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
                         enemies.circleColliders[enemyIndex].setPosition(0, 0);
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
