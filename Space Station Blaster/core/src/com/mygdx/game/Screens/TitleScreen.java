@@ -113,6 +113,7 @@ public class TitleScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
+                //TODO Sandy new CreditsScreen
                 //game.setScreen(new ......);
             }
         } );
@@ -162,7 +163,8 @@ public class TitleScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
