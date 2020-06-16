@@ -164,7 +164,6 @@ public class Enemies {
             return -1;
         }
 
-        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.UFO_SPAWN_SOUND, Sound.class).play();
         float xVelocity;
         float yVelocity;
         Vector2 spawnPoint;
@@ -332,6 +331,7 @@ public class Enemies {
                     if (currentBulletIndex >= 0) {
                         bullets.position[currentBulletIndex].set(sprite[i].getX(), sprite[i].getY());
                         shootInterval[i] = 0f;
+                        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play(0.3f);
                     }
                 }
 

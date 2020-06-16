@@ -128,7 +128,7 @@ public class Powerups {
         if (powerupType != SpaceStationBlaster.PowerupType.NONE) {
             direction[index].x = MathUtils.cos((float) (this.radians[index] + Math.PI / 2)) * SPEED;
             direction[index].y = MathUtils.sin((float) (this.radians[index] + Math.PI / 2)) * SPEED;
-            lifeTime[index] = 10f;
+            lifeTime[index] = 15f;
         }
 
         return index;

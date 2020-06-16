@@ -39,7 +39,6 @@ public class SpaceStationBlaster extends Game {
 	public static final String POWERUP_SHIELD_SOUND = "Sound/PowerupShield.wav";
 	public static final String POWERUP_SHOOTING_SOUND = "Sound/PowerupShooting.wav";
 	public static final String SPACE_STATION_SPAWN_SOUND = "Sound/SpaceStationSpawn.wav";
-	public static final String UFO_SPAWN_SOUND = "Sound/UFOSpawn.wav";
 	public static final String GAME_MUSIC = "Sound/vyra-mars-colony.mp3";
 	public static final String BUTTON_PRESS_SOUND = "Sound/ButtonPress.wav";
 
@@ -64,7 +63,6 @@ public class SpaceStationBlaster extends Game {
 		soundAssetManager.load(POWERUP_SHIELD_SOUND, Sound.class);
 		soundAssetManager.load(POWERUP_SHOOTING_SOUND, Sound.class);
 		soundAssetManager.load(SPACE_STATION_SPAWN_SOUND, Sound.class);
-		soundAssetManager.load(UFO_SPAWN_SOUND, Sound.class);
 		soundAssetManager.load(BUTTON_PRESS_SOUND, Sound.class);
 		soundAssetManager.finishLoading();
 
