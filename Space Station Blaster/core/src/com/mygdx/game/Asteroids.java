@@ -1,6 +1,6 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,6 +14,9 @@ import com.mygdx.game.Screens.PlayScreen;
 
 import java.util.Random;
 
+/**
+ * Asteroids: is used to create the number of asteroid with particular type and spawn them into game world
+ */
 public class Asteroids {
 
     // constants for large brown asteroid
@@ -61,7 +64,7 @@ public class Asteroids {
     private static final float MeteorGrey_Small1_SPEED = 96;
 
 
-    public static final int Asteroids_Max = 480;
+    public static final int Asteroids_Max = 480; // Maximum asteroids can be appeared one time in game world
     private static final int DEF_NUMBER_OF_ASTEROIDS = 20; // default number of asteroids for stage 1
 
     //TextureRegion of all asteroids
@@ -72,7 +75,7 @@ public class Asteroids {
     private TextureRegion SmallBrownAstTexture;
     private TextureRegion SmallGreyAstTexture;
 
-    //Polygon
+    //Polygon to check collision with other entities: enemies, bullets, player, wall
     public Polygon[] LargeBrownAstCollider;
     public Polygon[] LargeGreyAstCollider;
     public Polygon[] MediumBrownAstCollider;
@@ -81,13 +84,12 @@ public class Asteroids {
     public Polygon[] SmallGreyAstCollider;
     public Polygon[] Astcollider;
 
-
+    // declare all asteroid entities
     private PlayScreen playScreen;
     private Sprite[] asteroidSprite;
     public Vector2[] position;
     public Vector2[] direction;
     public float[] radians;
-    private float[] health;
     private float[] speed;
     private float[] rollSpeed;
     private TextureRegion[] currentFrame;
@@ -97,12 +99,16 @@ public class Asteroids {
     private Vector2[] animationPosition;
     private int numberOfAsteroids;
 
+    // all types of asteroids
     public enum  TYPE {
         BROWN_LARGE, GREY_LARGE, BROWN_MEDIUM, GREY_MEDIUM, BROWN_SMALL, GREY_SMALL, NONE;
+        // pick up random type
         public static TYPE getRandomType() {
             Random random = new Random();
             TYPE rtype;
             rtype = values()[random.nextInt(values().length-1) + 1];
+            // Asteroid types when random should not return NONE
+            // to make sure the specific number of asteroid will appear into game world
             while (rtype == NONE){
                 rtype = values()[random.nextInt(values().length-1) + 1];
             }
@@ -113,6 +119,12 @@ public class Asteroids {
     private int width = 0;
     private int height = 0;
 
+    /**
+     * Asteroids constructor: set up, gets texture regions, creates colliders for each type of them,
+     * get the specific number of asteroid for current stage and spawn them through for loop
+     * @param playScreen is where the player spaceship lives with asteroids, enemies and the walls
+     *
+     */
     public Asteroids(PlayScreen playScreen) {
         this.playScreen = playScreen;
         effects = playScreen.getEffects();
@@ -124,6 +136,7 @@ public class Asteroids {
         SmallBrownAstTexture = playScreen.getTextureAtlas().findRegion("meteorBrown_small1");
         SmallGreyAstTexture = playScreen.getTextureAtlas().findRegion("meteorGrey_small1");
 
+        // call init method
         init(Asteroids_Max);
 
         // set number of asteroids based on the current stage number
@@ -139,14 +152,15 @@ public class Asteroids {
 
     }
 
+    /**
+     * init: Initialises all asteroid entities variables with their array size
+     */
     public void init(int size ){
-
         asteroidSprite = new Sprite[size];
         type = new TYPE[size];
         position = new  Vector2[size];
         direction = new Vector2[size];
         radians = new float[size];
-        health = new float[size];
         speed = new float[size];
         Astcollider = new Polygon[size];
         rollSpeed = new  float[size];
@@ -191,11 +205,18 @@ public class Asteroids {
         }
     }
 
+    /**
+     * spawn: spawns a asteroid with random position, direction of movement depending on the
+     * angle in radians and speed depending on asteroid type
+     * @param t is the type of spawned asteroid
+     * @return index of current asteroid, which can used to access position, radian, direction,
+     * rollspeed, speed, sprite and asteroid collider
+     */
 
     public int spawn(TYPE t){
         // Check null
         if (t == TYPE.NONE) return -1;
-
+        // Select index of empty array
         int index = -1;
         for (int i = 0; i < Asteroids_Max; i++) {
             if (type[i] == TYPE.NONE) {
@@ -206,7 +227,6 @@ public class Asteroids {
 
         if (index < 0) return -1;
 
-
         type[index] = t;
         position[index] = new Vector2(0f,0f);
         direction[index] = new Vector2(0f,0f);
@@ -216,13 +236,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(LargeGreyAstTexture);
 
                 speed[index] = 32f;
-                health[index] = 3f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-2f,2f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -231,13 +251,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(LargeBrownAstTexture);
 
                 speed[index] = 32f;
-                health[index] = 3f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-2f,2f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -246,13 +266,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(MediumGreyAstTexture);
 
                 speed[index] = 64f;
-                health[index] = 1.5f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-3f,3f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -261,13 +281,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(MediumBrownAstTexture);
 
                 speed[index] = 64f;
-                health[index] = 1.5f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-3f,3f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -276,13 +296,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(SmallBrownAstTexture);
 
                 speed[index] = 96f;
-                health[index] = 0.75f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-4f,4f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -291,13 +311,13 @@ public class Asteroids {
                 asteroidSprite[index] = new Sprite(SmallGreyAstTexture);
 
                 speed[index] = 96f;
-                health[index] = 0f;
+                // get random roll speed and radian
                 rollSpeed[index] = MathUtils.random(-4f,4f);
                 radians[index] = MathUtils.random((float) (2 * Math.PI));
-
+                // calculate direction depending on current angle of radian
                 direction[index].x = MathUtils.cos(radians[index]) * speed[index];
                 direction[index].y = MathUtils.sin(radians[index]) * speed[index];
-
+                // get spawn position
                 position[index] = spawnPosition();
 
                 break;
@@ -310,8 +330,12 @@ public class Asteroids {
         return index;
     }
 
-
-
+    /**
+     * update: updates new position and sets up a asteroid collider depending on type.
+     * Next sets the collider's origin, position and rotation.
+     * Then, using this collider to check collision between asteroid with player, walls and UFO.
+     * @param dt is the time passed since the last frame
+     */
     public void update(float dt){
 
         //all asteroids movement
@@ -322,7 +346,7 @@ public class Asteroids {
                 position[index].x += direction[index].x *dt;
                 position[index].y += direction[index].y *dt;
                 radians[index] += rollSpeed[index] * dt;
-
+                // set collider depending on type
                 switch (type[index]){
                     case BROWN_LARGE:
                         width = MeteorBrown_Big1_TEXTURE_WIDTH;
@@ -355,15 +379,12 @@ public class Asteroids {
                         Astcollider[index] = SmallGreyAstCollider[index];
                         break;
                     case NONE:
-                        Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
                         break;
                 }
-
 
                 Astcollider[index].setOrigin(width / 2, height / 2);
                 Astcollider[index].setPosition(position[index].x, position[index].y);
                 Astcollider[index].setRotation( radians[index] * MathUtils.radiansToDegrees);
-                
 
                 //Check collider with wall
                 Walls walls = playScreen.getWalls();
@@ -375,10 +396,12 @@ public class Asteroids {
                     wallIndex++;
                     if (Intersector.overlapConvexPolygons(polygonWall, Astcollider[index])) {
                         //Collider with top and bot
+                        //Bounce off the wall by negating direction;
                         if (wallIndex == walls.TOP_WALL || wallIndex == walls.BOTTOM_WALL) {
                             direction[index].y = -direction[index].y;
                         }
                         //Collider with left and right
+                        //Bounce off the wall by negating direction;
                         if (wallIndex == walls.LEFT_WALL || wallIndex == walls.RIGHT_WALL) {
                             direction[index].x = - direction[index].x;
                         }
@@ -386,42 +409,48 @@ public class Asteroids {
                 }
 
                 //Collision with player
+                // Destroy player ship if it hits any asteroid
                 Player player = playScreen.getPlayer();
                 if (Intersector.overlapConvexPolygons(Astcollider[index], player.playerBounds)) {
-
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                     player.playerState = Player.PlayerState.DESTROYED;
 
                 }
 
                 //Collision with UFO
+                // Destroy any UFO if it hits any asteroid
                 Enemies enemies = playScreen.getEnemies();
                 for (int enemyIndex = 0; enemyIndex < Enemies.MAX_ENEMIES; enemyIndex++) {
                     if (enemies.overlaps(Astcollider[index], enemies.circleColliders[enemyIndex])) {
+                        SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
                         enemies.circleColliders[enemyIndex].setPosition(0, 0);
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
-
-                        split(index);
                     }
                 }
 
             }
         }
     }
-
+    /**
+     * spawnPosition: Generate a random spawn point for asteroids,
+     * make sure spawn position will be in game world and not too close with player spawn position
+     * @return Vector2, the initial spawn position of asteroid
+     */
     private Vector2 spawnPosition() {
-        float x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH );
+        // Select x in somewhere inside game world
+        float x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH + 50 , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH - 50);
         //Make sure spawn position x is not too close with player
-        while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH
-                && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH)
+        while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH *3
+                && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH *3)
         {
             x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH );
         }
-
-        float y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT );
+        // Select y in somewhere inside game world
+        float y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT + 50 , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT - 50);
         //Make sure spawn position y is not too close with player
-        while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT
-                && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT)
+        while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT *3
+                && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT *3)
         {
             y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT );
         }
@@ -429,10 +458,16 @@ public class Asteroids {
         return new Vector2(x, y);
     }
 
-
+    /**
+     * split: events when collision between asteroid and bullets occurs.
+     * Checking collision between them is in Bullets class
+     * @param index is the current index of asteroids. Asteroid type will be taken
+     *              to decide with event will occur
+     */
     public void split(int index){
         int i = -1;
-        //brown large will split into 2 brown mediums
+        // brown large will split into 2 brown mediums
+        // 2 brown mediums will spawn in the same position of the destroyed brown large
         if (type[index] == TYPE.BROWN_LARGE){
             i = spawn(TYPE.BROWN_MEDIUM);
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
@@ -441,10 +476,10 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
-        //grey large will split into 2 grey mediums
+        // grey large will split into 2 grey mediums
+        // 2 grey mediums will spawn in the same position of the destroyed grey large
         if (type[index] == TYPE.GREY_LARGE){
             i = spawn(TYPE.GREY_MEDIUM);
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
@@ -453,10 +488,10 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
-        //brown medium will split into 2 brown smallers
+        // brown medium will split into 2 brown smallers
+        // 2 brown smallers will spawn in the same position of the destroyed brown medium
         if (type[index] == TYPE.BROWN_MEDIUM){
             i = spawn(TYPE.BROWN_SMALL);
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
@@ -465,10 +500,10 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
-        //grey medium will split into 2 grey smallers
+        // grey medium will split into 2 grey smallers
+        // 2 grey smallers will spawn in the same position of the destroyed grey medium
         if (type[index] == TYPE.GREY_MEDIUM){
             i = spawn(TYPE.GREY_SMALL);
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
@@ -477,29 +512,35 @@ public class Asteroids {
             position[i] = new Vector2(Astcollider[index].getX(),Astcollider[index].getY());
 
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.ASTEROID_EXPLOSION_SOUND, Sound.class).play();
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX() + MeteorBrown_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorBrown_Small1_TEXTURE_HEIGHT/2);
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.ASTEROID_EXPLOSION_SOUND, Sound.class).play();
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX() + MeteorGrey_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorGrey_Small1_TEXTURE_WIDTH/2);
+
             type[index] = TYPE.NONE;
-            Astcollider[index]= new Polygon(new float[]{0,0,0,0,0,0,0,0});
             Astcollider[index].setPosition(0f, 0f);
         }
 
     }
 
-
+    /**
+     * render: render all asteroids with their types are not NONE
+     * then sets the origin, posistion and rotation and draws the sprite.
+     * Animation will also be render through this method
+     * @param batch used to draw textures or sprites onto the screen for the current frame
+     * @param dt The time passed since the last frame
+     */
     public void render(SpriteBatch batch, float dt) {
         for (int i=0; i<Asteroids_Max; i++) {
             if (type[i] != TYPE.NONE) {

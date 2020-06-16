@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +22,9 @@ import com.mygdx.game.Scenes.Controller;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 
+/**
+ * Player: the ship which is controlled by the player on both mobile or desktop mode
+ */
 public class Player {
     public enum PlayerState { NORMAL, DESTROYED, STAGE_COMPLETE}
 
@@ -112,8 +118,15 @@ public class Player {
     private Enemies enemies;
     private Asteroids asteroids;
 
+    public Music music;
+
     private PlayScreen playScreen;
 
+    /**
+     * Player constructor: creates the animations for the player fire, impact, trail and explosion.
+     * creates a collider based on the player object in Texture map. Sets the position and origin
+     * of the collider
+     */
     public Player(PlayScreen playScreen) {
         this.playScreen = playScreen;
         this.textureAtlas = playScreen.getTextureAtlas();
@@ -121,6 +134,11 @@ public class Player {
         this.bullets = playScreen.getBullets();
         this.effects = playScreen.getEffects();
         this.walls = playScreen.getWalls();
+
+        // background music
+        music = SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.GAME_MUSIC, Music.class);
+        music.setLooping(true);
+        music.play();
 
         playerState = PlayerState.NORMAL;
         bulletFired = false;
@@ -157,6 +175,7 @@ public class Player {
         impactElapsedTime = 0;
         elapsedTime = 0;
 
+        // create the animations
         playScreen.getTextureAtlas();
         textureRegion = textureAtlas.findRegion(PLAYER_TEXTURE_ATLAS_REGION);
         fireAnimation = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_FIRE);
@@ -201,48 +220,92 @@ public class Player {
         return new Vector2(x, y);
     }
 
+    /**
+     * decreaseBulletCooldown: for decreasing the cooldown of the fire which therefore increases
+     * the firing rate of the Player
+     */
     public void decreaseBulletCooldown() {
         // allow only 4 levels of cooldown (0.5, 0.25, 0.125, 0.0625)
         if (shootingCooldownSpeed >= MIN_SHOOTING_COOLDOWN) {
             shootingCooldownSpeed *= SHOOTING_COOLDOWN_DECREASE;
             playScreen.getGameHud().shootingCooldown = shootingCooldownSpeed;
-            Gdx.app.log("Powerups.shootingCooldownSpeed", String.format("%f", shootingCooldownSpeed));
-            Gdx.app.log("Hud.shootingCooldown", String.format("%f", playScreen.getGameHud().shootingCooldown));
         }
     }
 
+    /**
+     * handleInput: for handling input for both the mobile and desktop modes. Pressing left makes
+     * the Player ship rotate left. Pressing right makes the Player ship rotate right, pressing up
+     * makes the ship thrust forward the ship is facing. Pressing fire makes the Player ship fire
+     * a Bullet
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     private void handleInput(float deltaTime) {
 
         // player turning right or left
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || playScreen.controller.isRightPressed()
-                && playerState == PlayerState.NORMAL) {
-            radians -= ROTATION_SPEED * deltaTime;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || playScreen.controller.isLeftPressed()
-                && playerState == PlayerState.NORMAL) {
-            radians += ROTATION_SPEED * deltaTime;
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && playerState == PlayerState.NORMAL) {
+                radians -= ROTATION_SPEED * deltaTime;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && playerState == PlayerState.NORMAL) {
+                radians += ROTATION_SPEED * deltaTime;
+            }
+        }
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (playScreen.controller.isRightPressed() && playerState == PlayerState.NORMAL) {
+                radians -= ROTATION_SPEED * deltaTime;
+            } else if (playScreen.controller.isLeftPressed() && playerState == PlayerState.NORMAL) {
+                radians += ROTATION_SPEED * deltaTime;
+            }
         }
 
         // player accelerating
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || playScreen.controller.isUpPressed()
-                && playerState == PlayerState.NORMAL) {
-            direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
-            direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) && playerState == PlayerState.NORMAL) {
+                direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+                direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+            }
+        }
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (playScreen.controller.isUpPressed() && playerState == PlayerState.NORMAL) {
+                direction.x += MathUtils.cos((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+                direction.y += MathUtils.sin((float) (radians + Math.PI / 2)) * ACCELERATION * deltaTime;
+            }
         }
 
         // player shooting
-        if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
-                || playScreen.controller.isShootPressed() && playerState == PlayerState.NORMAL) {
-            bulletFired = true;
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                    && playerState == PlayerState.NORMAL) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
+                bulletFired = true;
 
-        // spawn the bullet when animation is finished
-        } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
-            currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
-            bullets.position[currentBulletIndex].set(firePosition);
+                // spawn the bullet when animation is finished
+            } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
+                currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+                bullets.position[currentBulletIndex].set(firePosition);
 
-            shootingCooldown = shootingCooldownSpeed;
-        } else {
-            shootingCooldown -= deltaTime;
+                shootingCooldown = shootingCooldownSpeed;
+            } else {
+                shootingCooldown -= deltaTime;
+            }
         }
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            if (shootingCooldown <= 0f && !bulletFired && playScreen.controller.isShootPressed()
+                    && playerState == PlayerState.NORMAL) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
+                bulletFired = true;
+
+                // spawn the bullet when animation is finished
+            } else if (fireAnimation.isAnimationFinished(fireElapsedTime)) {
+                currentBulletIndex = bullets.spawn(SpaceStationBlaster.BulletType.GREEN, radians);
+                bullets.position[currentBulletIndex].set(firePosition);
+
+                shootingCooldown = shootingCooldownSpeed;
+            } else {
+                shootingCooldown -= deltaTime;
+            }
+
+        }
+
 
         // player deceleration
         float speedTravelling = (float) Math.sqrt(direction.x * direction.x + direction.y * direction.y); {
@@ -268,6 +331,19 @@ public class Player {
 
     }
 
+    /**
+     * update: sets the sprites position and rotation. If the player state is normal sets the
+     * collider to the current position. If the plyers is destroyed or stage complete sets the
+     * collider to a position off the game world. If the Player has been hit by a Bullet set the
+     * bulletsRadians, bulletDirection and bulletPosistion to be equal to the impactRadians, impactDirection and impactPosition.
+     * If the Bullet is fired by the player sets the fireRadians, firePosistion, FireDirection so
+     * it can fire from the front of the Player ship. If Player collider collides with Enemy or
+     * space station collider sets player state to be destroyed. If player collider collides with
+     * Wall collider negate the Player collider posisiton to make it bounce of Wall collider. Sets
+     * the trailRaidians, trailDirection and trailPosistion for trail effect.
+     *
+     * @param deltaTime
+     */
     public void update(float deltaTime) {
         handleInput(deltaTime);
 
@@ -278,7 +354,7 @@ public class Player {
         if (playerState == PlayerState.NORMAL) {
             playerBounds.setPosition(position.x, position.y);
         } else if (playerState == PlayerState.DESTROYED) {
-            playerBounds.setPosition(-50, -50);
+            playerBounds.setPosition(-500, -500);
         } else if (playerState == PlayerState.STAGE_COMPLETE) {
             playerBounds.setPosition(-500, -500);
         }
@@ -317,8 +393,7 @@ public class Player {
         enemies = playScreen.getEnemies();
         for (int index = 0; index < enemies.circleColliders.length; index++) {
             if (playScreen.getEnemies().overlaps(playerBounds, enemies.circleColliders[index])) {
-                enemies.type[index] = Enemies.Type.NONE;
-                enemies.circleColliders[index].setPosition(0, 0);
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                 playerState = PlayerState.DESTROYED;
             }
         }
@@ -326,9 +401,11 @@ public class Player {
         // collision with space station
         if (enemies.spaceStationSpawned()) {
             if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[0], playerBounds)) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                 playerState = Player.PlayerState.DESTROYED;
             }
             if (Intersector.overlapConvexPolygons(enemies.spaceStationPolygons[1], playerBounds)) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                 playerState = Player.PlayerState.DESTROYED;
             }
         }
@@ -368,17 +445,29 @@ public class Player {
                         2 + 12, trailPosition);
     }
 
+    /**
+     * render: draw the Player sprite on the screen
+     * @param spriteBatch is the time passed since the last frame of animation
+     */
     public void render(SpriteBatch spriteBatch) {
         playerSprite.draw(spriteBatch);
     }
 
+    /**
+     * getSprite: gets the Player sprite
+     * @return playerSprite
+     */
     public Sprite getSprite() {
         return playerSprite;
     }
 
+    /**
+     * spawnBulletPowerup: spawns a Bullet powerup and sets the Bullet powerup position to center of
+     * the Red UFOs current UFO index
+     */
     public void spawnBulletPowerup() {
         int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.BULLET);
-        // set the bulletPowerupDirection
+        // set the bullet powerup position to center of UFO
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
                 Powerups.BULLET_POWERUP_TEXTURE_WIDTH / 2;
         playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -
@@ -386,9 +475,13 @@ public class Player {
         spawningBulletPowerup = false;
     }
 
+    /**
+     * spawnShieldPowerup: spawns a Shield powerup and sets the Sheild powerup position to center of
+     * the Green UFOs current UFO index
+     */
     public void spawnShieldPowerup() {
         int index = playScreen.getPowerups().spawn(SpaceStationBlaster.PowerupType.SHIELD);
-        // set the bulletPowerupDirection
+        // set the bullet powerup position to center of UFO
         playScreen.getPowerups().position[index].x = playScreen.getEnemies().position[currentUFOIndex].x -
                 Powerups.SHIELD_POWERUP_TEXTURE_WIDTH / 2;
         playScreen.getPowerups().position[index].y = playScreen.getEnemies().position[currentUFOIndex].y -

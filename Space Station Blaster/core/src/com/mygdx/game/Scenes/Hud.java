@@ -1,6 +1,7 @@
 package com.mygdx.game.Scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -27,6 +28,9 @@ import com.mygdx.game.Player;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.SpaceStationBlaster;
 
+/**
+ * Hud: for displaying the current score, shield level and number of ships remaining
+ */
 public class Hud implements Disposable {
 
     public static final int GREEN_UFO_POINTS = 700;
@@ -46,8 +50,8 @@ public class Hud implements Disposable {
     private static final int MAX_SHIELD = 5;
     private static final int DEF_STAGE_NUMBER = 1;
 
-    boolean first_extra_ship_awarded;
-    boolean second_extra_ship_awarded;
+    boolean firstExtraShipAwarded;
+    boolean secondExtraShipAwarded;
 
     public Stage stage;
     private Viewport viewport;
@@ -87,6 +91,16 @@ public class Hud implements Disposable {
 
     private PlayScreen playScreen;
 
+    /**
+     * Hud constructor: display a Hud at the top of the screen using displaying the score, Shield
+     * level and number of ships in a Table. Display the score, and number of lives in a Label
+     * using FreeTrueTypeFontGenerator and display the Shield level using Pixmap on a ProgressBar.
+     * Also prepare message displaying Stage number in a Label to be displayed at the start of each
+     * stage.
+     * @param spriteBatch used to draw textures or sprites onto the screen for the current frame
+     * @param playScreen is the screen that the player spaceship lives in as well as asteroids,
+     *                   enemies and the walls
+     */
     public Hud(SpriteBatch spriteBatch, PlayScreen playScreen) {
         this.playScreen = playScreen;
         this.textureAtlas = playScreen.getTextureAtlas();
@@ -97,8 +111,8 @@ public class Hud implements Disposable {
         shield = DEF_SHIELD;
         ships = DEF_SHIPS;
         stageNumber = DEF_STAGE_NUMBER;
-        first_extra_ship_awarded = false;
-        second_extra_ship_awarded = false;
+        firstExtraShipAwarded = false;
+        secondExtraShipAwarded = false;
 
         viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT,
                 new OrthographicCamera());
@@ -201,34 +215,57 @@ public class Hud implements Disposable {
         stage.addActor(stageNumberLabel);
     }
 
+    /**
+     * updateScore: increment the current score and the current stage score and update the label
+     * with the new score.
+     * @param scoreIncrease is the score to be added to the current score and current stage score
+     */
     public void updateScore(int scoreIncrease) {
         score += scoreIncrease;
         currentStageScore += scoreIncrease;
         currentScoreLabel.setText(String.format("SCORE: %06d", score));
     }
 
+    /**
+     * nextStage: for updating and displaying the stage number. Increments the stage number and
+     * updates the Label with the new stage number
+     */
     public void nextStage() {
         this.stageNumber++;
         stageNumberLabel.setText(String.format("STAGE: %d", stageNumber));
     }
 
+    /**
+     * addShip: for giving the player an extra ship. increments ships amd updates the Label with
+     * the new amount of ships
+     */
     public void addShip() {
         ships++;
         shipsCountLabel.setText(String.format("SHIPS: %d", ships));
     }
 
+    /**
+     * extraShipAwarded: for checking and to see if the Player has not been rewarded the first ship or
+     * second ship.
+     * @return true if first extra ship has been awarded or second extra ship has been awarded
+     * otherwise returns false
+     */
     public boolean extraShipAwarded() {
         boolean shipAwarded = false;
-        if (score >= FIRST_EXTRA_SHIP && !first_extra_ship_awarded) {
-            first_extra_ship_awarded = true;
+        if (score >= FIRST_EXTRA_SHIP && !firstExtraShipAwarded) {
+            firstExtraShipAwarded = true;
             shipAwarded = true;
-        } else if (score >= SECOND_EXTRA_SHIP && !second_extra_ship_awarded) {
-            second_extra_ship_awarded = true;
+        } else if (score >= SECOND_EXTRA_SHIP && !secondExtraShipAwarded) {
+            secondExtraShipAwarded = true;
             shipAwarded = true;
         }
         return shipAwarded;
     }
 
+    /**
+     * increaseShield: for increasing the shield on the shild ProgressBar provided it is not
+     * full.
+     */
     public void increaseShield() {
         if (shield < MAX_SHIELD) {
             shield++;
@@ -236,32 +273,53 @@ public class Hud implements Disposable {
         }
     }
 
+    /**
+     * decreaseShield: for decreasing the shied on the shield ProgressBar provided it is not empty.
+     * Updates the shield ProgressBar with the new shield level. If the shield is empty sets the
+     * player state to destroyed
+     */
     public void decreaseShield() {
         if (shield > 0) {
             shield--;
             shieldProgressBar.setValue(shield * 0.2f);
             // check if player has no shield
             if (shield == 0) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.EXPLOSION_SOUND, Sound.class).play();
                 playScreen.getPlayer().playerState = Player.PlayerState.DESTROYED;
             }
         }
     }
 
+    /**
+     * resetShield: resets the shield to its initial default level and updates the shield ProgressBar
+     * with the shield level.
+     */
     public void resetShield() {
         shield = DEF_SHIELD;
         shieldProgressBar.setValue(shield * 0.2f);
     }
 
+    /**
+     * removeShip: for removing a ship when the Player is destroyed. decrements ships and updates
+     * Label to display the new number of ships
+     */
     public void removeShip() {
         ships--;
         shipsCountLabel.setText(String.format("SHIPS: %d", ships));
     }
 
+    /**
+     * setScoreRequiredToSpawnSpaceStation: sets the currentStageScore to zero and resets the
+     * score required to spawn spaceStation based on the stage number.
+     */
     public void setScoreRequiredToSpawnSpaceStation() {
         currentStageScore = 0;
         scoreRequiredToSpawnSpaceStation = SCORE_REQUIRED_TO_SPAWN_SPACE_STATION * stageNumber;
     }
 
+    /**
+     * clearStageNumberDisplay: clears the stage number Label after for 4 seconds.
+     */
     public void clearStageNumberDisplay() {
         Timer.schedule(new Timer.Task() {
 
@@ -272,6 +330,9 @@ public class Hud implements Disposable {
         }, 4);
     }
 
+    /**
+     * clearStageCompleteDisplay: clears the stage complete display after 4 seconds.
+     */
     public void clearStageCompleteDisplay() {
         Timer.schedule(new Timer.Task() {
             @Override
@@ -281,10 +342,14 @@ public class Hud implements Disposable {
         }, 3);
     }
 
+    /**
+     * displayStageComplete: for preparing the stage complete Label to displaying the STAGE COMPLETE
+     * message on the screen when the Player destroys the space station.
+     */
     public void displayStageComplete() {
         if (stageCompleteLabel == null) {
             stageCompleteLabel = new Label("STAGE COMPLETE", labelStyleStage);
-            stageCompleteLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() + 80) / 2,
+            stageCompleteLabel.setPosition((SpaceStationBlaster.V_WIDTH - stageNumberLabel.getWidth() - 100) / 2,
                     (SpaceStationBlaster.V_HEIGHT - stageNumberLabel.getHeight() - 60) / 2);
             stage.addActor(stageCompleteLabel);
         } else {
@@ -292,6 +357,11 @@ public class Hud implements Disposable {
         }
     }
 
+    /**
+     * getNinePatch: for creating the glass panel display for the Hud. Creates a NinePatch from the
+     * TexureAtlas regoin glassPanel.
+     * @return a new NinePatch
+     */
     private NinePatch getNinePatch() {
         // get the image
         final TextureAtlas.AtlasRegion region = uiTextureAtlas.findRegion("glassPanel");
@@ -299,6 +369,9 @@ public class Hud implements Disposable {
         return new NinePatch(new TextureRegion(region, 0, 0, region.getRegionWidth(), region.getRegionHeight()), 10, 10, 10, 10);
     }
 
+    /**
+     * dispose: disposes of assets to prevent memory leaks
+     */
     @Override
     public void dispose() {
         bitmapFont.dispose();

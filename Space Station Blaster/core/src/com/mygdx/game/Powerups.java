@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,6 +11,9 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.PlayScreen;
 
+/**
+ * Powerups: for setting up the Shield and Bullet powerups and spawning then into the game world
+ */
 public class Powerups {
 
     // constants for the bullet powerup
@@ -47,6 +51,11 @@ public class Powerups {
     private PlayScreen playScreen;
     private Walls walls;
 
+    /**
+     * Powerups constructor: for setting up entities and textures for shield and bullet powerups
+     * @param playScreen is the screen that the player spaceship lives in as well as asteroids,
+     *                   enemies and the walls
+     */
     public Powerups(PlayScreen playScreen) {
         this.playScreen = playScreen;
         this.walls = playScreen.getWalls();
@@ -73,6 +82,10 @@ public class Powerups {
 
     }
 
+    /**
+     * instantiateEntities: instiates entities with their maxSize
+     * @param maxSize is the maximum size of the entity arrays
+     */
     private void instantiateEntities(int maxSize) {
         this.powerupType = new SpaceStationBlaster.PowerupType[maxSize];
         position = new Vector2[maxSize];
@@ -81,6 +94,14 @@ public class Powerups {
         lifeTime = new float[maxSize];
     }
 
+    /**
+     * spawn: spawns a Powerup with a fixed speed and random direction of movement depending on the
+     * power up type
+     * @param powerupType a SpaceStationBlaster.PowerupType which represents the type of power up
+     *                    to be spawned
+     * @return index of the enitity array containg all the position, direction, radians
+     * and lifeTime
+     */
     public int spawn(SpaceStationBlaster.PowerupType powerupType) {
         // bulletType should not be null
         if (powerupType == null) return -1;
@@ -113,6 +134,12 @@ public class Powerups {
         return index;
     }
 
+    /**
+     * update: updates the powerup lifetime, position and sets up a Powerup collider. Then sets the
+     * collider's origin, position and rotation.
+     * Uses: checkWallCollision, checkPlayerCollision
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     public void update(float deltaTime) {
         for (int index = 0; index < MAX_POWERUPS; index++) {
             if (powerupType[index] == SpaceStationBlaster.PowerupType.NONE) {
@@ -159,6 +186,11 @@ public class Powerups {
         }
     }
 
+    /**
+     * checkWallCOllision: checks to see if the Powerup collider has collided with a Wall collider.
+     * If it has it makes the Powerup collider bounce of the Wall collider
+     * @param index is the position in the entity arrays
+     */
     public void checkWallCollision(int index) {
         for (int i = 0; i < walls.colliders.size(); i++) {
             Polygon polygonWall = new Polygon(new float[]{0, 0, walls.colliders.get(i).getWidth(), 0,
@@ -175,15 +207,23 @@ public class Powerups {
         }
     }
 
+    /**
+     * checkPlayerCollision: check to see if the Player collider has collided with the Powerup
+     * collider. If it has it removes it form the enitity array and then decreases the bullet
+     * cooldown if it is a Bullet Powerup and increases shield if it is a Shield poserup.
+     * @param index is the position in the entity arrays
+     */
     public void checkPlayerCollision(int index) {
         Player player = playScreen.getPlayer();
         if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
             switch (powerupType[index]) {
                 case BULLET: {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.POWERUP_SHOOTING_SOUND, Sound.class).play();
                     powerupType[index] = SpaceStationBlaster.PowerupType.NONE;
                     playScreen.getPlayer().decreaseBulletCooldown();
                 }
                 case SHIELD: {
+                    SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.POWERUP_SHIELD_SOUND, Sound.class).play();
                     powerupType[index] = SpaceStationBlaster.PowerupType.NONE;
                     playScreen.getGameHud().increaseShield();
                 }
@@ -191,6 +231,12 @@ public class Powerups {
         }
     }
 
+    /**
+     * render: sets up the sprites based on the assigned texture region for Shield and Bullet
+     * Powerups. Also sets the sprites origin, position, rotation and then draws it to the screen
+     * @param spriteBatch used to draw textures or sprites onto the screen for the current frame
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_POWERUPS; index++) {
             switch (powerupType[index]) {
