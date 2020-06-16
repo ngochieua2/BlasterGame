@@ -275,7 +275,7 @@ public class Player {
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             if (shootingCooldown <= 0f && !bulletFired && Gdx.input.isKeyPressed(Input.Keys.SPACE)
                     && playerState == PlayerState.NORMAL) {
-                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play();
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.PLAYER_LASER_SOUND, Sound.class).play(0.3f);
                 bulletFired = true;
 
                 // spawn the bullet when animation is finished
