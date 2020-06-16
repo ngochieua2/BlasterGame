@@ -65,7 +65,9 @@ public class GameOverScreen implements Screen {
         this.score = score;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), camera);
+        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+
         batch = new SpriteBatch();
         stage = new Stage(viewport, batch);
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
@@ -133,7 +135,9 @@ public class GameOverScreen implements Screen {
         stage.addActor(tryAgain);
         stage.addActor(mainMenu);
         stage.addActor(exit);
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
+
 
     }
 
@@ -151,6 +155,9 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
 
         stage.draw();
 

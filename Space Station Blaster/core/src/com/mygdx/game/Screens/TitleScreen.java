@@ -50,6 +50,7 @@ public class TitleScreen implements Screen {
     private Viewport viewport;
     private OrthographicCamera camera;
 
+
     /**
      * TitleScreen constructor: set up all entities will appear on this screen including banner,
      * labels, buttons, images, stage.
@@ -59,7 +60,8 @@ public class TitleScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), camera);
+        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         batch = new SpriteBatch();
         stage = new Stage(viewport, batch);
@@ -76,7 +78,7 @@ public class TitleScreen implements Screen {
         gameBanner = new Texture("screen/gameTitle.png");
         bannerImage = new Image(gameBanner);
         bannerImage.setSize(BANNER_WIDTH,BANNER_HEIGHT);
-        bannerImage.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() - 310);
+        bannerImage.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() - BANNER_HEIGHT * 4/5 );
 
         // play button
         Play = new TextButton("PLAY GAME", skin, "default");
@@ -92,7 +94,7 @@ public class TitleScreen implements Screen {
         } );
 
         // instruction button
-        Instruction = new TextButton("INSTRUCTION", skin, "default");
+        Instruction = new TextButton("INSTRUCTIONS", skin, "default");
         Instruction.setWidth(BUTTON_WIDTH);
         Instruction.setHeight(BUTTON_HEIGHT);
         Instruction.setPosition(Gdx.graphics.getWidth() /2 - Instruction.getWidth()/2, Gdx.graphics.getHeight()/2 - 80 );
@@ -139,7 +141,10 @@ public class TitleScreen implements Screen {
         stage.addActor(Instruction);
         stage.addActor(Credits);
         stage.addActor(Exit);
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
+
+
     }
 
 
@@ -156,6 +161,9 @@ public class TitleScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
 
         stage.draw();
 
