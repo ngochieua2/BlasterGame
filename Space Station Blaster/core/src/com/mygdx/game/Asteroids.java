@@ -426,7 +426,6 @@ public class Asteroids {
                         enemies.type[enemyIndex] = Enemies.Type.NONE;
                         enemies.circleColliders[enemyIndex].setPosition(0, 0);
                         enemies.animations[enemyIndex] = effects.getAnimation(SpaceStationBlaster.EffectType.ENEMY_EXPLOSION);
-                        //split(index);
                     }
                 }
 
@@ -517,6 +516,7 @@ public class Asteroids {
         }
         // brown small will disappear
         if (type[index] == TYPE.BROWN_SMALL){
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.ASTEROID_EXPLOSION_SOUND, Sound.class).play();
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX() + MeteorBrown_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorBrown_Small1_TEXTURE_HEIGHT/2);
             type[index] = TYPE.NONE;
@@ -524,6 +524,7 @@ public class Asteroids {
         }
         // grey small will disappear
         if (type[index] == TYPE.GREY_SMALL){
+            SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.ASTEROID_EXPLOSION_SOUND, Sound.class).play();
             animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.SMALL_ASTEROID_EXPLOSION);
             animationPosition[index].set(Astcollider[index].getX() + MeteorGrey_Small1_TEXTURE_WIDTH/2, Astcollider[index].getY() + MeteorGrey_Small1_TEXTURE_WIDTH/2);
 

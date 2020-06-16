@@ -2,6 +2,7 @@ package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -85,6 +86,7 @@ public class TitleScreen implements Screen {
         Play.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 game.setScreen(new PlayScreen(game));
             }
         } );
@@ -97,11 +99,12 @@ public class TitleScreen implements Screen {
         Instruction.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 game.setScreen(new InstructionScreen(game));
             }
         } );
 
-        // instruction button
+        // credit button
         Credits = new TextButton("CREDITS", skin, "default");
         Credits.setWidth(BUTTON_WIDTH);
         Credits.setHeight(BUTTON_HEIGHT);
@@ -109,6 +112,7 @@ public class TitleScreen implements Screen {
         Credits.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 //game.setScreen(new ......);
             }
         } );
@@ -121,6 +125,7 @@ public class TitleScreen implements Screen {
         Exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 Gdx.app.exit();
             }
         } );

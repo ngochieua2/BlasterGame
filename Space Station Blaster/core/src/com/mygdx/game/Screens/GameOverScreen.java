@@ -2,6 +2,7 @@ package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -94,6 +95,7 @@ public class GameOverScreen implements Screen {
         tryAgain.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 game.setScreen(new PlayScreen(game));
             }
         } );
@@ -106,6 +108,7 @@ public class GameOverScreen implements Screen {
         mainMenu.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 game.setScreen(new TitleScreen(game));
             }
         } );
@@ -118,6 +121,7 @@ public class GameOverScreen implements Screen {
         exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
                 Gdx.app.exit();
             }
         } );
