@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Screens.TitleScreen;
 
 public class SpaceStationBlaster extends Game {
 	public enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE, RESERVED }
@@ -66,7 +67,7 @@ public class SpaceStationBlaster extends Game {
 		soundAssetManager.load(BUTTON_PRESS_SOUND, Sound.class);
 		soundAssetManager.finishLoading();
 
-		this.setScreen(new PlayScreen(this));
+		this.setScreen(new TitleScreen(this));
 	}
 
 	/**
