@@ -13,6 +13,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
 
+/**
+ * Controller: for displaying a controller overlay on the PlaySceen and providing touch input for
+ * mobile phone.
+ */
 public class Controller {
     private static final int BUTTON_WIDTH = 80;
     private static final int BUTTON_HEIGHT = 80;
@@ -29,6 +33,11 @@ public class Controller {
 
     OrthographicCamera camera;
 
+    /**
+     * Controller constructor: sets the camera, viewport and stage for displaying a controller
+     * overlay on the screen and providing input.
+     * @param spriteBatch used to draw textures or sprites onto the screen for the current frame
+     */
     public Controller(SpriteBatch spriteBatch) {
         camera = new OrthographicCamera();
         viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT, camera);
@@ -136,18 +145,34 @@ public class Controller {
         stage.addActor(shootImage);
     }
 
+    /**
+     * isUpPressed: checks to see if up is pressed on the Controller overlay
+     * @return true if finger or mouse button is pressed down on up image otherwise returns false
+     */
     public boolean isUpPressed() {
         return upPressed;
     }
 
+    /**
+     * isLeftPressed: checks to see if left is pressed on the Controller overlay
+     * @return true if finger or mouse button is pressed down on left image otherwise returns false
+     */
     public boolean isLeftPressed() {
         return leftPressed;
     }
 
+    /**
+     * isRightPressed: checks to see if right is pressed on the Controller overlay
+     * @return true if finger or mouse button is pressed down on right image otherwise returns false
+     */
     public boolean isRightPressed() {
         return rightPressed;
     }
 
+    /**
+     * isShootPressed: checks to see if shoot is pressed on the Controller overlay
+     * @return true if finger or mouse button is pressed down on shoot image otherwise returns false
+     */
     public boolean isShootPressed() {
         return shootPressed;
     }
