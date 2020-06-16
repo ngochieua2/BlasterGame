@@ -302,6 +302,10 @@ public class Bullets {
         }
     }
 
+    /**
+     * Checks collisions between a given bullet and every UFO 
+     * @param index The index position of the bullet being checked
+     */
     private void checkUFOCollision(int index) {
         Enemies enemies = playScreen.getEnemies();
 

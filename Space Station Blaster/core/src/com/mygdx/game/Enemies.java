@@ -72,7 +72,7 @@ public class Enemies {
     Circle[] circleColliders;
     private Rectangle[] spaceStationColliders;
     Polygon[] spaceStationPolygons;
-    private int[] health;   //Enemy health increases for stage progression. Not implemented for stage one, since Enemies die in 1 hit
+    private int[] health;   //Enemy health can optionally increases for stage progression. Not implemented for stage one, since Enemies die in 1 hit
     private int spaceStationHealth;
     private float[] shootInterval;
 
@@ -308,7 +308,7 @@ public class Enemies {
         int currentBulletIndex;
 
         //Spawns enemies after waiting a specified amount of time
-        if (timeInterval >= enemySpawnInterval) {
+        if (timeInterval >= enemySpawnInterval - playScreen.getGameHud().stageNumber) {
             boolean greenUFO = MathUtils.randomBoolean();
             if (greenUFO) {
                 spawn(Type.GREEN_UFO);
