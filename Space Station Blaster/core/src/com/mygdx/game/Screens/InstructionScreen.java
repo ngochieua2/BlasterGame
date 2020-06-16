@@ -39,7 +39,6 @@ public class InstructionScreen implements Screen {
 
     // declare all instruction screen entities
     private SpaceStationBlaster game;
-    private SpriteBatch batch;
     private Skin skin;
     private Skin textSkin;
     private Stage stage;
@@ -146,19 +145,20 @@ public class InstructionScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), camera);
-        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-
-        batch = new SpriteBatch();
-        stage = new Stage(viewport, batch);
+        viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT, camera);
+        camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH / 2, SpaceStationBlaster.V_HEIGHT / 2);
 
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
+        stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
         textSkin = new Skin(Gdx.files.internal("gui/uiskin.json"));
+
+        stage.getViewport();
+        stage.setViewport(viewport);
 
         // background
         backgroundTexture = new Texture("screen/star_background.png");
         background = new Image(backgroundTexture);
-        background.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        background.setSize(SpaceStationBlaster.V_WIDTH,SpaceStationBlaster.V_HEIGHT);
         background.setPosition(0,0);
         stage.addActor(background);
 
@@ -166,7 +166,7 @@ public class InstructionScreen implements Screen {
         gameBanner = new Texture("screen/instruction.png");
         bannerImage = new Image(gameBanner);
         bannerImage.setSize(BANNER_WIDTH, BANNER_HEIGHT);
-        bannerImage.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() - BANNER_HEIGHT + 10);
+        bannerImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT + 10);
 
         // label instruction text
         instructionTextlabel = new Label("You are required manoeuvre and destroy asteroids and incoming UFOs to rack up \n"+
@@ -175,7 +175,7 @@ public class InstructionScreen implements Screen {
                 "station, you will move on to a more challenging stage. During each stage, you can \n" +
                 "pick up random Shield and Weapon upgrades to improve you space cruiser", textSkin, "default");
 
-        instructionTextlabel.setPosition(Gdx.graphics.getWidth() /2 - instructionTextlabel.getWidth()/2, Gdx.graphics.getHeight() - BANNER_HEIGHT  - 70);
+        instructionTextlabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - instructionTextlabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT  - 70);
         instructionTextlabel.setAlignment(Align.center);
 
         // Show control instruction on desktop or mobile
@@ -184,43 +184,43 @@ public class InstructionScreen implements Screen {
             case Android:
                 // control title
                 mobileControlTitleLabel = new Label("Control your Space cruiser on mobile:", textSkin, "default");
-                mobileControlTitleLabel.setPosition(Gdx.graphics.getWidth() /2 - mobileControlTitleLabel.getWidth()/2,Gdx.graphics.getHeight() - BANNER_HEIGHT - 100);
+                mobileControlTitleLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - mobileControlTitleLabel.getWidth()/2,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 100);
                 mobileControlTitleLabel.setAlignment(Align.center);
                 mobileControlTitleLabel.setColor(Color.SALMON);
 
                 // mobile key
                 mobileUpLabel = new Label(": Thrust", textSkin,"default");
-                mobileUpLabel.setPosition(Gdx.graphics.getWidth()/2 - mobileUpLabel.getWidth()/2 - 240 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mobileUpLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileUpLabel.getWidth()/2 - 240 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileLeftLabel = new Label(": Rotate Left", textSkin,"default");
-                mobileLeftLabel.setPosition(Gdx.graphics.getWidth()/2 - mobileLeftLabel.getWidth()/2 - 80 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mobileLeftLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileRightLabel = new Label(": Rotate Right", textSkin,"default");
-                mobileRightLabel.setPosition(Gdx.graphics.getWidth()/2 - mobileRightLabel.getWidth()/2 + 80 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mobileRightLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileShotLabel = new Label(": Fire", textSkin,"default");
-                mobileShotLabel.setPosition(Gdx.graphics.getWidth()/2  - mobileShotLabel.getWidth()/2  + 240 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mobileShotLabel.setPosition(SpaceStationBlaster.V_WIDTH/2  - mobileShotLabel.getWidth()/2  + 240 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 // mobile key images
                 mobileKeyUp = new Texture("Controls/transparentDark24.png");
                 mkuImage = new Image(mobileKeyUp);
                 mkuImage.setSize(BUTTON_SIZE, BUTTON_SIZE);
-                mkuImage.setPosition(Gdx.graphics.getWidth()/2 - mobileUpLabel.getWidth()/2 - 240 - BUTTON_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mkuImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileUpLabel.getWidth()/2 - 240 - BUTTON_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileKeyLeft = new Texture("Controls/transparentDark22.png");
                 mklImage = new Image(mobileKeyLeft);
                 mklImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                mklImage.setPosition(Gdx.graphics.getWidth()/2 - mobileLeftLabel.getWidth()/2 - 80 - BUTTON_SIZE ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mklImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 80 - BUTTON_SIZE ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileKeyRight = new Texture("Controls/transparentDark23.png");
                 mkrImage = new Image(mobileKeyRight);
                 mkrImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                mkrImage.setPosition(Gdx.graphics.getWidth()/2 - mobileRightLabel.getWidth()/2 + 80 - BUTTON_SIZE,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mkrImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 80 - BUTTON_SIZE,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 mobileKeyShot = new Texture("Controls/transparentDark47.png");
                 mksImage = new Image(mobileKeyShot);
                 mksImage.setSize(BUTTON_SIZE ,BUTTON_SIZE);
-                mksImage.setPosition(Gdx.graphics.getWidth()/2  - mobileShotLabel.getWidth()/2  + 240 - BUTTON_SIZE,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                mksImage.setPosition(SpaceStationBlaster.V_WIDTH/2  - mobileShotLabel.getWidth()/2  + 240 - BUTTON_SIZE,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 // add key labels and images to stage
                 stage.addActor(mobileControlTitleLabel);
@@ -237,43 +237,43 @@ public class InstructionScreen implements Screen {
             case Desktop:
                 // control title
                 desktopControlTitleLabel = new Label("Control your Space cruiser on desktop:", textSkin, "default");
-                desktopControlTitleLabel.setPosition(Gdx.graphics.getWidth() /2 - desktopControlTitleLabel.getWidth()/2,Gdx.graphics.getHeight() - BANNER_HEIGHT - 100);
+                desktopControlTitleLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - desktopControlTitleLabel.getWidth()/2,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 100);
                 desktopControlTitleLabel.setAlignment(Align.center);
                 desktopControlTitleLabel.setColor(Color.SALMON);
 
                 // desktop key
                 desktopUpLabel = new Label(": Thrust", textSkin,"default");
-                desktopUpLabel.setPosition(Gdx.graphics.getWidth()/2 - desktopUpLabel.getWidth()/2 - 240 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                desktopUpLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopUpLabel.getWidth()/2 - 240 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopLeftLabel = new Label(": Rotate Left", textSkin,"default");
-                desktopLeftLabel.setPosition(Gdx.graphics.getWidth()/2 - desktopLeftLabel.getWidth()/2 - 80 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                desktopLeftLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopLeftLabel.getWidth()/2 - 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopRightLabel = new Label(": Rotate Right", textSkin,"default");
-                desktopRightLabel.setPosition(Gdx.graphics.getWidth()/2 - desktopRightLabel.getWidth()/2 + 80 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                desktopRightLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopRightLabel.getWidth()/2 + 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopShotLabel = new Label(": Fire", textSkin,"default");
-                desktopShotLabel.setPosition(Gdx.graphics.getWidth()/2  - desktopShotLabel.getWidth()/2  + 290 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                desktopShotLabel.setPosition(SpaceStationBlaster.V_WIDTH/2  - desktopShotLabel.getWidth()/2  + 290 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 // Desktop key images
                 desktopKeyUp = new Texture("Controls/upkey.png");
                 dkuImage = new Image(desktopKeyUp);
                 dkuImage.setSize(BUTTON_SIZE, BUTTON_SIZE);
-                dkuImage.setPosition(Gdx.graphics.getWidth()/2 - desktopUpLabel.getWidth()/2 - 240 - BUTTON_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                dkuImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopUpLabel.getWidth()/2 - 240 - BUTTON_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopKeyLeft = new Texture("Controls/LeftKey.png");
                 dklImage = new Image(desktopKeyLeft);
                 dklImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                dklImage.setPosition(Gdx.graphics.getWidth()/2 - desktopLeftLabel.getWidth()/2 - 80 - BUTTON_SIZE ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                dklImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopLeftLabel.getWidth()/2 - 80 - BUTTON_SIZE ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopKeyRight = new Texture("Controls/rightkey.png");
                 dkrImage = new Image(desktopKeyRight);
                 dkrImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                dkrImage.setPosition(Gdx.graphics.getWidth()/2 - desktopRightLabel.getWidth()/2 + 80 - BUTTON_SIZE,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                dkrImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - desktopRightLabel.getWidth()/2 + 80 - BUTTON_SIZE,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 desktopKeyShot = new Texture("Controls/spacebar.png");
                 dksImage = new Image(desktopKeyShot);
                 dksImage.setSize(BUTTON_SIZE *4,BUTTON_SIZE);
-                dksImage.setPosition(Gdx.graphics.getWidth()/2  - desktopShotLabel.getWidth()/2  + 290 - BUTTON_SIZE*4 ,Gdx.graphics.getHeight() - BANNER_HEIGHT - 130);
+                dksImage.setPosition(SpaceStationBlaster.V_WIDTH/2  - desktopShotLabel.getWidth()/2  + 290 - BUTTON_SIZE*4 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
 
                 // add key labels and images to stage
                 stage.addActor(desktopControlTitleLabel);
@@ -290,114 +290,114 @@ public class InstructionScreen implements Screen {
 
         // score information
         scoreLabel = new Label("Scoring:", textSkin, "default");
-        scoreLabel.setPosition(Gdx.graphics.getWidth() /2 - scoreLabel.getWidth()/2,Gdx.graphics.getHeight() - BANNER_HEIGHT - 160);
+        scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 160);
         scoreLabel.setAlignment(Align.center);
         scoreLabel.setColor(Color.SALMON);
 
         largeAsteroidScore = new Label(": x100", textSkin,"default");
-        largeAsteroidScore.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200, Gdx.graphics.getHeight() - BANNER_HEIGHT - 190);
+        largeAsteroidScore.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 190);
 
         mediumAsteroidScore = new Label(": x200", textSkin,"default");
-        mediumAsteroidScore.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200, Gdx.graphics.getHeight() - BANNER_HEIGHT - 220);
+        mediumAsteroidScore.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 220);
 
         smallAsteroidScore = new Label(": x300", textSkin,"default");
-        smallAsteroidScore.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200, Gdx.graphics.getHeight() - BANNER_HEIGHT - 245);
+        smallAsteroidScore.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 245);
 
         ufoGreenScore = new Label(": x700", textSkin, "default");
-        ufoGreenScore.setPosition(Gdx.graphics.getWidth()/2 - ufoGreenScore.getWidth()/2 , Gdx.graphics.getHeight() - BANNER_HEIGHT - 195);
+        ufoGreenScore.setPosition(SpaceStationBlaster.V_WIDTH/2 - ufoGreenScore.getWidth()/2 , SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 195);
 
         ufoRedScore = new Label(": x1000", textSkin, "default");
-        ufoRedScore.setPosition(Gdx.graphics.getWidth()/2 - ufoGreenScore.getWidth()/2, Gdx.graphics.getHeight() - BANNER_HEIGHT - 235);
+        ufoRedScore.setPosition(SpaceStationBlaster.V_WIDTH/2 - ufoGreenScore.getWidth()/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 235);
 
         spaceStationScore = new Label(": x2500", textSkin, "default");
-        spaceStationScore.setPosition(Gdx.graphics.getWidth()/2 - spaceStationScore.getWidth()/2 + 250 , Gdx.graphics.getHeight() - BANNER_HEIGHT - 210);
+        spaceStationScore.setPosition(SpaceStationBlaster.V_WIDTH/2 - spaceStationScore.getWidth()/2 + 250 , SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 210);
 
         // add image for score
         largeBrownAstTexture = new Texture("screen/largeBrown.png");
         largeBrownImage = new Image(largeBrownAstTexture);
         largeBrownImage.setSize(SCORE_SIZE,SCORE_SIZE);
-        largeBrownImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE * 2, Gdx.graphics.getHeight() - BANNER_HEIGHT - 200);
+        largeBrownImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE * 2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 200);
 
         largeGreyAstTexture = new Texture("screen/largeGrey.png");
         largeGreyImage = new Image(largeGreyAstTexture);
         largeGreyImage.setSize(SCORE_SIZE,SCORE_SIZE);
-        largeGreyImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 200);
+        largeGreyImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 200);
 
         mediumBrownAstTexture = new Texture("screen/mediumBrown.png");
         mediumBrownImage = new Image(mediumBrownAstTexture);
         mediumBrownImage.setSize(SCORE_SIZE/2,SCORE_SIZE/2);
-        mediumBrownImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 220);
+        mediumBrownImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 220);
 
         mediumGreyAstTexture = new Texture("screen/mediumGrey.png");
         mediumGreyImage = new Image(mediumGreyAstTexture);
         mediumGreyImage.setSize(SCORE_SIZE/2,SCORE_SIZE/2);
-        mediumGreyImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE/2, Gdx.graphics.getHeight() - BANNER_HEIGHT - 220);
+        mediumGreyImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 220);
 
         smallBrownAstTexture = new Texture("screen/smallBrown.png");
         smallBrownImage = new Image(smallBrownAstTexture);
         smallBrownImage.setSize(SCORE_SIZE/3,SCORE_SIZE/3);
-        smallBrownImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE * 2/3, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        smallBrownImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE * 2/3, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         smallGreyAstTexture = new Texture("screen/smallGrey.png");
         smallGreyImage = new Image(smallGreyAstTexture);
         smallGreyImage.setSize(SCORE_SIZE/3,SCORE_SIZE/3);
-        smallGreyImage.setPosition(Gdx.graphics.getWidth() /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE/3, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        smallGreyImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - largeAsteroidScore.getWidth()/2 - 200 - SCORE_SIZE/3, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         greenUFOTexture = new Texture("screen/greenUFO.png");
         greenUFOImage = new Image(greenUFOTexture);
         greenUFOImage.setSize(SCORE_SIZE,SCORE_SIZE);
-        greenUFOImage.setPosition(Gdx.graphics.getWidth()/2 - ufoGreenScore.getWidth()/2 - SCORE_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 200);
+        greenUFOImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - ufoGreenScore.getWidth()/2 - SCORE_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 200);
 
         redUFOTexture = new Texture("screen/redUFO.png");
         redUFOImage = new Image(redUFOTexture);
         redUFOImage.setSize(SCORE_SIZE,SCORE_SIZE);
-        redUFOImage.setPosition(Gdx.graphics.getWidth()/2 - ufoGreenScore.getWidth()/2 - SCORE_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        redUFOImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - ufoGreenScore.getWidth()/2 - SCORE_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         spaceStationTexture1 = new Texture("screen/SS1.png");
         spaceStation1Image = new Image(spaceStationTexture1);
         spaceStation1Image.setSize(SCORE_SIZE,SCORE_SIZE*2);
-        spaceStation1Image.setPosition(Gdx.graphics.getWidth()/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        spaceStation1Image.setPosition(SpaceStationBlaster.V_WIDTH/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         spaceStationTexture2 = new Texture("screen/SS2.png");
         spaceStation2Image = new Image(spaceStationTexture2);
         spaceStation2Image.setSize(SCORE_SIZE,SCORE_SIZE*2);
-        spaceStation2Image.setPosition(Gdx.graphics.getWidth()/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE * 2, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        spaceStation2Image.setPosition(SpaceStationBlaster.V_WIDTH/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE * 2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         spaceStationTexture3 = new Texture("screen/SS3.png");
         spaceStation3Image = new Image(spaceStationTexture3);
         spaceStation3Image.setSize(SCORE_SIZE,SCORE_SIZE*2);
-        spaceStation3Image.setPosition(Gdx.graphics.getWidth()/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE * 3, Gdx.graphics.getHeight() - BANNER_HEIGHT - 240);
+        spaceStation3Image.setPosition(SpaceStationBlaster.V_WIDTH/2 - spaceStationScore.getWidth()/2 + 250 - SCORE_SIZE * 3, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 240);
 
         // powerup label
         powerUpsLabel = new Label("Power up: ", textSkin, "default");
-        powerUpsLabel.setPosition(Gdx.graphics.getWidth() /2 - powerUpsLabel.getWidth()/2,Gdx.graphics.getHeight() - BANNER_HEIGHT - 265);
+        powerUpsLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - powerUpsLabel.getWidth()/2,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 265);
         powerUpsLabel.setAlignment(Align.center);
         powerUpsLabel.setColor(Color.SALMON);
 
         shieldLabel = new Label(": randomly appears when Green UFOs are destroyed. 20% increase in shield",textSkin, "default");
-        shieldLabel.setPosition(Gdx.graphics.getWidth() /2 - shieldLabel.getWidth()/2 , Gdx.graphics.getHeight() - BANNER_HEIGHT - 290);
+        shieldLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - shieldLabel.getWidth()/2 , SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 290);
         shieldLabel.setAlignment(Align.center);
 
         boltLabel = new Label(": randomly appears when Red UFOs are destroyed. It increases fire rate",textSkin, "default");
-        boltLabel.setPosition(Gdx.graphics.getWidth() /2 - boltLabel.getWidth()/2, Gdx.graphics.getHeight() - BANNER_HEIGHT - 320);
+        boltLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - boltLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 320);
         boltLabel.setAlignment(Align.center);
 
         // add images for power up
         shieldTexture = new Texture("screen/shield.png");
         shieldImage = new Image(shieldTexture);
         shieldImage.setSize(POWERUP_SIZE * 2.5f, POWERUP_SIZE * 3);
-        shieldImage.setPosition(Gdx.graphics.getWidth() /2 - shieldLabel.getWidth()/2 - 25,Gdx.graphics.getHeight() - BANNER_HEIGHT - 290);
+        shieldImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - shieldLabel.getWidth()/2 - 25,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 290);
 
         boltTexture = new Texture("screen/bolt.png");
         boltImage = new Image(boltTexture);
         boltImage.setSize(POWERUP_SIZE * 2, POWERUP_SIZE * 3);
-        boltImage.setPosition(Gdx.graphics.getWidth() /2 - boltLabel.getWidth()/2 - 25,Gdx.graphics.getHeight() - BANNER_HEIGHT - 320);
+        boltImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - boltLabel.getWidth()/2 - 25,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 320);
 
         // Back button
         Back = new TextButton("Back", skin, "default");
         Back.setWidth(150f);
         Back.setHeight(70f);
-        Back.setPosition(Gdx.graphics.getWidth() /2 - Back.getWidth()/2, 0);
+        Back.setPosition(SpaceStationBlaster.V_WIDTH /2 - Back.getWidth()/2, 0);
         Back.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -407,6 +407,7 @@ public class InstructionScreen implements Screen {
         } );
 
         // set stage and add actor
+
         stage.addActor(bannerImage);
         stage.addActor(instructionTextlabel);
         stage.addActor(scoreLabel);
@@ -433,7 +434,7 @@ public class InstructionScreen implements Screen {
         stage.addActor(boltLabel);
         stage.addActor(boltImage);
         stage.addActor(Back);
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        resize(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
 
@@ -455,7 +456,7 @@ public class InstructionScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
         stage.draw();
 

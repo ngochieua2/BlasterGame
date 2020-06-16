@@ -444,7 +444,7 @@ public class Asteroids {
         while (x > SpaceStationBlaster.MAP_WIDTH/2  - MeteorBrown_Big1_TEXTURE_WIDTH *3
                 && x < SpaceStationBlaster.MAP_WIDTH/2  + MeteorBrown_Big1_TEXTURE_WIDTH *3)
         {
-            x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH );
+            x = MathUtils.random(MeteorBrown_Big1_TEXTURE_WIDTH + 50 , SpaceStationBlaster.MAP_WIDTH - MeteorBrown_Big1_TEXTURE_WIDTH - 50 );
         }
         // Select y in somewhere inside game world
         float y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT + 50 , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT - 50);
@@ -452,7 +452,7 @@ public class Asteroids {
         while (y > SpaceStationBlaster.MAP_HEIGHT/2   - MeteorBrown_Big1_TEXTURE_HEIGHT *3
                 && y < SpaceStationBlaster.MAP_HEIGHT/2   + MeteorBrown_Big1_TEXTURE_HEIGHT *3)
         {
-            y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT );
+            y = MathUtils.random(MeteorBrown_Big1_TEXTURE_HEIGHT + 50 , SpaceStationBlaster.MAP_HEIGHT - MeteorBrown_Big1_TEXTURE_HEIGHT - 50 );
         }
 
         return new Vector2(x, y);

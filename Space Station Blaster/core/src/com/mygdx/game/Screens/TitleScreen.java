@@ -33,7 +33,6 @@ public class TitleScreen implements Screen {
 
     // declare all title screen entities
     private SpaceStationBlaster game;
-    private SpriteBatch batch;
     private Skin skin;
     private Stage stage;
 
@@ -60,31 +59,30 @@ public class TitleScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), camera);
-        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT, camera);
+        camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH / 2, SpaceStationBlaster.V_HEIGHT / 2);
 
-        batch = new SpriteBatch();
-        stage = new Stage(viewport, batch);
 
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
-
+        stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
+        stage.getViewport();
         // background
         backgroundTexture = new Texture("screen/star_background.png");
         background = new Image(backgroundTexture);
-        background.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        background.setSize(SpaceStationBlaster.V_WIDTH,SpaceStationBlaster.V_HEIGHT);
         background.setPosition(0,0);
 
         // game banner
         gameBanner = new Texture("screen/gameTitle.png");
         bannerImage = new Image(gameBanner);
         bannerImage.setSize(BANNER_WIDTH,BANNER_HEIGHT);
-        bannerImage.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() - BANNER_HEIGHT * 4/5 );
+        bannerImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT * 4/5 );
 
         // play button
         Play = new TextButton("PLAY GAME", skin, "default");
-        Play.setWidth(BUTTON_WIDTH);
-        Play.setHeight(BUTTON_HEIGHT);
-        Play.setPosition(Gdx.graphics.getWidth() /2 - Play.getWidth()/2, Gdx.graphics.getHeight()/2  );
+        Play.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+
+        Play.setPosition(SpaceStationBlaster.V_WIDTH /2 - Play.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2  );
         Play.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -97,7 +95,7 @@ public class TitleScreen implements Screen {
         Instruction = new TextButton("INSTRUCTIONS", skin, "default");
         Instruction.setWidth(BUTTON_WIDTH);
         Instruction.setHeight(BUTTON_HEIGHT);
-        Instruction.setPosition(Gdx.graphics.getWidth() /2 - Instruction.getWidth()/2, Gdx.graphics.getHeight()/2 - 80 );
+        Instruction.setPosition(SpaceStationBlaster.V_WIDTH /2 - Instruction.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 80 );
         Instruction.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -110,7 +108,7 @@ public class TitleScreen implements Screen {
         Credits = new TextButton("CREDITS", skin, "default");
         Credits.setWidth(BUTTON_WIDTH);
         Credits.setHeight(BUTTON_HEIGHT);
-        Credits.setPosition(Gdx.graphics.getWidth() /2 - Credits.getWidth()/2, Gdx.graphics.getHeight()/2 - 160 );
+        Credits.setPosition(SpaceStationBlaster.V_WIDTH /2 - Credits.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 160 );
         Credits.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -124,7 +122,7 @@ public class TitleScreen implements Screen {
         Exit = new TextButton("EXIT GAME", skin, "default");
         Exit.setWidth(BUTTON_WIDTH);
         Exit.setHeight(BUTTON_HEIGHT);
-        Exit.setPosition(Gdx.graphics.getWidth() /2 - Exit.getWidth()/2, Gdx.graphics.getHeight()/2 - 240);
+        Exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - Exit.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 240);
         Exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -134,14 +132,14 @@ public class TitleScreen implements Screen {
         } );
 
         // set stage and add actor
-        stage = new Stage();
+        stage.setViewport(viewport);
         stage.addActor(background);
         stage.addActor(bannerImage);
         stage.addActor(Play);
         stage.addActor(Instruction);
         stage.addActor(Credits);
         stage.addActor(Exit);
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        resize(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
 
@@ -163,7 +161,7 @@ public class TitleScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
         stage.draw();
 
@@ -173,6 +171,7 @@ public class TitleScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width, height);
         stage.getViewport().update(width, height, true);
+
     }
 
     @Override

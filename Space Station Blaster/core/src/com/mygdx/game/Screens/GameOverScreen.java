@@ -34,7 +34,6 @@ public class GameOverScreen implements Screen {
 
     // declare all game over screen entities
     private SpaceStationBlaster game;
-    private SpriteBatch batch;
     private Skin skin;
     private Stage stage;
 
@@ -65,35 +64,35 @@ public class GameOverScreen implements Screen {
         this.score = score;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), camera);
-        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport = new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT, camera);
+        camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH / 2, SpaceStationBlaster.V_HEIGHT / 2);
 
-        batch = new SpriteBatch();
-        stage = new Stage(viewport, batch);
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
+        stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
+        stage.getViewport();
 
         // background
         backgroundTexture = new Texture("screen/star_background.png");
         background = new Image(backgroundTexture);
-        background.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        background.setSize(SpaceStationBlaster.V_WIDTH,SpaceStationBlaster.V_HEIGHT);
         background.setPosition(0,0);
 
         // gameover banner
         gameoverBanner = new Texture("screen/gameover.png");
         image = new Image(gameoverBanner);
         image.setSize(BANNER_WIDTH, BANNER_HEIGHT);
-        image.setPosition(Gdx.graphics.getWidth() /2 - BANNER_WIDTH/2, Gdx.graphics.getHeight() * 2/3 - BANNER_HEIGHT/2);
+        image.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT * 2/3 - BANNER_HEIGHT/2);
 
         // score label
         scoreLabel = new Label(String.format("SCORE: %d", score), skin ,"default");
-        scoreLabel.setPosition(Gdx.graphics.getWidth() /2 - scoreLabel.getWidth()/2, Gdx.graphics.getHeight()/2 + 20);
+        scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 + 20);
         scoreLabel.setAlignment(Align.center);
 
         // try again button
         tryAgain = new TextButton("TRY AGAIN", skin, "default");
         tryAgain.setWidth(BUTTON_WIDTH);
         tryAgain.setHeight(BUTTON_HEIGHT);
-        tryAgain.setPosition(Gdx.graphics.getWidth() /2 - tryAgain.getWidth()/2, Gdx.graphics.getHeight()/2 - 70 );
+        tryAgain.setPosition(SpaceStationBlaster.V_WIDTH /2 - tryAgain.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 70 );
         tryAgain.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,7 +105,7 @@ public class GameOverScreen implements Screen {
         mainMenu = new TextButton("Main Menu", skin, "default");
         mainMenu.setWidth(BUTTON_WIDTH);
         mainMenu.setHeight(BUTTON_HEIGHT);
-        mainMenu.setPosition(Gdx.graphics.getWidth() /2 - mainMenu.getWidth()/2, Gdx.graphics.getHeight()/2 - 140 );
+        mainMenu.setPosition(SpaceStationBlaster.V_WIDTH /2 - mainMenu.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 140 );
         mainMenu.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -119,7 +118,7 @@ public class GameOverScreen implements Screen {
         exit = new TextButton("EXIT GAME", skin, "default");
         exit.setWidth(BUTTON_WIDTH);
         exit.setHeight(BUTTON_HEIGHT);
-        exit.setPosition(Gdx.graphics.getWidth() /2 - exit.getWidth()/2, Gdx.graphics.getHeight()/2 - 240);
+        exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - exit.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 240);
         exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -135,7 +134,7 @@ public class GameOverScreen implements Screen {
         stage.addActor(tryAgain);
         stage.addActor(mainMenu);
         stage.addActor(exit);
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        resize(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
 
@@ -157,7 +156,7 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
         stage.draw();
 
