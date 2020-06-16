@@ -193,38 +193,38 @@ public class InstructionScreen implements Screen {
                 mobileControlTitleLabel.setColor(Color.SALMON);
 
                 // mobile key
-                mobileUpLabel = new Label(": Thrust", textSkin,"default");
+                mobileUpLabel = new Label(": Thrust", skin,"default");
                 mobileUpLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileUpLabel.getWidth()/2 - 450 ,SpaceStationBlaster.V_HEIGHT/2  + 70);
 
-                mobileLeftLabel = new Label(": Rotate Left", textSkin,"default");
-                mobileLeftLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
+                mobileLeftLabel = new Label(": Rotate Left", skin,"default");
+                mobileLeftLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 160 ,SpaceStationBlaster.V_HEIGHT/2  + 70);
 
-                mobileRightLabel = new Label(": Rotate Right", textSkin,"default");
-                mobileRightLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 80 ,SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT - 130);
+                mobileRightLabel = new Label(": Rotate Right", skin,"default");
+                mobileRightLabel.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 190 ,SpaceStationBlaster.V_HEIGHT/2 + 70);
 
-                mobileShotLabel = new Label(": Fire", textSkin,"default");
+                mobileShotLabel = new Label(": Fire", skin,"default");
                 mobileShotLabel.setPosition(SpaceStationBlaster.V_WIDTH/2  - mobileShotLabel.getWidth()/2  + 450 ,SpaceStationBlaster.V_HEIGHT/2  + 70);
 
                 // mobile key images
                 mobileKeyUp = new Texture("Controls/transparentDark24.png");
                 mkuImage = new Image(mobileKeyUp);
                 mkuImage.setSize(BUTTON_SIZE, BUTTON_SIZE);
-                mkuImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileUpLabel.getWidth()/2 - 460 - dkuImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
+                mkuImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileUpLabel.getWidth()/2 - 460 - mkuImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
 
                 mobileKeyLeft = new Texture("Controls/transparentDark22.png");
                 mklImage = new Image(mobileKeyLeft);
                 mklImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                mklImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 185 - dklImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
+                mklImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileLeftLabel.getWidth()/2 - 185 - mklImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
 
                 mobileKeyRight = new Texture("Controls/transparentDark23.png");
                 mkrImage = new Image(mobileKeyRight);
                 mkrImage.setSize(BUTTON_SIZE,BUTTON_SIZE);
-                mkrImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 175 ,SpaceStationBlaster.V_HEIGHT/2  + 70);
+                mkrImage.setPosition(SpaceStationBlaster.V_WIDTH/2 - mobileRightLabel.getWidth()/2 + 120 ,SpaceStationBlaster.V_HEIGHT/2  + 60);
 
                 mobileKeyShot = new Texture("Controls/transparentDark47.png");
                 mksImage = new Image(mobileKeyShot);
                 mksImage.setSize(BUTTON_SIZE ,BUTTON_SIZE);
-                mksImage.setPosition(SpaceStationBlaster.V_WIDTH/2  - mobileShotLabel.getWidth()/2  + 440 - dksImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
+                mksImage.setPosition(SpaceStationBlaster.V_WIDTH/2  - mobileShotLabel.getWidth()/2  + 440 - mksImage.getWidth() ,SpaceStationBlaster.V_HEIGHT/2  + 60);
 
                 // add key labels and images to stage
                 stage.addActor(mobileControlTitleLabel);
