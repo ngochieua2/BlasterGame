@@ -6,7 +6,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -27,14 +29,16 @@ import com.mygdx.game.SpaceStationBlaster;
 public class GameOverScreen implements Screen {
 
     // constants for game over banner and button
-    private static final int BANNER_WIDTH = 400;
-    private static final int BANNER_HEIGHT = 300;
-    private static final int BUTTON_WIDTH = 220;
-    private static final int BUTTON_HEIGHT = 80;
-
+    private static final int BANNER_WIDTH = 1000;
+    private static final int BANNER_HEIGHT = 500;
+    private static final int BUTTON_WIDTH = 400;
+    private static final int BUTTON_HEIGHT = 140;
+    private static final float TEXT_BUTTON_WIDTH = 1.75f;
+    private static final float TEXT_BUTTON_HEIGHT = 1.75f;
     // declare all game over screen entities
     private SpaceStationBlaster game;
     private Skin skin;
+    private Skin textSkin;
     private Stage stage;
 
     private Texture gameoverBanner;
@@ -68,8 +72,11 @@ public class GameOverScreen implements Screen {
         camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH / 2, SpaceStationBlaster.V_HEIGHT / 2);
 
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
+        textSkin = new Skin(Gdx.files.internal("gui/glassy-ui.json"));
         stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
         stage.getViewport();
+
+
 
         // background
         backgroundTexture = new Texture("screen/star_background.png");
@@ -81,18 +88,19 @@ public class GameOverScreen implements Screen {
         gameoverBanner = new Texture("screen/gameover.png");
         image = new Image(gameoverBanner);
         image.setSize(BANNER_WIDTH, BANNER_HEIGHT);
-        image.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT * 2/3 - BANNER_HEIGHT/2);
+        image.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT * 3/4);
 
         // score label
-        scoreLabel = new Label(String.format("SCORE: %d", score), skin ,"default");
-        scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 + 20);
+        scoreLabel = new Label(String.format("SCORE: %d", score), textSkin, "big" );
+        scoreLabel.setSize(50,50);
+        scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 + 140);
         scoreLabel.setAlignment(Align.center);
 
         // try again button
         tryAgain = new TextButton("TRY AGAIN", skin, "default");
-        tryAgain.setWidth(BUTTON_WIDTH);
-        tryAgain.setHeight(BUTTON_HEIGHT);
-        tryAgain.setPosition(SpaceStationBlaster.V_WIDTH /2 - tryAgain.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 70 );
+        tryAgain.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        tryAgain.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        tryAgain.setPosition(SpaceStationBlaster.V_WIDTH /2 - tryAgain.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - tryAgain.getHeight()/2);
         tryAgain.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -131,9 +139,9 @@ public class GameOverScreen implements Screen {
         stage.addActor(background);
         stage.addActor(image);
         stage.addActor(scoreLabel);
-        stage.addActor(tryAgain);
-        stage.addActor(mainMenu);
-        stage.addActor(exit);
+        //stage.addActor(tryAgain);
+        //stage.addActor(mainMenu);
+        //stage.addActor(exit);
         resize(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 

@@ -26,10 +26,12 @@ import com.mygdx.game.SpaceStationBlaster;
 public class TitleScreen implements Screen {
 
     // constants for title screen banner, button
-    private static final int BANNER_WIDTH = 660;
-    private static final int BANNER_HEIGHT = 400;
-    private static final int BUTTON_WIDTH = 250;
-    private static final int BUTTON_HEIGHT = 80;
+    private static final int BANNER_WIDTH = 1500;
+    private static final int BANNER_HEIGHT = 800;
+    private static final int BUTTON_WIDTH = 400;
+    private static final int BUTTON_HEIGHT = 140;
+    private static final float TEXT_BUTTON_WIDTH = 1.75f;
+    private static final float TEXT_BUTTON_HEIGHT = 1.75f;
 
     // declare all title screen entities
     private SpaceStationBlaster game;
@@ -66,6 +68,7 @@ public class TitleScreen implements Screen {
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
         stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
         stage.getViewport();
+
         // background
         backgroundTexture = new Texture("screen/star_background.png");
         background = new Image(backgroundTexture);
@@ -76,13 +79,13 @@ public class TitleScreen implements Screen {
         gameBanner = new Texture("screen/gameTitle.png");
         bannerImage = new Image(gameBanner);
         bannerImage.setSize(BANNER_WIDTH,BANNER_HEIGHT);
-        bannerImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT * 4/5 );
+        bannerImage.setPosition(SpaceStationBlaster.V_WIDTH /2 - BANNER_WIDTH/2, SpaceStationBlaster.V_HEIGHT - BANNER_HEIGHT * 3/4 );
 
         // play button
         Play = new TextButton("PLAY GAME", skin, "default");
         Play.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-
-        Play.setPosition(SpaceStationBlaster.V_WIDTH /2 - Play.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2  );
+        Play.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        Play.setPosition(SpaceStationBlaster.V_WIDTH /2 - Play.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - Play.getHeight()/2 + 20);
         Play.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -93,9 +96,9 @@ public class TitleScreen implements Screen {
 
         // instruction button
         Instruction = new TextButton("INSTRUCTIONS", skin, "default");
-        Instruction.setWidth(BUTTON_WIDTH);
-        Instruction.setHeight(BUTTON_HEIGHT);
-        Instruction.setPosition(SpaceStationBlaster.V_WIDTH /2 - Instruction.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 80 );
+        Instruction.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        Instruction.getLabel().setFontScale(TEXT_BUTTON_WIDTH - 0.25f, TEXT_BUTTON_HEIGHT - 0.25f);
+        Instruction.setPosition(SpaceStationBlaster.V_WIDTH /2 - Instruction.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - Instruction.getHeight() * 4/3 + 12 );
         Instruction.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,9 +109,9 @@ public class TitleScreen implements Screen {
 
         // credit button
         Credits = new TextButton("CREDITS", skin, "default");
-        Credits.setWidth(BUTTON_WIDTH);
-        Credits.setHeight(BUTTON_HEIGHT);
-        Credits.setPosition(SpaceStationBlaster.V_WIDTH /2 - Credits.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 160 );
+        Credits.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        Credits.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        Credits.setPosition(SpaceStationBlaster.V_WIDTH /2 - Credits.getWidth()/2,  Credits.getHeight() - 35 );
         Credits.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -120,9 +123,9 @@ public class TitleScreen implements Screen {
 
         // exit button
         Exit = new TextButton("EXIT GAME", skin, "default");
-        Exit.setWidth(BUTTON_WIDTH);
-        Exit.setHeight(BUTTON_HEIGHT);
-        Exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - Exit.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 240);
+        Exit.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        Exit.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        Exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - Exit.getWidth()/2,  Exit.getHeight()/2 - 80);
         Exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
