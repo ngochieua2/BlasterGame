@@ -33,6 +33,9 @@ import com.mygdx.game.Asteroids;
 import com.mygdx.game.Enemies;
 import com.mygdx.game.Walls;
 
+/**
+ * PlayScreen: the main screen of our game world where the Player, Asteroids and Enemies live in
+ */
 public class PlayScreen implements Screen {
 
     private TextureAtlas textureAtlas;
@@ -59,6 +62,13 @@ public class PlayScreen implements Screen {
 
     private ShapeRenderer shapeRenderer;
 
+    /**
+     * PlayerScreen constructor: setups up the textureAtlas and tiled map paths. Then sets up
+     * camera, game view port and map render. Posisions the view port to the camera. Then creates
+     * instances of the Hud, Controller, Walls, Effects, Powerups, Bullets, Player, Enemies and
+     * Asteriods.
+     * @param game this is the main Game class
+     */
     public PlayScreen(SpaceStationBlaster game) {
         this.game = game;
         shapeRenderer = new ShapeRenderer();
@@ -81,7 +91,7 @@ public class PlayScreen implements Screen {
         gameHud = new Hud(game.spriteBatch, this);
 
         // create the onscreen Controller for mobile input
-        controller = new Controller( game.spriteBatch);
+        controller = new Controller(game.spriteBatch);
 
         walls = new Walls(this);
         effects = new Effects(this);
@@ -96,6 +106,11 @@ public class PlayScreen implements Screen {
         stageCompleteElapsedTime = 0;
     }
 
+    /**
+     * reloadStage: reloads the stage of the game by re initialising Powerups, Bullets, Player
+     * Enemies, Asteroids. Then clears score required to spawn stace station and clears stage
+     * number display
+     */
     public void reloadStage() {
         powerups = new Powerups(this);
         bullets = new Bullets(this);
@@ -106,26 +121,50 @@ public class PlayScreen implements Screen {
         gameHud.clearStageNumberDisplay();
     }
 
+    /**
+     * getTextureAtlas: gets the textureAtlas
+     * @return textureAtlas
+     */
     public TextureAtlas getTextureAtlas() {
         return textureAtlas;
     }
 
+    /**
+     * getUITextureAtlas: gets the UITextureAtlas
+     * @return UITextureAtlas
+     */
     public TextureAtlas getUITextureAtlas() {
         return uiTextureAtlas;
     }
 
+    /**
+     * getTiledMap: gets the tiledMap
+     * @return tiledMap
+     */
     public TiledMap getTiledMap() {
         return tiledMap;
     }
 
+    /**
+     * getBullets: gets the bullets
+     * @return bullets
+     */
     public Bullets getBullets() {
         return bullets;
     }
 
+    /**
+     * getEffects: gets the effects
+     * @return effects
+     */
     public Effects getEffects() {
         return effects;
     }
 
+    /**
+     * getPowerUps: gets the powerups
+     * @return powerups
+     */
     public Powerups getPowerups() {
         return powerups;
     }
@@ -135,12 +174,23 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * handleInput: exits the game of the Player presses escape key
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     private void handleInput(float deltaTime) {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
     }
 
+    /**
+     * update: checks to see if the score required to spawn space station and is space station is
+     * not spawned. If it has spawns a space station. updates handleInput, powerups, player, bullets
+     * enemies and asteroids. Sets the camera position to be same as the Player position. Update
+     * the game camera and set map render to draw only what it can see in our game world
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     public void update(float deltaTime) {
         if (gameHud.currentStageScore >= getGameHud().scoreRequiredToSpawnSpaceStation && !enemies.spaceStationSpawned()) {
             enemies.spawnSpaceStation();
@@ -162,6 +212,13 @@ public class PlayScreen implements Screen {
         mapRenderer.setView(gameCamera);
     }
 
+    /**
+     * render: clears the screen and renders the mapRenderer, player, powerups, bullets, enemies and
+     * asteroids. render Bullet fire, Bullet hit, Player destroyed explosion and trail current
+     * animation frame. When Player destroyed explosion is on its last frame reset stage, remove
+     * ship, reset shield and reset player shooting cooldown speed. Draw Hud and Controller overlay
+     * @param delta is the time passed since the last frame of animation
+     */
     @Override
     public void render(float delta) {
         update(delta);
@@ -170,7 +227,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // gameCamera.update();
         mapRenderer.render();
 
         // set camera to draw what our main game camera can see
@@ -203,7 +259,8 @@ public class PlayScreen implements Screen {
 
         if (player.bulletHit && !player.impactAnimation.isAnimationFinished(player.impactElapsedTime)) {
             game.spriteBatch.begin();
-            player.impactCurrentFrame = (TextureRegion) player.impactAnimation.getKeyFrame(player.impactElapsedTime, false);;
+            player.impactCurrentFrame = (TextureRegion) player.impactAnimation.getKeyFrame(player.impactElapsedTime, false);
+            ;
             game.spriteBatch.draw(player.impactCurrentFrame, player.impactPosition.x, player.impactPosition.y,
                     player.impactCurrentFrame.getRegionWidth() / 2,
                     player.impactCurrentFrame.getRegionHeight() / 2,
@@ -225,9 +282,9 @@ public class PlayScreen implements Screen {
             player.explosionCurrentFrame = (TextureRegion) player.explosionAnimation.getKeyFrame(player.explosionElapsedTime, false);
             player.playerSprite.setRegion(player.explosionCurrentFrame);
             game.spriteBatch.draw(player.explosionCurrentFrame, player.position.x - player.explosionCurrentFrame.getRegionWidth() / 2 +
-                    player.playerSprite.getWidth() / 2,
+                            player.playerSprite.getWidth() / 2,
                     player.position.y - player.explosionCurrentFrame.getRegionHeight() / 2 +
-                    player.playerSprite.getHeight() / 2,
+                            player.playerSprite.getHeight() / 2,
                     player.explosionCurrentFrame.getRegionWidth() / 2,
                     player.explosionCurrentFrame.getRegionHeight() / 2,
                     player.explosionCurrentFrame.getRegionWidth(),
@@ -284,69 +341,14 @@ public class PlayScreen implements Screen {
             game.spriteBatch.setProjectionMatrix((controller.stage.getCamera().combined));
             controller.stage.draw();
         }
-
-
-        // testing the player bounds
-        /*
-        shapeRenderer.setProjectionMatrix(gameCamera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.polygon(player.playerBounds.getTransformedVertices());
-        shapeRenderer.end();
-
-        // testing the space station bounds
-
-        shapeRenderer.setProjectionMatrix(gameCamera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(enemies.spaceStationColliders[0].x, enemies.spaceStationColliders[0].y, enemies.spaceStationColliders[0].width, enemies.spaceStationColliders[0].height);
-        shapeRenderer.rect(enemies.spaceStationColliders[1].x, enemies.spaceStationColliders[1].y, enemies.spaceStationColliders[1].width, enemies.spaceStationColliders[1].height);
-        shapeRenderer.end();
-
-
-        //testing enemy bounds
-        for (int i=0; i<Enemies.MAX_ENEMIES; i++) {
-            shapeRenderer.setProjectionMatrix(gameCamera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.circle(enemies.circleColliders[i].x, enemies.circleColliders[i].y, enemies.circleColliders[i].radius);
-            shapeRenderer.end();
-        }
-
-        // testing the wall bounds
-        for(int index = 0; index < walls.colliders.size(); index++) {
-            shapeRenderer.setProjectionMatrix(gameCamera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect(walls.colliders.get(index).getX(), walls.colliders.get(index).getY(),
-                    walls.colliders.get(index).getWidth(), walls.colliders.get(index).getHeight());
-            shapeRenderer.end();
-        }
-
-        // testing the bullet bounds
-        if (bullets.refCollider != null) {
-            shapeRenderer.setProjectionMatrix(gameCamera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.BLUE);
-            shapeRenderer.polygon(bullets.refCollider.getTransformedVertices());
-            shapeRenderer.end();
-        }
-
-        //testing the Asteroids bounds
-        for (int i=0; i < Asteroids.Asteroids_Max; i++){
-            if (asteroids.type[i] != Asteroids.TYPE.NONE ){
-
-                shapeRenderer.setProjectionMatrix(gameCamera.combined);
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                shapeRenderer.setColor(Color.YELLOW);
-                shapeRenderer.polygon(asteroids.Astcollider[i].getTransformedVertices());
-                shapeRenderer.end();
-            }
-
-        }
-         */
     }
 
+    /**
+     * resize: updates the game view port width and height to allow for updates when the window
+     * is resized.
+     * @param width of the screen
+     * @param height of the screen
+     */
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height);
@@ -367,30 +369,60 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * dispose: dispose of assets to prevent memory leaks
+     */
     @Override
     public void dispose() {
         gameHud.dispose();
+        effects.dispose();
     }
 
+    /**
+     * getPlayer: gets a player
+     * @return player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * getsWalls: gets walls
+     * @return walls
+     */
     public Walls getWalls() {
         return walls;
     }
 
+    /**
+     * getGameHud: gets the gameHud
+     * @return gameHud
+     */
     public Hud getGameHud() {
         return gameHud;
     }
 
+    /**
+     * getEnemies: gets the enemies
+     * @return enemies
+     */
     public Enemies getEnemies() {
         return enemies;
     }
 
+    /**
+     * getCamera: gets the gameCamera
+     * @return gameCamera
+     */
     public OrthographicCamera getCamera() {
         return gameCamera;
     }
 
-    public  Asteroids getAsteroids(){ return asteroids;}
+    /**
+     * getAsteroids: gets the asteroids
+     * @return asteroids
+     */
+    public Asteroids getAsteroids() {
+        return asteroids;
+    }
 }

@@ -9,6 +9,10 @@ import com.mygdx.game.Screens.PlayScreen;
 
 import java.util.ArrayList;
 
+/**
+ * Walls: the invisible walls to prevent asteroids enemies and the player from leaving the game
+ * world;
+ */
 public class Walls {
     private static final String MAP_BOUNDS = "Bounds";
     public static final int MAX_WALLS = 8;
@@ -24,6 +28,12 @@ public class Walls {
     private Vector2[] positions;
 
     private TiledMap tiledMap;
+
+    /**
+     * Walls contsructor: set up the colliders for the invisible wall
+     * @param playScreen is the screen that the player spaceship lives in as well as asteroids,
+     *                   enemies and the walls
+     */
     public Walls(PlayScreen playScreen) {
         this.tiledMap = playScreen.getTiledMap();
         positions = new Vector2[MAX_WALLS];

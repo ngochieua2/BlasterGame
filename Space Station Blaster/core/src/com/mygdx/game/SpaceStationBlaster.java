@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Screens.TitleScreen;
 
+/**
+ * SpaceStationBlaster: intended to set up assets, enum and constants required for the Game and
+ * set the game screen to a new TitleScreeen
+ */
 public class SpaceStationBlaster extends Game {
 	public enum BulletType { NONE, GREEN, ORANGE, PURPLE, BLUE, RESERVED }
 	public enum EffectType { NONE, GREEN_FIRE, ORANGE_FIRE, PURPLE_FIRE, BLUE_FIRE, GREEN_IMPACT,
@@ -22,7 +26,6 @@ public class SpaceStationBlaster extends Game {
 	public static final String TEXTURE_ATLAS_PATH = "sprite-sheet.atlas";
 	public static final String UI_TEXTURE_ATLAS_PATH = "ui-space-expansion-sprite-sheet.atlas";
 	public static final String TILE_MAP_PATH = "game-map.tmx";
-	public static final String MAP_BOUNDS = "Bounds";
 
 	public static final int MAP_WIDTH = 3200;
 	public static final int MAP_HEIGHT = 2500;
@@ -42,12 +45,10 @@ public class SpaceStationBlaster extends Game {
 
 	public SpriteBatch spriteBatch; // public to allow access to batch from SpaceStationBlaster
 
-	public Sound ButtonPressSound;
-
 	public static AssetManager soundAssetManager;
 
 	/**
-	 * create: sets the Game Screen as a new PlayScreen
+	 * create constructor: sets the Game Screen as a new TitleScreen
 	 */
 	@Override
 	public void create () {

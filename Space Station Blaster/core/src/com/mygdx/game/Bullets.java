@@ -23,6 +23,9 @@ import java.util.Random;
 
 import javax.xml.soap.Text;
 
+/**
+ * Bullets: used for creating a bullet of a particular type and spawning it into our game world
+ */
 public class Bullets {
 
     // constants for green bullet
@@ -87,6 +90,12 @@ public class Bullets {
     private PlayScreen playScreen;
     private Effects effects;
 
+    /**
+     * Bullets constructor: sets up our entity arrays and gets our texure regions and creates
+     * colliders for each of them.
+     * @param playScreen is the screen that the player spaceship lives in as well as asteroids,
+     *                   enemies and the walls
+     */
     public Bullets(PlayScreen playScreen) {
         this.playScreen = playScreen;
         effects = playScreen.getEffects();
@@ -128,6 +137,10 @@ public class Bullets {
                 BLUE_BULLET_COLLIDER_HEIGHT});
     }
 
+    /**
+     * instantiateEntities: instiates entities with their maxSize
+     * @param maxSize is the maximum size of the entity arrays
+     */
     private void instantiateEntities(int maxSize) {
         this.bulletType = new SpaceStationBlaster.BulletType[maxSize];
         position = new Vector2[maxSize];
@@ -139,6 +152,15 @@ public class Bullets {
         animationElapsedTime = new float[maxSize];
     }
 
+    /**
+     * spawn: spawns a Bullet with a fixed speed and direction of movement depending on the
+     * angle in radians
+     * @param bulletType a SpaceStationBlaster.BulletType which represents the type of bullet to
+     *                   be spawned
+     * @param radians the angle represented in radians
+     * @return index of the enitity array containg all the position, direction, radians
+     * and lifeTime
+     */
     public int spawn(SpaceStationBlaster.BulletType bulletType, float radians) {
         // bulletType should not be null
         if (bulletType == null) return -1;
@@ -195,6 +217,12 @@ public class Bullets {
         return index;
     }
 
+    /**
+     * update: updates the Bullet lifetime, position and sets up a Bullet collider. Then sets the
+     * collider's origin, position and rotation.
+     * Uses: checkWallCollision, checkUFOCollision, checkPlayerCollision, checkAsteroidsCollision
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     public void update(float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
             if (bulletType[index] == SpaceStationBlaster.BulletType.NONE || bulletType[index] == SpaceStationBlaster.BulletType.RESERVED) {
@@ -266,6 +294,11 @@ public class Bullets {
         }
     }
 
+    /**
+     * checks if a Bullet collider collides with a Wall collider and if it does creates an
+     * impact animation for that type of bulletType.
+     * @param index is the position in the entity arrays
+     */
     private void checkWallCollision(int index) {
         for (Rectangle wall : playScreen.getWalls().colliders) {
             Polygon polygonWall = new Polygon(new float[] { 0, 0, wall.getWidth(), 0,
@@ -275,10 +308,6 @@ public class Bullets {
                 SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.IMPACT_SOUND, Sound.class).play();
                 switch(bulletType[index]) {
                     case GREEN: {
-                        //playScreen.getPlayer().bulletHit = true;
-                        //playScreen.getPlayer().currentBulletIndex = index;
-                        //bulletType[index] = SpaceStationBlaster.BulletType.NONE;
-
                         bulletType[index] = SpaceStationBlaster.BulletType.RESERVED;
                         animations[index] = effects.getAnimation(SpaceStationBlaster.EffectType.GREEN_IMPACT);
                         break;
@@ -333,10 +362,10 @@ public class Bullets {
                                 playScreen.getGameHud().addShip();
                             }
                             randomValue = random.nextInt(3) + 1;
-                            //if (randomValue == 1) {
+                            if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
                                 playScreen.getPlayer().spawnBulletPowerup();
-                            //}
+                            }
 
                         } else if (enemies.type[enemyIndex] == Enemies.Type.GREEN_UFO) {
                             playScreen.getGameHud().updateScore(Hud.GREEN_UFO_POINTS);
@@ -345,10 +374,10 @@ public class Bullets {
                                 playScreen.getGameHud().addShip();
                             }
                             randomValue = random.nextInt(3) + 1;
-                            //if (randomValue == 1) {
+                            if (randomValue == 1) {
                                 playScreen.getPlayer().currentUFOIndex = enemyIndex;
                                 playScreen.getPlayer().spawnShieldPowerup();
-                            //}
+                            }
 
                         }
 
@@ -379,6 +408,12 @@ public class Bullets {
         }
     }
 
+    /**
+     * checkPlayerCollision: checks if Player collider and collidered with Bullet collider of
+     * a particular bulletType. If it has it sets that bulletType to reserved and then creates an
+     * impact animation for that bulletType
+     * @param index is the position in the entity arrays
+     */
     public void checkPlayerCollision(int index) {
         Player player = playScreen.getPlayer();
         if (Intersector.overlapConvexPolygons(refCollider, player.playerBounds)) {
@@ -468,7 +503,13 @@ public class Bullets {
 
     }
 
-
+    /**
+     * render: render the Bullet for each bulletType in the entity array that is not NONE and then
+     * sets the origin, posistion and rotation and draws the sprite. For BulletTypes that are
+     * RESERVED renders the current impact animation frame
+     * @param spriteBatch used to draw textures or sprites onto the screen for the current frame
+     * @param deltaTime is the time passed since the last frame of animation
+     */
     public void render(SpriteBatch spriteBatch, float deltaTime) {
         for (int index = 0; index < MAX_BULLETS; index++) {
             switch(bulletType[index]) {
