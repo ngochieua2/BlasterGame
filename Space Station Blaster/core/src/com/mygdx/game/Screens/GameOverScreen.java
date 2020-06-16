@@ -92,7 +92,7 @@ public class GameOverScreen implements Screen {
 
         // score label
         scoreLabel = new Label(String.format("SCORE: %d", score), textSkin, "big" );
-        scoreLabel.setSize(50,50);
+        //scoreLabel.setSize(50,50);
         scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 + 140);
         scoreLabel.setAlignment(Align.center);
 
@@ -111,9 +111,9 @@ public class GameOverScreen implements Screen {
 
         // main menu button
         mainMenu = new TextButton("Main Menu", skin, "default");
-        mainMenu.setWidth(BUTTON_WIDTH);
-        mainMenu.setHeight(BUTTON_HEIGHT);
-        mainMenu.setPosition(SpaceStationBlaster.V_WIDTH /2 - mainMenu.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 140 );
+        mainMenu.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        mainMenu.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        mainMenu.setPosition(SpaceStationBlaster.V_WIDTH /2 - mainMenu.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - mainMenu.getHeight() *4/3 - 15);
         mainMenu.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -124,9 +124,9 @@ public class GameOverScreen implements Screen {
 
         // exit button
         exit = new TextButton("EXIT GAME", skin, "default");
-        exit.setWidth(BUTTON_WIDTH);
-        exit.setHeight(BUTTON_HEIGHT);
-        exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - exit.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 - 240);
+        exit.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        exit.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        exit.setPosition(SpaceStationBlaster.V_WIDTH /2 - exit.getWidth()/2,  exit.getHeight() /2 - 50);
         exit.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -139,9 +139,9 @@ public class GameOverScreen implements Screen {
         stage.addActor(background);
         stage.addActor(image);
         stage.addActor(scoreLabel);
-        //stage.addActor(tryAgain);
-        //stage.addActor(mainMenu);
-        //stage.addActor(exit);
+        stage.addActor(tryAgain);
+        stage.addActor(mainMenu);
+        stage.addActor(exit);
         resize(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
