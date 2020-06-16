@@ -1,0 +1,36 @@
+Credits
+
+Space Station Blaster was developed by:
+Sandy Nelson
+Clayton Frank Kingham
+Ngoc Hieu Nguyen
+
+Attributions
+
+Spaceship, UFO and Asteroids by Kenny
+https://kenney.nl/assets/space-shooter-redux
+licenced under kenny.nl Attribution CCO 1.0 Universal
+
+Spacestation by Kenny
+https://kenney.nl/assets/space-shooter-extension
+licenced under kenny.nl Attribution CCO 1.0 Universal
+
+Hud overlay glass and Kevector Future font by Kenny
+https://kenney.nl/assets/ui-pack-space-expansion
+licenced under kenny.nl Attribution CCO 1.0 Universal
+
+Player and UFO fire, impact and bullet by CraftPix
+https://craftpix.net/freebies/free-pixel-art-enemy-spaceship-2d-sprites/
+licenced under craftpix.net Free no attribution required
+
+Explosions by Sinestesia Studio
+https://sinestesia.itch.io/free-2d-explosion-animations-2
+licenced under sinestesia.itch.io Free attribution required
+
+
+
+
+
+
+
+
