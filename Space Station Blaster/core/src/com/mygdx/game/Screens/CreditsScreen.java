@@ -2,14 +2,21 @@ package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.SpaceStationBlaster;
@@ -19,17 +26,24 @@ import com.mygdx.game.SpaceStationBlaster;
  */
 public class CreditsScreen implements Screen {
 
+    private static final int BUTTON_WIDTH = 400;
+    private static final int BUTTON_HEIGHT = 140;
+    private static final float TEXT_BUTTON_WIDTH = 1.75f;
+    private static final float TEXT_BUTTON_HEIGHT = 1.75f;
+
     private Viewport viewport;
     private OrthographicCamera camera;
 
-    String credits;
-    Label creditsLabel;
+    private String credits;
+    private Label creditsLabel;
+    private Texture backgroundTexture;
+    private Image background;
 
     private Skin skin;
 
     private Stage stage;
 
-    private Button closeButton;
+    private TextButton closeButton;
 
     boolean closeButtonClicked;
 
@@ -37,10 +51,10 @@ public class CreditsScreen implements Screen {
 
     /**
      * CreditsScreen constructor: sets up the screen to display the credits in a Label and a button
-     * for closing the credits screen
+     * for closing the credits screen.
      * @param game this is the main Game class
      */
-    public CreditsScreen(SpaceStationBlaster game) {
+    public CreditsScreen(final SpaceStationBlaster game) {
         this.game = game;
         closeButtonClicked = false;
 
@@ -52,7 +66,7 @@ public class CreditsScreen implements Screen {
 
         // center the camera
         // camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT);
+        camera.setToOrtho(false, SpaceStationBlaster.V_WIDTH / 2, SpaceStationBlaster.V_HEIGHT / 2);
 
         skin = new Skin(Gdx.files.internal("gui/star-soldier-ui.json"));
         stage = new Stage(new FitViewport(SpaceStationBlaster.V_WIDTH, SpaceStationBlaster.V_HEIGHT));
@@ -60,19 +74,36 @@ public class CreditsScreen implements Screen {
 
         credits = Gdx.files.internal("credits.txt").readString();
 
-        creditsLabel = new Label(credits, skin);
-        creditsLabel.setWidth(SpaceStationBlaster.V_WIDTH);
-        creditsLabel.setWidth(SpaceStationBlaster.V_WIDTH);
-        creditsLabel.setPosition(SpaceStationBlaster.V_WIDTH - creditsLabel.getWidth() / 2,
-                SpaceStationBlaster.V_HEIGHT - creditsLabel.getHeight() / 2);
+        // background
+        backgroundTexture = new Texture("screen/star_background.png");
+        background = new Image(backgroundTexture);
+        background.setSize(SpaceStationBlaster.V_WIDTH,SpaceStationBlaster.V_HEIGHT);
+        background.setPosition(0,0);
 
-        closeButton = new TextButton("EXIT", skin, "default");
-        closeButton.setWidth(200f);
-        closeButton.setHeight(60f);
-        closeButton.setPosition((SpaceStationBlaster.V_WIDTH - closeButton.getWidth()) / 2,
-                (SpaceStationBlaster.V_HEIGHT - closeButton.getHeight() / 2) - 420);
+
+        creditsLabel = new Label(credits, skin);
+        creditsLabel.setFontScale(1.15f);
+        creditsLabel.setWidth(SpaceStationBlaster.V_WIDTH);
+        creditsLabel.setWidth(SpaceStationBlaster.V_WIDTH);
+        creditsLabel.setPosition(SpaceStationBlaster.V_WIDTH / 2 - creditsLabel.getWidth() / 2,
+                SpaceStationBlaster.V_HEIGHT / 2 - creditsLabel.getHeight() / 2 - 20);
+        creditsLabel.setAlignment(Align.center);
+
+        closeButton = new TextButton("CLOSE", skin, "default");
+        closeButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        closeButton.getLabel().setFontScale(TEXT_BUTTON_WIDTH, TEXT_BUTTON_HEIGHT);
+        closeButton.setPosition(SpaceStationBlaster.V_WIDTH / 2 - closeButton.getWidth() / 2,
+                SpaceStationBlaster.V_HEIGHT / 2 - closeButton.getHeight() / 2 - 340);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                SpaceStationBlaster.soundAssetManager.get(SpaceStationBlaster.BUTTON_PRESS_SOUND, Sound.class).play();
+                game.setScreen(new TitleScreen(game));
+            }
+        });
 
         stage.setViewport(viewport);
+        stage.addActor(background);
         stage.addActor(creditsLabel);
         stage.addActor(closeButton);
 
@@ -87,37 +118,16 @@ public class CreditsScreen implements Screen {
     }
 
     /**
-     * HandleInput: for handing input for closeButton and playing button sound effect when clicked.
-     */
-    public void handleInput() {
-        closeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                closeButtonClicked = true;
-                //buttonSound.play();
-            }
-        });
-    }
-
-    /**
-     * update: checks to see if the close button has been clicked. returns to the TitleScreen if
-     * closeButton has been clicked.
-     * @param deltaTime is the difference between one frame rendered and the next frame rendered
-     */
-    public void update(float deltaTime) {
-        handleInput();
-        if (closeButtonClicked) {
-            this.dispose();
-        }
-    }
-
-    /**
      * render: updates the camera and renders the stage to the screen
      * @param delta is the difference between one frame rendered and the next frame rendered
      */
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         camera.update();
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
         stage.draw();
     }
