@@ -92,7 +92,6 @@ public class GameOverScreen implements Screen {
 
         // score label
         scoreLabel = new Label(String.format("SCORE: %d", score), textSkin, "big" );
-        //scoreLabel.setSize(50,50);
         scoreLabel.setPosition(SpaceStationBlaster.V_WIDTH /2 - scoreLabel.getWidth()/2, SpaceStationBlaster.V_HEIGHT/2 + 140);
         scoreLabel.setAlignment(Align.center);
 
